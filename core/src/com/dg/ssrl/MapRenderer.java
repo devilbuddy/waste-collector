@@ -23,24 +23,27 @@ public class MapRenderer {
         viewport.update(width, height);
     }
 
-    public void render(SpriteBatch spriteBatch) {
+    public void render(World world, SpriteBatch spriteBatch) {
 
         viewport.apply(true);
         spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
 
 
-        int size = 16;
+        World.Cell[][] cells = world.getCells();
+
+        int width = world.getWidth();
+        int height = world.getHeight();
 
         int yy = 0;
-
-        for (int y = 0; y < size; y++) {
-
+        for (int y = 0; y < height; y++) {
             int xx = 0;
-            for (int x = 0; x < size; x++) {
+            for (int x = 0; x < width; x++) {
+                World.Cell cell = cells[y][x];
+
                 spriteBatch.draw(assets.tiles[y%3][x%2], xx, yy);
-                xx += 8;
+                xx += Assets.TILE_SIZE;
             }
-            yy += 8;
+            yy += Assets.TILE_SIZE;
         }
     }
 

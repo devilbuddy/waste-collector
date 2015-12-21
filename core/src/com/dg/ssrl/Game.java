@@ -30,24 +30,24 @@ public class Game extends ApplicationAdapter {
 					Point size = debugScreenSizes[index];
 					Gdx.graphics.setDisplayMode(size.x, size.y, false);
 				}
-
 			}
 			return false;
 		}
 	}
+
 	private static final String tag = "Game";
 
 	private DebugInputSwitcher debugInputSwitcher;
 	private InputMultiplexer inputMultiplexer = new InputMultiplexer();
 
     private Assets assets = new Assets();
-
-    private SpriteBatch spriteBatch;
+	private SpriteBatch spriteBatch;
 	private MapRenderer mapRenderer;
 
-    private Viewport viewport = new StretchViewport(160, 240);
+    private Stage stage;
 
-    Stage stage;
+	private World world = new World(16, 16);
+
 	public Game(Point[] debugScreenSizes) {
 		debugInputSwitcher = new DebugInputSwitcher(debugScreenSizes);
         inputMultiplexer.addProcessor(debugInputSwitcher);
@@ -63,15 +63,17 @@ public class Game extends ApplicationAdapter {
 
         stage = new Stage(new StretchViewport(160, 240));
         stage.setDebugAll(true);
-
     }
 
     @Override
     public void resize(int width, int height) {
         Gdx.app.log(tag, "resize " + width + " " + height);
         mapRenderer.resize(width, height);
-        viewport.update(width, height);
-        Gdx.app.log(tag, "viewport " + viewport.getWorldWidth() + " " + viewport.getWorldHeight());
+
+        stage.getViewport().update(width, height);
+		stage.getViewport().apply(true);
+
+		Gdx.app.log(tag, "viewport " + stage.getViewport().getWorldWidth() + " " + stage.getViewport().getWorldHeight());
 
     }
 
@@ -80,17 +82,16 @@ public class Game extends ApplicationAdapter {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        stage.draw();
 
-        stage.draw();;
+		Viewport viewport = stage.getViewport();
+		spriteBatch.begin();
+        spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
+		spriteBatch.draw(assets.tiles[0][7], 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+		spriteBatch.end();
 
 		spriteBatch.begin();
-        viewport.apply(true);
-        spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
-        spriteBatch.draw(assets.tiles[0][2], 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
-        spriteBatch.end();
-
-        spriteBatch.begin();
-        mapRenderer.render(spriteBatch);
+		mapRenderer.render(world, spriteBatch);
         spriteBatch.end();
 
 	}

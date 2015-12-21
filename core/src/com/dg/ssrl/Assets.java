@@ -9,12 +9,14 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 public class Assets {
 
+    public static final int TILE_SIZE = 8;
+
     private Texture tilesTexture;
     public TextureRegion[][] tiles;
     public void create() {
         tilesTexture = new Texture(Gdx.files.internal("tiles.png"));
 
-        tiles = TextureRegion.split(tilesTexture, 8, 8);
+        tiles = TextureRegion.split(tilesTexture, TILE_SIZE, TILE_SIZE);
     }
 
 
