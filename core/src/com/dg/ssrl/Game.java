@@ -7,6 +7,9 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class Game extends ApplicationAdapter {
 
@@ -42,10 +45,13 @@ public class Game extends ApplicationAdapter {
     private SpriteBatch spriteBatch;
 	private MapRenderer mapRenderer;
 
+    private Viewport viewport = new StretchViewport(160, 240);
+
+    Stage stage;
 	public Game(Point[] debugScreenSizes) {
 		debugInputSwitcher = new DebugInputSwitcher(debugScreenSizes);
         inputMultiplexer.addProcessor(debugInputSwitcher);
-
+		inputMultiplexer.addProcessor(new MapMovementInputHandler());
         mapRenderer = new MapRenderer(assets);
 	}
 
@@ -54,23 +60,39 @@ public class Game extends ApplicationAdapter {
         spriteBatch = new SpriteBatch();
         assets.create();
         Gdx.input.setInputProcessor(inputMultiplexer);
-	}
+
+        stage = new Stage(new StretchViewport(160, 240));
+        stage.setDebugAll(true);
+
+    }
 
     @Override
     public void resize(int width, int height) {
         Gdx.app.log(tag, "resize " + width + " " + height);
         mapRenderer.resize(width, height);
+        viewport.update(width, height);
+        Gdx.app.log(tag, "viewport " + viewport.getWorldWidth() + " " + viewport.getWorldHeight());
+
     }
 
 	@Override
 	public void render () {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+
+        stage.draw();;
+
 		spriteBatch.begin();
+        viewport.apply(true);
+        spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
+        spriteBatch.draw(assets.tiles[0][2], 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+        spriteBatch.end();
 
+        spriteBatch.begin();
         mapRenderer.render(spriteBatch);
+        spriteBatch.end();
 
-		spriteBatch.end();
 	}
 
 

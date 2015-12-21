@@ -9,7 +9,9 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  */
 public class MapRenderer {
 
-    Viewport viewport = new FitViewport(80, 80);
+    int tileSize = 8;
+    int mapSize = 16;
+    Viewport viewport = new FitViewport(tileSize * mapSize, tileSize * mapSize);
 
     private final Assets assets;
 
@@ -19,16 +21,15 @@ public class MapRenderer {
 
     public void resize(int width, int height) {
         viewport.update(width, height);
-        viewport.getCamera().position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() /2, 0);
     }
 
     public void render(SpriteBatch spriteBatch) {
 
-        viewport.apply();
+        viewport.apply(true);
         spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
 
 
-        int size = 10;
+        int size = 16;
 
         int yy = 0;
 
@@ -36,7 +37,7 @@ public class MapRenderer {
 
             int xx = 0;
             for (int x = 0; x < size; x++) {
-                spriteBatch.draw(assets.tiles[0][x%2], xx, yy);
+                spriteBatch.draw(assets.tiles[y%3][x%2], xx, yy);
                 xx += 8;
             }
             yy += 8;
