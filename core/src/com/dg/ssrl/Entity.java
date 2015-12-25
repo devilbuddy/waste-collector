@@ -13,6 +13,7 @@ public class Entity {
 
     interface Component {}
 
+
     public static class Position implements Component {
         public int x;
         public int y;
@@ -37,8 +38,11 @@ public class Entity {
     public static class MoveState implements Component {
         private static final String tag = "MoveState";
 
+        public Direction direction = Direction.NONE;
+
         private enum State {
-            BUSY,
+            MOVE,
+            TURN,
             DONE
         }
 
@@ -59,23 +63,42 @@ public class Entity {
 
             stateTime = 0f;
 
-            state = State.BUSY;
+            state = State.MOVE;
             this.onDone = onDone;
+        }
+
+        public void init(Direction direction, Runnable onDone) {
+            this.direction = direction;
+            stateTime = 0f;
+            this.onDone = onDone;
+            state = State.TURN;
         }
 
         public void update(float delta) {
             stateTime += delta;
 
-            float alpha = MathUtils.clamp(stateTime/duration, 0.0f, 1.0f);
-            position.lerp(target, alpha);
-            if (tmp.set(position).dst(target) < 0.1f) {
-                state = State.DONE;
-                onDone.run();
-                onDone = null;
+            if (state == State.MOVE) {
+                float alpha = MathUtils.clamp(stateTime/duration, 0.0f, 1.0f);
+                position.lerp(target, alpha);
+                if (tmp.set(position).dst(target) < 0.1f) {
+                    onDone();
+                }
+            } else if (state == State.TURN) {
+                if (stateTime > duration) {
+                    onDone();
+                }
             }
+
         }
+
+        private void onDone() {
+            state = State.DONE;
+            onDone.run();
+            onDone = null;
+        }
+
         public boolean isBusy() {
-            return state == State.BUSY;
+            return state != State.DONE;
         }
     }
 

@@ -45,16 +45,16 @@ public class MapMovementInputHandler extends InputAdapter {
 
         switch (keycode) {
             case com.badlogic.gdx.Input.Keys.LEFT:
-                pushMove(Direction.WEST);
+                setMovementDirection(Direction.WEST);
                 break;
             case com.badlogic.gdx.Input.Keys.RIGHT:
-                pushMove(Direction.EAST);
+                setMovementDirection(Direction.EAST);
                 break;
             case com.badlogic.gdx.Input.Keys.UP:
-                pushMove(Direction.NORTH);
+                setMovementDirection(Direction.NORTH);
                 break;
             case com.badlogic.gdx.Input.Keys.DOWN:
-                pushMove(Direction.SOUTH);
+                setMovementDirection(Direction.SOUTH);
                 break;
         }
         return super.keyDown(keycode);
@@ -74,21 +74,10 @@ public class MapMovementInputHandler extends InputAdapter {
     }
 
 
-    private void pushMove(Direction direction) {
+    private void setMovementDirection(Direction direction) {
         movementDirection = direction;
-        //inputQueue.add(direction);
+
     }
-
-    /*
-    public Direction popMove() {
-        if (inputQueue.size() > 0) {
-            return inputQueue.remove(inputQueue.size() - 1);
-        }
-        return null;
-    }
-    */
-
-
 
     @Override
     public boolean touchDown(int x, int y, int pointer, int button) {
@@ -97,7 +86,6 @@ public class MapMovementInputHandler extends InputAdapter {
             this.pointer.set(x, y);
             this.pointerDown.set(x,y);
             isWithinTapSquare = true;
-
         }
 
         return super.touchDown(x,y,pointer,button);
@@ -140,8 +128,7 @@ public class MapMovementInputHandler extends InputAdapter {
                 Direction swipeDirection = directionFromAngle(angle);
                 if(swipeDirection != Direction.NONE && !swiped) {
                     swiped = true;
-
-                    pushMove(swipeDirection);
+                    setMovementDirection(swipeDirection);
                 }
 
             }

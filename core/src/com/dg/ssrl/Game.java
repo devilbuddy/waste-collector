@@ -99,12 +99,14 @@ public class Game extends ApplicationAdapter {
     }
 
 	private void initWorld() {
-		player.getComponent(Entity.Position.class).set(0, 0);
-		player.getComponent(Entity.MoveState.class).position.set(0, 0);
-		
 		int width = 16;
 		int height = 16;
 		Generator.LevelData levelData = Generator.generate(System.currentTimeMillis(), width, height);
+
+		Point start = levelData.start;
+		player.getComponent(Entity.Position.class).set(start.x, start.y);
+		player.getComponent(Entity.MoveState.class).position.set(start.x * Assets.TILE_SIZE, start.y * Assets.TILE_SIZE);
+
 		world = new World(width, height);
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
@@ -158,19 +160,30 @@ public class Game extends ApplicationAdapter {
 			moveState.update(delta);
 		} else {
 			Direction moveDirection = mapMovementInputHandler.getMovementDirection();
+
 			if(moveDirection != Direction.NONE) {
 				Gdx.app.log(tag, "moveDirection=" + moveDirection);
-				Entity.Position position = player.getComponent(Entity.Position.class);
-				final Entity.Position targetPosition = position.clone();
-				targetPosition.translate(moveDirection);
-				if (world.contains(targetPosition.x, targetPosition.y) && world.getCell(targetPosition.x, targetPosition.y).isWalkable()) {
-					moveState.init(position.x * Assets.TILE_SIZE, position.y * Assets.TILE_SIZE,
-							targetPosition.x * Assets.TILE_SIZE, targetPosition.y * Assets.TILE_SIZE, new Runnable() {
-								@Override
-								public void run() {
-									world.move(player, targetPosition.x, targetPosition.y);
-								}
-							});
+
+				if (moveState.direction == moveDirection) {
+					Entity.Position position = player.getComponent(Entity.Position.class);
+					final Entity.Position targetPosition = position.clone();
+					targetPosition.translate(moveDirection);
+					if (world.contains(targetPosition.x, targetPosition.y) && world.getCell(targetPosition.x, targetPosition.y).isWalkable()) {
+						moveState.init(position.x * Assets.TILE_SIZE, position.y * Assets.TILE_SIZE,
+								targetPosition.x * Assets.TILE_SIZE, targetPosition.y * Assets.TILE_SIZE, new Runnable() {
+									@Override
+									public void run() {
+										world.move(player, targetPosition.x, targetPosition.y);
+									}
+								});
+					}
+				} else {
+					moveState.init(moveDirection, new Runnable() {
+						@Override
+						public void run() {
+
+						}
+					});
 				}
 
 			}

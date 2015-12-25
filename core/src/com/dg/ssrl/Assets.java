@@ -12,7 +12,7 @@ public class Assets {
 
     public static final int TILE_SIZE = 8;
 
-    private Texture tilesTexture;
+    public Texture tilesTexture;
     public TextureRegion[][] tiles;
     public BitmapFont font;
 

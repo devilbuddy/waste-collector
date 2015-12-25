@@ -11,6 +11,7 @@ public class Generator {
         public int width;
         public int height;
         public World.Cell.Type[][] tiles;
+        public Point start = new Point(0,0);
     }
 
     public static LevelData generate(long seed, int width, int height) {
