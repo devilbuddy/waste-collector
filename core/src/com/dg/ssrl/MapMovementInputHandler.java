@@ -1,6 +1,8 @@
 package com.dg.ssrl;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
@@ -9,7 +11,15 @@ import java.util.List;
 /**
  * Created by magnus.ornebring on 31/05/15.
  */
-public class MapMovementInputHandler extends InputAdapter {
+public class MapMovementInputHandler extends InputAdapter implements GestureDetector.GestureListener {
+
+    private static final String tag = "MapMovementInputHandler";
+
+
+    public enum Action {
+        FIRE,
+        BOMB
+    }
 
     private static final double ONE_PI_EIGHTS = (Math.PI) / 8;
     private static final double THREE_PI_EIGHTS = (3 * Math.PI) / 8;
@@ -34,10 +44,18 @@ public class MapMovementInputHandler extends InputAdapter {
 
     private Direction movementDirection = Direction.NONE;
 
-    private List<Direction> inputQueue = new ArrayList<Direction>();
+    private ArrayList<Action> actionQueue = new ArrayList<Action>();
+
 
     public Direction getMovementDirection() {
         return movementDirection;
+    }
+
+    public Action popAction() {
+        if (actionQueue.size() > 0) {
+            return actionQueue.remove(0);
+        }
+        return null;
     }
 
     @Override
@@ -76,7 +94,6 @@ public class MapMovementInputHandler extends InputAdapter {
 
     private void setMovementDirection(Direction direction) {
         movementDirection = direction;
-
     }
 
     @Override
@@ -160,4 +177,48 @@ public class MapMovementInputHandler extends InputAdapter {
     }
 
 
+    @Override
+    public boolean touchDown(float x, float y, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean tap(float x, float y, int count, int button) {
+        if(count == 1) {
+            actionQueue.add(Action.FIRE);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean longPress(float x, float y) {
+        actionQueue.add(Action.BOMB);
+        return true;
+    }
+
+    @Override
+    public boolean fling(float velocityX, float velocityY, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean pan(float x, float y, float deltaX, float deltaY) {
+        return false;
+    }
+
+    @Override
+    public boolean panStop(float x, float y, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean zoom(float initialDistance, float distance) {
+        return false;
+    }
+
+    @Override
+    public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
+        return false;
+    }
 }

@@ -7,6 +7,7 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -77,9 +78,11 @@ public class Game extends ApplicationAdapter {
 	public Game(Point[] debugScreenSizes) {
 		debugInputSwitcher = new DebugInputSwitcher(debugScreenSizes);
 		mapMovementInputHandler = new MapMovementInputHandler();
+
         inputMultiplexer.addProcessor(debugInputSwitcher);
 		inputMultiplexer.addProcessor(mapMovementInputHandler);
-        mapRenderer = new MapRenderer(assets);
+        inputMultiplexer.addProcessor(new GestureDetector(mapMovementInputHandler));
+		mapRenderer = new MapRenderer(assets);
 
 		entityFactory = new EntityFactory();
 		player = entityFactory.makePlayer();
@@ -185,7 +188,12 @@ public class Game extends ApplicationAdapter {
 						}
 					});
 				}
-
+			}
+			MapMovementInputHandler.Action action;
+			while ((action = mapMovementInputHandler.popAction()) != null) {
+				if (action == MapMovementInputHandler.Action.FIRE) {
+					Gdx.app.log(tag, "FIRE");
+				}
 			}
 		}
 	}

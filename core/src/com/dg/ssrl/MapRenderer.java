@@ -62,38 +62,42 @@ public class MapRenderer {
         Entity entity = world.getEntity(playerEntityId);
         if (entity != null) {
             Entity.MoveState moveState = entity.getComponent(Entity.MoveState.class);
-            boolean flipX = false;
-            boolean flipY = false;
+
             switch (moveState.direction) {
                 case NORTH:
-                    flipX = false;
-                    flipY = true;
+                    spriteBatch.draw(assets.tiles[4][0], moveState.position.x, moveState.position.y, 4, 4, 8, 8, 1, 1, 270);
                     break;
                 case SOUTH:
-                    flipX = true;
-                    flipY = false;
+                    spriteBatch.draw(assets.tiles[4][0], moveState.position.x, moveState.position.y, 4, 4, 8, 8, 1, 1, 90);
                     break;
                 case EAST:
-                    flipX = true;
-                    flipY = false;
+                    spriteBatch.draw(assets.tilesTexture,
+                            moveState.position.x,
+                            moveState.position.y,
+                            Assets.TILE_SIZE,
+                            Assets.TILE_SIZE,
+                            0,
+                            4 * Assets.TILE_SIZE,
+                            Assets.TILE_SIZE,
+                            Assets.TILE_SIZE,
+                            true,
+                            false);
+
                     break;
-                case WEST:
-                    flipX = false;
-                    flipY = false;
+                case WEST:spriteBatch.draw(assets.tilesTexture,
+                        moveState.position.x,
+                        moveState.position.y,
+                        Assets.TILE_SIZE,
+                        Assets.TILE_SIZE,
+                        0,
+                        4 * Assets.TILE_SIZE,
+                        Assets.TILE_SIZE,
+                        Assets.TILE_SIZE,
+                        false,
+                        false);
+
                     break;
             }
-
-            spriteBatch.draw(assets.tilesTexture,
-                    moveState.position.x,
-                    moveState.position.y,
-                    Assets.TILE_SIZE,
-                    Assets.TILE_SIZE,
-                    0,
-                    4 * Assets.TILE_SIZE,
-                    Assets.TILE_SIZE,
-                    Assets.TILE_SIZE,
-                    flipX,
-                    flipY);
 
         }
 
