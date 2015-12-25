@@ -13,7 +13,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class Game extends ApplicationAdapter {
 
-	private static class DebugInputSwitcher extends InputAdapter {
+	private class DebugInputSwitcher extends InputAdapter {
 		private int index = 0;
 		private final Point[] debugScreenSizes;
 		public  DebugInputSwitcher(Point[] debugScreenSizes) {
@@ -30,6 +30,8 @@ public class Game extends ApplicationAdapter {
 					Point size = debugScreenSizes[index];
 					Gdx.graphics.setDisplayMode(size.x, size.y, false);
 				}
+			} else if (keycode == Input.Keys.G) {
+				initWorld();
 			}
 			return false;
 		}
@@ -70,7 +72,7 @@ public class Game extends ApplicationAdapter {
 	private EntityFactory entityFactory;
 
 	Entity player;
-	private World world = new World(16, 16);
+	private World world;
 
 	public Game(Point[] debugScreenSizes) {
 		debugInputSwitcher = new DebugInputSwitcher(debugScreenSizes);
@@ -82,7 +84,6 @@ public class Game extends ApplicationAdapter {
 		entityFactory = new EntityFactory();
 		player = entityFactory.makePlayer();
 
-		world.addEntity(player);
 	}
 
 	@Override
@@ -93,11 +94,29 @@ public class Game extends ApplicationAdapter {
 
         stage = new Stage(new StretchViewport(160, 240));
         stage.setDebugAll(true);
+
+		initWorld();
     }
+
+	private void initWorld() {
+		player.getComponent(Entity.Position.class).set(0, 0);
+		player.getComponent(Entity.MoveState.class).position.set(0, 0);
+		
+		int width = 16;
+		int height = 16;
+		Generator.LevelData levelData = Generator.generate(System.currentTimeMillis(), width, height);
+		world = new World(width, height);
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				world.getCell(x, y).type = levelData.tiles[y][x];
+			}
+		}
+		world.addEntity(player);
+	}
 
     @Override
     public void resize(int width, int height) {
-        Gdx.app.log(tag, "resize " + width + " " + height);
+		Gdx.app.log(tag, "resize " + width + " " + height);
         mapRenderer.resize(width, height);
 
         stage.getViewport().update(width, height);
@@ -144,13 +163,16 @@ public class Game extends ApplicationAdapter {
 				Entity.Position position = player.getComponent(Entity.Position.class);
 				final Entity.Position targetPosition = position.clone();
 				targetPosition.translate(moveDirection);
-				moveState.init(position.x * Assets.TILE_SIZE, position.y * Assets.TILE_SIZE,
-						targetPosition.x * Assets.TILE_SIZE, targetPosition.y * Assets.TILE_SIZE, new Runnable() {
-							@Override
-							public void run() {
-								world.move(player, targetPosition.x, targetPosition.y);
-							}
-						});
+				if (world.contains(targetPosition.x, targetPosition.y) && world.getCell(targetPosition.x, targetPosition.y).isWalkable()) {
+					moveState.init(position.x * Assets.TILE_SIZE, position.y * Assets.TILE_SIZE,
+							targetPosition.x * Assets.TILE_SIZE, targetPosition.y * Assets.TILE_SIZE, new Runnable() {
+								@Override
+								public void run() {
+									world.move(player, targetPosition.x, targetPosition.y);
+								}
+							});
+				}
+
 			}
 		}
 	}

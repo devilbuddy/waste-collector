@@ -2,6 +2,7 @@ package com.dg.ssrl;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -42,8 +43,16 @@ public class MapRenderer {
             int xx = 0;
             for (int x = 0; x < width; x++) {
                 World.Cell cell = cells[y][x];
-
-                spriteBatch.draw(assets.tiles[y%3][x%2], xx, yy);
+                TextureRegion region = null;
+                switch (cell.type) {
+                    case Floor:
+                        region = assets.floor;
+                        break;
+                    case Wall:
+                        region = assets.wall;
+                        break;
+                }
+                spriteBatch.draw(region, xx, yy);
                 xx += Assets.TILE_SIZE;
             }
             yy += Assets.TILE_SIZE;

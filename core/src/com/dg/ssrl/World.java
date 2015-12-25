@@ -12,12 +12,27 @@ public class World {
 
     public static class Cell {
         public enum Type {
-            Wall,
-            Floor
+            Wall(false),
+            Floor(true);
+
+
+            private boolean walkable;
+
+            Type(boolean walkable) {
+                this.walkable = walkable;
+            }
         }
         public Type type;
-
         private IntArray entityIds = new IntArray();
+
+        public Cell() {
+            type = Type.Floor;
+        }
+
+        boolean isWalkable() {
+            return type.walkable;
+        }
+
     }
 
     private final int width;
@@ -77,5 +92,9 @@ public class World {
         getCell(position.x, position.y).entityIds.removeValue(entity.id);
         position.set(toX, toY);
         getCell(position.x, position.y).entityIds.add(entity.id);
+    }
+
+    public boolean contains(int x, int y) {
+        return x >= 0 && x <= width - 1 && y >= 0 && y <= height - 1;
     }
 }
