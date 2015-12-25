@@ -44,10 +44,9 @@ public class Entity {
 
         Vector2 target = new Vector2();
         Vector2 position = new Vector2();
-        Vector2 startPosition = new Vector2();
         Vector2 tmp = new Vector2();
 
-        float duration = 0.5f;
+        float duration = 0.4f;
         float stateTime = 0f;
 
         State state = State.DONE;
@@ -55,7 +54,6 @@ public class Entity {
 
         public void init(float startX, float startY, float targetX, float targetY, Runnable onDone) {
             Gdx.app.log(tag, "init " + startX + " " + startY + " " + targetX + " " + targetY);
-            startPosition.set(startX, startY);
             position.set(startX, startY);
             target.set(targetX, targetY);
 

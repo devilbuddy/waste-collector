@@ -117,9 +117,13 @@ public class Game extends ApplicationAdapter {
         stage.draw();
 
 		Viewport viewport = stage.getViewport();
+		viewport.apply(true);
 		spriteBatch.begin();
         spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
 		spriteBatch.draw(assets.tiles[0][7], 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+
+		assets.font.draw(spriteBatch, "Foo", 50, viewport.getWorldHeight() - assets.font.getLineHeight());
+
 		spriteBatch.end();
 
 		spriteBatch.begin();
@@ -144,7 +148,7 @@ public class Game extends ApplicationAdapter {
 						targetPosition.x * Assets.TILE_SIZE, targetPosition.y * Assets.TILE_SIZE, new Runnable() {
 							@Override
 							public void run() {
-								player.getComponent(Entity.Position.class).set(targetPosition.x, targetPosition.y);
+								world.move(player, targetPosition.x, targetPosition.y);
 							}
 						});
 			}

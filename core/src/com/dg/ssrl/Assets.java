@@ -2,6 +2,7 @@ package com.dg.ssrl;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
@@ -13,10 +14,14 @@ public class Assets {
 
     private Texture tilesTexture;
     public TextureRegion[][] tiles;
+    public BitmapFont font;
+
     public void create() {
         tilesTexture = new Texture(Gdx.files.internal("tiles.png"));
 
         tiles = TextureRegion.split(tilesTexture, TILE_SIZE, TILE_SIZE);
+
+        font = new BitmapFont(Gdx.files.internal("kongtext.fnt"));
     }
 
 
