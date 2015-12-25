@@ -1,5 +1,6 @@
 package com.dg.ssrl;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -8,6 +9,9 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  * Created by magnus on 2015-10-04.
  */
 public class MapRenderer {
+
+
+    private static final String tag = "MapRenderer";
 
     int tileSize = 8;
     int mapSize = 16;
@@ -23,11 +27,10 @@ public class MapRenderer {
         viewport.update(width, height);
     }
 
-    public void render(World world, SpriteBatch spriteBatch) {
+    public void render(World world, SpriteBatch spriteBatch, int playerEntityId) {
 
         viewport.apply(true);
         spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
-
 
         World.Cell[][] cells = world.getCells();
 
@@ -45,6 +48,13 @@ public class MapRenderer {
             }
             yy += Assets.TILE_SIZE;
         }
+
+        Entity entity = world.getEntity(playerEntityId);
+        if (entity != null) {
+            Entity.MoveState moveState = entity.getComponent(Entity.MoveState.class);
+            spriteBatch.draw(assets.tiles[4][0], moveState.position.x, moveState.position.y);
+        }
+
     }
 
 }

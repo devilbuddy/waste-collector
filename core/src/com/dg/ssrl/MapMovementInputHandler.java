@@ -32,7 +32,13 @@ public class MapMovementInputHandler extends InputAdapter {
 
     private boolean swiped;
 
+    private Direction movementDirection = Direction.NONE;
+
     private List<Direction> inputQueue = new ArrayList<Direction>();
+
+    public Direction getMovementDirection() {
+        return movementDirection;
+    }
 
     @Override
     public boolean keyDown (int keycode) {
@@ -54,16 +60,33 @@ public class MapMovementInputHandler extends InputAdapter {
         return super.keyDown(keycode);
     }
 
-    private void pushMove(Direction direction) {
-        inputQueue.add(direction);
+    @Override
+    public boolean keyUp (int keycode) {
+        switch (keycode) {
+            case com.badlogic.gdx.Input.Keys.LEFT:
+            case com.badlogic.gdx.Input.Keys.RIGHT:
+            case com.badlogic.gdx.Input.Keys.UP:
+            case com.badlogic.gdx.Input.Keys.DOWN:
+                movementDirection = Direction.NONE;
+                break;
+        }
+        return super.keyUp(keycode);
     }
 
+
+    private void pushMove(Direction direction) {
+        movementDirection = direction;
+        //inputQueue.add(direction);
+    }
+
+    /*
     public Direction popMove() {
         if (inputQueue.size() > 0) {
             return inputQueue.remove(inputQueue.size() - 1);
         }
         return null;
     }
+    */
 
 
 
@@ -93,8 +116,7 @@ public class MapMovementInputHandler extends InputAdapter {
         if(pointer == pointerId) {
             swiped = false;
             pointerId = -1;
-
-
+            movementDirection = Direction.NONE;
         }
         return super.touchUp(x, y, pointer, button);
     }
