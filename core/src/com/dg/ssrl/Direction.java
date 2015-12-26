@@ -20,4 +20,18 @@ public enum Direction {
         this.dx = dx;
         this.dy = dy;
     }
+
+    Direction opposite() {
+        switch (this) {
+            case NORTH:
+                return SOUTH;
+            case SOUTH:
+                return NORTH;
+            case WEST:
+                return EAST;
+            case EAST:
+                return WEST;
+        }
+        return NONE;
+    }
 }

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -63,42 +64,45 @@ public class MapRenderer {
         if (entity != null) {
             Entity.MoveState moveState = entity.getComponent(Entity.MoveState.class);
 
-            switch (moveState.direction) {
-                case NORTH:
-                    spriteBatch.draw(assets.tiles[4][0], moveState.position.x, moveState.position.y, 4, 4, 8, 8, 1, 1, 270);
-                    break;
-                case SOUTH:
-                    spriteBatch.draw(assets.tiles[4][0], moveState.position.x, moveState.position.y, 4, 4, 8, 8, 1, 1, 90);
-                    break;
-                case EAST:
-                    spriteBatch.draw(assets.tilesTexture,
-                            moveState.position.x,
-                            moveState.position.y,
+            int numMovements = moveState.numMovements;
+            for (int i = 0; i < numMovements; i++) {
+                Vector2 position = moveState.movements[i].position;
+                switch (moveState.direction) {
+                    case NORTH:
+                        spriteBatch.draw(assets.tiles[4][0], position.x, position.y, 4, 4, 8, 8, 1, 1, 270);
+                        break;
+                    case SOUTH:
+                        spriteBatch.draw(assets.tiles[4][0], position.x, position.y, 4, 4, 8, 8, 1, 1, 90);
+                        break;
+                    case EAST:
+                        spriteBatch.draw(assets.tilesTexture,
+                                position.x,
+                                position.y,
+                                Assets.TILE_SIZE,
+                                Assets.TILE_SIZE,
+                                0,
+                                4 * Assets.TILE_SIZE,
+                                Assets.TILE_SIZE,
+                                Assets.TILE_SIZE,
+                                true,
+                                false);
+
+                        break;
+                    case WEST:spriteBatch.draw(assets.tilesTexture,
+                            position.x,
+                            position.y,
                             Assets.TILE_SIZE,
                             Assets.TILE_SIZE,
                             0,
                             4 * Assets.TILE_SIZE,
                             Assets.TILE_SIZE,
                             Assets.TILE_SIZE,
-                            true,
+                            false,
                             false);
 
-                    break;
-                case WEST:spriteBatch.draw(assets.tilesTexture,
-                        moveState.position.x,
-                        moveState.position.y,
-                        Assets.TILE_SIZE,
-                        Assets.TILE_SIZE,
-                        0,
-                        4 * Assets.TILE_SIZE,
-                        Assets.TILE_SIZE,
-                        Assets.TILE_SIZE,
-                        false,
-                        false);
-
-                    break;
+                        break;
+                }
             }
-
         }
 
     }

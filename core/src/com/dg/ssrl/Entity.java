@@ -54,8 +54,13 @@ public class Entity {
             DONE
         }
 
-        Vector2 target = new Vector2();
-        Vector2 position = new Vector2();
+        public static class Movement {
+            Vector2 target = new Vector2();
+            Vector2 position = new Vector2();
+        }
+
+        public Movement[] movements = new Movement[2];
+
         Vector2 tmp = new Vector2();
 
         float duration = 0.4f;
@@ -64,10 +69,37 @@ public class Entity {
         State state = State.DONE;
         private Runnable onDone;
 
+        int numMovements = 1;
+
+        public MoveState() {
+            movements[0] = new Movement();
+            movements[1] = new Movement();
+        }
+
         public void initMove(float startX, float startY, float targetX, float targetY, Runnable onDone) {
             Gdx.app.log(tag, "initMove " + startX + " " + startY + " " + targetX + " " + targetY);
-            position.set(startX, startY);
-            target.set(targetX, targetY);
+            numMovements = 1;
+
+            movements[0].position.set(startX, startY);
+            movements[0].target.set(targetX, targetY);
+
+            stateTime = 0f;
+
+            state = State.MOVE;
+            this.onDone = onDone;
+        }
+
+        public void initMove(float startX, float startY, float targetX, float targetY, float start2X, float start2Y, float target2X, float target2Y, Runnable onDone) {
+            Gdx.app.log(tag, "initMove " + startX + " " + startY + " " + targetX + " " + targetY);
+            numMovements = 2;
+
+            movements[0].position.set(startX, startY);
+            movements[0].target.set(targetX, targetY);
+
+
+            movements[1].position.set(start2X, start2Y);
+            movements[1].target.set(target2X, target2Y);
+
 
             stateTime = 0f;
 
@@ -87,10 +119,21 @@ public class Entity {
 
             if (state == State.MOVE) {
                 float alpha = MathUtils.clamp(stateTime/duration, 0.0f, 1.0f);
-                position.lerp(target, alpha);
-                if (tmp.set(position).dst(target) < 0.1f) {
-                    onDone();
+                boolean done = false;
+                for (int i = 0; i < numMovements; i++) {
+                    movements[i].position.lerp(movements[i].target, alpha);
+                    if (tmp.set(movements[i].position).dst(movements[i].target) < 0.1f) {
+                        done |= true;
+                    }
                 }
+                if (done) {
+                    onDone();
+                    if(numMovements == 2) {
+                        movements[0].position.set(movements[1].target);
+                    }
+                    numMovements = 1;
+                }
+
             } else if (state == State.TURN) {
                 if (stateTime > duration) {
                     onDone();

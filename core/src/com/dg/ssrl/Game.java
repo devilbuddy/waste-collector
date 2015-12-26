@@ -108,7 +108,7 @@ public class Game extends ApplicationAdapter {
 
 		Point start = levelData.start;
 		player.getComponent(Entity.Position.class).set(start.x, start.y);
-		player.getComponent(Entity.MoveState.class).position.set(start.x * Assets.TILE_SIZE, start.y * Assets.TILE_SIZE);
+		player.getComponent(Entity.MoveState.class).movements[0].position.set(start.x * Assets.TILE_SIZE, start.y * Assets.TILE_SIZE);
 		player.getComponent(Entity.MoveState.class).direction = Direction.EAST;
 
 		world = new World(width, height);
@@ -174,15 +174,9 @@ public class Game extends ApplicationAdapter {
 
 					targetPosition.translate(moveDirection);
 
-					targetPosition.x = targetPosition.x % world.getWidth();
-					targetPosition.y = targetPosition.y % world.getHeight();
-
-					while (targetPosition.x < 0) { targetPosition.x += world.getWidth(); }
-					while (targetPosition.y < 0) { targetPosition.y += world.getHeight(); }
-
 					Gdx.app.log(tag, "targetPosition:" + targetPosition);
 
-					if (world.contains(targetPosition.x, targetPosition.y) && world.getCell(targetPosition.x, targetPosition.y).isWalkable()) {
+					if(world.contains(targetPosition.x, targetPosition.y) && world.getCell(targetPosition.x, targetPosition.y).isWalkable()) {
 						moveState.initMove(position.x * Assets.TILE_SIZE, position.y * Assets.TILE_SIZE,
 								targetPosition.x * Assets.TILE_SIZE, targetPosition.y * Assets.TILE_SIZE, new Runnable() {
 									@Override
@@ -190,7 +184,36 @@ public class Game extends ApplicationAdapter {
 										world.move(player, targetPosition.x, targetPosition.y);
 									}
 								});
+					} else {
+						// wrap around
+						Entity.Position start1 = position.clone();
+						Entity.Position end1 = position.clone();
+						end1.translate(moveDirection);
+
+						Entity.Position end2 = end1.clone();
+						end2.x = end2.x % world.getWidth();
+						end2.y = end2.y % world.getHeight();
+						while (end2.x < 0) { end2.x += world.getWidth(); }
+						while (end2.y < 0) { end2.y += world.getHeight(); }
+
+						if (world.getCell(end2.x, end2.y).isWalkable()) {
+							Entity.Position start2 = end2.clone();
+							start2.translate(moveDirection.opposite());
+
+							final Entity.Position finalTarget = end2.clone();
+							moveState.initMove(start1.x * Assets.TILE_SIZE, start1.y * Assets.TILE_SIZE,
+									end1.x * Assets.TILE_SIZE, end1.y * Assets.TILE_SIZE,
+									start2.x * Assets.TILE_SIZE, start2.y * Assets.TILE_SIZE,
+									end2.x * Assets.TILE_SIZE, end2.y * Assets.TILE_SIZE, new Runnable() {
+										@Override
+										public void run() {
+											world.move(player, finalTarget.x, finalTarget.y);
+										}
+									});
+						}
+
 					}
+
 				} else {
 					moveState.initTurn(moveDirection, new Runnable() {
 						@Override
