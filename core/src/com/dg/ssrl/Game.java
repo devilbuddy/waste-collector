@@ -81,7 +81,7 @@ public class Game extends ApplicationAdapter {
 
         inputMultiplexer.addProcessor(debugInputSwitcher);
 		inputMultiplexer.addProcessor(mapMovementInputHandler);
-        inputMultiplexer.addProcessor(new GestureDetector(mapMovementInputHandler));
+        inputMultiplexer.addProcessor(new GestureDetector(20, 0.1f, 1.1f, 0.15f, mapMovementInputHandler));
 		mapRenderer = new MapRenderer(assets);
 
 		entityFactory = new EntityFactory();
@@ -109,6 +109,7 @@ public class Game extends ApplicationAdapter {
 		Point start = levelData.start;
 		player.getComponent(Entity.Position.class).set(start.x, start.y);
 		player.getComponent(Entity.MoveState.class).position.set(start.x * Assets.TILE_SIZE, start.y * Assets.TILE_SIZE);
+		player.getComponent(Entity.MoveState.class).direction = Direction.EAST;
 
 		world = new World(width, height);
 		for (int y = 0; y < height; y++) {
@@ -170,9 +171,19 @@ public class Game extends ApplicationAdapter {
 				if (moveState.direction == moveDirection) {
 					Entity.Position position = player.getComponent(Entity.Position.class);
 					final Entity.Position targetPosition = position.clone();
+
 					targetPosition.translate(moveDirection);
+
+					targetPosition.x = targetPosition.x % world.getWidth();
+					targetPosition.y = targetPosition.y % world.getHeight();
+
+					while (targetPosition.x < 0) { targetPosition.x += world.getWidth(); }
+					while (targetPosition.y < 0) { targetPosition.y += world.getHeight(); }
+
+					Gdx.app.log(tag, "targetPosition:" + targetPosition);
+
 					if (world.contains(targetPosition.x, targetPosition.y) && world.getCell(targetPosition.x, targetPosition.y).isWalkable()) {
-						moveState.init(position.x * Assets.TILE_SIZE, position.y * Assets.TILE_SIZE,
+						moveState.initMove(position.x * Assets.TILE_SIZE, position.y * Assets.TILE_SIZE,
 								targetPosition.x * Assets.TILE_SIZE, targetPosition.y * Assets.TILE_SIZE, new Runnable() {
 									@Override
 									public void run() {
@@ -181,7 +192,7 @@ public class Game extends ApplicationAdapter {
 								});
 					}
 				} else {
-					moveState.init(moveDirection, new Runnable() {
+					moveState.initTurn(moveDirection, new Runnable() {
 						@Override
 						public void run() {
 
@@ -193,6 +204,8 @@ public class Game extends ApplicationAdapter {
 			while ((action = mapMovementInputHandler.popAction()) != null) {
 				if (action == MapMovementInputHandler.Action.FIRE) {
 					Gdx.app.log(tag, "FIRE");
+				} else if (action == MapMovementInputHandler.Action.BOMB) {
+					Gdx.app.log(tag, "BOMB");
 				}
 			}
 		}

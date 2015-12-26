@@ -33,6 +33,14 @@ public class Entity {
             p.set(x, y);
             return p;
         }
+
+        @Override
+        public String toString() {
+            return "Position{" +
+                    "x=" + x +
+                    ", y=" + y +
+                    '}';
+        }
     }
 
     public static class MoveState implements Component {
@@ -56,8 +64,8 @@ public class Entity {
         State state = State.DONE;
         private Runnable onDone;
 
-        public void init(float startX, float startY, float targetX, float targetY, Runnable onDone) {
-            Gdx.app.log(tag, "init " + startX + " " + startY + " " + targetX + " " + targetY);
+        public void initMove(float startX, float startY, float targetX, float targetY, Runnable onDone) {
+            Gdx.app.log(tag, "initMove " + startX + " " + startY + " " + targetX + " " + targetY);
             position.set(startX, startY);
             target.set(targetX, targetY);
 
@@ -67,7 +75,7 @@ public class Entity {
             this.onDone = onDone;
         }
 
-        public void init(Direction direction, Runnable onDone) {
+        public void initTurn(Direction direction, Runnable onDone) {
             this.direction = direction;
             stateTime = 0f;
             this.onDone = onDone;
