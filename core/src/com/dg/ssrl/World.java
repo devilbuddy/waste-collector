@@ -3,6 +3,7 @@ package com.dg.ssrl;
 import com.badlogic.gdx.utils.IntArray;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by magnus on 2015-12-21.
@@ -39,7 +40,7 @@ public class World {
     private final int height;
 
     private final Cell[][] cells;
-    private ArrayList<Entity> entities = new ArrayList<Entity>();
+    public ArrayList<Entity> entities = new ArrayList<Entity>();
 
     public World(int width, int height) {
         this.width = width;

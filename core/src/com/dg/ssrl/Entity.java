@@ -22,9 +22,10 @@ public class Entity {
             this.y = y;
         }
 
-        public void translate(Direction direction) {
+        public Position translate(Direction direction) {
             x += direction.dx;
             y += direction.dy;
+            return this;
         }
 
         public Position clone() {
@@ -145,6 +146,14 @@ public class Entity {
     private HashMap<Class<? extends Component>, Component> components = new HashMap<Class<? extends Component>, Component>();
 
     public final int id;
+
+    @Override
+    public String toString() {
+        return "Entity{" +
+                "components=" + components +
+                ", id=" + id +
+                '}';
+    }
 
     public Entity(int id) {
         this.id = id;

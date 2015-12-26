@@ -1,6 +1,7 @@
 package com.dg.ssrl;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
@@ -86,6 +87,9 @@ public class MapMovementInputHandler extends InputAdapter implements GestureDete
             case com.badlogic.gdx.Input.Keys.UP:
             case com.badlogic.gdx.Input.Keys.DOWN:
                 movementDirection = Direction.NONE;
+                break;
+            case Input.Keys.SPACE:
+                actionQueue.add(Action.FIRE);
                 break;
         }
         return super.keyUp(keycode);

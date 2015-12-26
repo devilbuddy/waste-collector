@@ -1,5 +1,6 @@
 package com.dg.ssrl;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -10,13 +11,10 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  * Created by magnus on 2015-10-04.
  */
 public class MapRenderer {
-
-
     private static final String tag = "MapRenderer";
 
-    int tileSize = 8;
     int mapSize = 16;
-    Viewport viewport = new FitViewport(tileSize * mapSize, tileSize * mapSize);
+    Viewport viewport = new FitViewport(Assets.TILE_SIZE * mapSize, Assets.TILE_SIZE * mapSize);
 
     private final Assets assets;
 
@@ -58,12 +56,12 @@ public class MapRenderer {
             yy += Assets.TILE_SIZE;
         }
 
-        Entity entity = world.getEntity(playerEntityId);
-        if (entity != null) {
+
+        for (Entity entity : world.entities) {
             Entity.MoveAnimation moveAnimation = entity.getComponent(Entity.MoveAnimation.class);
 
-            int numMovements = moveAnimation.animationCount;
-            for (int i = 0; i < numMovements; i++) {
+            int animationCount = moveAnimation.animationCount;
+            for (int i = 0; i < animationCount; i++) {
                 Vector2 position = moveAnimation.animations[i].position;
                 switch (moveAnimation.direction) {
                     case NORTH:
@@ -84,24 +82,25 @@ public class MapRenderer {
                                 Assets.TILE_SIZE,
                                 true,
                                 false);
-
                         break;
-                    case WEST:spriteBatch.draw(assets.tilesTexture,
-                            position.x,
-                            position.y,
-                            Assets.TILE_SIZE,
-                            Assets.TILE_SIZE,
-                            0,
-                            4 * Assets.TILE_SIZE,
-                            Assets.TILE_SIZE,
-                            Assets.TILE_SIZE,
-                            false,
-                            false);
-
+                    case WEST:
+                        spriteBatch.draw(assets.tilesTexture,
+                                position.x,
+                                position.y,
+                                Assets.TILE_SIZE,
+                                Assets.TILE_SIZE,
+                                0,
+                                4 * Assets.TILE_SIZE,
+                                Assets.TILE_SIZE,
+                                Assets.TILE_SIZE,
+                                false,
+                                false);
                         break;
                 }
             }
+
         }
+
 
     }
 

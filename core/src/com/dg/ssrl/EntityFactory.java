@@ -16,4 +16,9 @@ public class EntityFactory {
         return entity;
     }
 
+    public Entity makeBullet() {
+        Entity entity = new Entity(entityIdCounter.incrementAndGet());
+        entity.addComponent(new Entity.MoveAnimation());
+        return entity;
+    }
 }

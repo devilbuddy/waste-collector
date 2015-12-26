@@ -158,17 +158,20 @@ public class Game extends ApplicationAdapter {
 	}
 
 	private void step(float delta) {
-		Entity.MoveAnimation moveAnimation = player.getComponent(Entity.MoveAnimation.class);
+		for (Entity entity : world.entities) {
+			entity.getComponent(Entity.MoveAnimation.class).update(delta);
+		}
 
-		if(moveAnimation.isBusy()) {
-			moveAnimation.update(delta);
-		} else {
+		Entity.MoveAnimation playerMoveAnimation = player.getComponent(Entity.MoveAnimation.class);
+
+		if(!playerMoveAnimation.isBusy()) {
+
 			Direction moveDirection = mapMovementInputHandler.getMovementDirection();
 
 			if(moveDirection != Direction.NONE) {
 				Gdx.app.log(tag, "moveDirection=" + moveDirection);
 
-				if (moveAnimation.direction == moveDirection) {
+				if (playerMoveAnimation.direction == moveDirection) {
 					Entity.Position position = player.getComponent(Entity.Position.class);
 					final Entity.Position targetPosition = position.clone();
 
@@ -177,7 +180,7 @@ public class Game extends ApplicationAdapter {
 					Gdx.app.log(tag, "targetPosition:" + targetPosition);
 
 					if(world.contains(targetPosition.x, targetPosition.y) && world.getCell(targetPosition.x, targetPosition.y).isWalkable()) {
-						moveAnimation.initMove(position, targetPosition, new Runnable() {
+						playerMoveAnimation.initMove(position, targetPosition, new Runnable() {
 							@Override
 							public void run() {
 								world.move(player, targetPosition.x, targetPosition.y);
@@ -200,7 +203,7 @@ public class Game extends ApplicationAdapter {
 							start2.translate(moveDirection.opposite());
 
 							final Entity.Position finalTarget = end2.clone();
-							moveAnimation.initMove(start1, end1, start2, end2, new Runnable() {
+							playerMoveAnimation.initMove(start1, end1, start2, end2, new Runnable() {
 								@Override
 								public void run() {
 									world.move(player, finalTarget.x, finalTarget.y);
@@ -209,7 +212,7 @@ public class Game extends ApplicationAdapter {
 						}
 					}
 				} else {
-					moveAnimation.initTurn(moveDirection, new Runnable() {
+					playerMoveAnimation.initTurn(moveDirection, new Runnable() {
 						@Override
 						public void run() {
 
@@ -221,6 +224,26 @@ public class Game extends ApplicationAdapter {
 			while ((action = mapMovementInputHandler.popAction()) != null) {
 				if (action == MapMovementInputHandler.Action.FIRE) {
 					Gdx.app.log(tag, "FIRE");
+
+					Entity.Position bulletStartPosition = player.getComponent(Entity.Position.class).clone();
+					bulletStartPosition.translate(playerMoveAnimation.direction);
+
+					Entity.Position bulletEndPosition = bulletStartPosition.clone().translate(playerMoveAnimation.direction);
+
+					Gdx.app.log(tag, "start:" + bulletStartPosition + " end:" + bulletEndPosition);
+
+					Entity bullet = entityFactory.makeBullet();
+					Entity.MoveAnimation bulletMove = bullet.getComponent(Entity.MoveAnimation.class);
+					bulletMove.direction = playerMoveAnimation.direction;
+					bulletMove.initMove(bulletStartPosition, bulletEndPosition, new Runnable() {
+						@Override
+						public void run() {
+							Gdx.app.log(tag, "bullet done");
+						}
+					});
+
+					world.addEntity(bullet);
+
 				} else if (action == MapMovementInputHandler.Action.BOMB) {
 					Gdx.app.log(tag, "BOMB");
 				}
