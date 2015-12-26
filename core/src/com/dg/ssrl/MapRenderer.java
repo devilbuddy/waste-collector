@@ -1,7 +1,5 @@
 package com.dg.ssrl;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -62,12 +60,12 @@ public class MapRenderer {
 
         Entity entity = world.getEntity(playerEntityId);
         if (entity != null) {
-            Entity.MoveState moveState = entity.getComponent(Entity.MoveState.class);
+            Entity.MoveAnimation moveAnimation = entity.getComponent(Entity.MoveAnimation.class);
 
-            int numMovements = moveState.numMovements;
+            int numMovements = moveAnimation.animationCount;
             for (int i = 0; i < numMovements; i++) {
-                Vector2 position = moveState.movements[i].position;
-                switch (moveState.direction) {
+                Vector2 position = moveAnimation.animations[i].position;
+                switch (moveAnimation.direction) {
                     case NORTH:
                         spriteBatch.draw(assets.tiles[4][0], position.x, position.y, 4, 4, 8, 8, 1, 1, 270);
                         break;

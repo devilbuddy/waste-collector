@@ -12,7 +12,7 @@ public class EntityFactory {
     public Entity makePlayer() {
         Entity entity = new Entity(entityIdCounter.incrementAndGet());
         entity.addComponent(new Entity.Position());
-        entity.addComponent(new Entity.MoveState());
+        entity.addComponent(new Entity.MoveAnimation());
         return entity;
     }
 

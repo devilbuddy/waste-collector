@@ -108,8 +108,8 @@ public class Game extends ApplicationAdapter {
 
 		Point start = levelData.start;
 		player.getComponent(Entity.Position.class).set(start.x, start.y);
-		player.getComponent(Entity.MoveState.class).movements[0].position.set(start.x * Assets.TILE_SIZE, start.y * Assets.TILE_SIZE);
-		player.getComponent(Entity.MoveState.class).direction = Direction.EAST;
+		player.getComponent(Entity.MoveAnimation.class).animations[0].position.set(start.x * Assets.TILE_SIZE, start.y * Assets.TILE_SIZE);
+		player.getComponent(Entity.MoveAnimation.class).direction = Direction.EAST;
 
 		world = new World(width, height);
 		for (int y = 0; y < height; y++) {
@@ -158,17 +158,17 @@ public class Game extends ApplicationAdapter {
 	}
 
 	private void step(float delta) {
-		Entity.MoveState moveState = player.getComponent(Entity.MoveState.class);
+		Entity.MoveAnimation moveAnimation = player.getComponent(Entity.MoveAnimation.class);
 
-		if(moveState.isBusy()) {
-			moveState.update(delta);
+		if(moveAnimation.isBusy()) {
+			moveAnimation.update(delta);
 		} else {
 			Direction moveDirection = mapMovementInputHandler.getMovementDirection();
 
 			if(moveDirection != Direction.NONE) {
 				Gdx.app.log(tag, "moveDirection=" + moveDirection);
 
-				if (moveState.direction == moveDirection) {
+				if (moveAnimation.direction == moveDirection) {
 					Entity.Position position = player.getComponent(Entity.Position.class);
 					final Entity.Position targetPosition = position.clone();
 
@@ -177,13 +177,12 @@ public class Game extends ApplicationAdapter {
 					Gdx.app.log(tag, "targetPosition:" + targetPosition);
 
 					if(world.contains(targetPosition.x, targetPosition.y) && world.getCell(targetPosition.x, targetPosition.y).isWalkable()) {
-						moveState.initMove(position.x * Assets.TILE_SIZE, position.y * Assets.TILE_SIZE,
-								targetPosition.x * Assets.TILE_SIZE, targetPosition.y * Assets.TILE_SIZE, new Runnable() {
-									@Override
-									public void run() {
-										world.move(player, targetPosition.x, targetPosition.y);
-									}
-								});
+						moveAnimation.initMove(position, targetPosition, new Runnable() {
+							@Override
+							public void run() {
+								world.move(player, targetPosition.x, targetPosition.y);
+							}
+						});
 					} else {
 						// wrap around
 						Entity.Position start1 = position.clone();
@@ -201,21 +200,16 @@ public class Game extends ApplicationAdapter {
 							start2.translate(moveDirection.opposite());
 
 							final Entity.Position finalTarget = end2.clone();
-							moveState.initMove(start1.x * Assets.TILE_SIZE, start1.y * Assets.TILE_SIZE,
-									end1.x * Assets.TILE_SIZE, end1.y * Assets.TILE_SIZE,
-									start2.x * Assets.TILE_SIZE, start2.y * Assets.TILE_SIZE,
-									end2.x * Assets.TILE_SIZE, end2.y * Assets.TILE_SIZE, new Runnable() {
-										@Override
-										public void run() {
-											world.move(player, finalTarget.x, finalTarget.y);
-										}
-									});
+							moveAnimation.initMove(start1, end1, start2, end2, new Runnable() {
+								@Override
+								public void run() {
+									world.move(player, finalTarget.x, finalTarget.y);
+								}
+							});
 						}
-
 					}
-
 				} else {
-					moveState.initTurn(moveDirection, new Runnable() {
+					moveAnimation.initTurn(moveDirection, new Runnable() {
 						@Override
 						public void run() {
 

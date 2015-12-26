@@ -1,6 +1,5 @@
 package com.dg.ssrl;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
@@ -43,10 +42,8 @@ public class Entity {
         }
     }
 
-    public static class MoveState implements Component {
-        private static final String tag = "MoveState";
-
-        public Direction direction = Direction.NONE;
+    public static class MoveAnimation implements Component {
+        private static final String tag = "MoveAnimation";
 
         private enum State {
             MOVE,
@@ -54,55 +51,47 @@ public class Entity {
             DONE
         }
 
-        public static class Movement {
+        public static class Animation {
             Vector2 target = new Vector2();
             Vector2 position = new Vector2();
         }
 
-        public Movement[] movements = new Movement[2];
+        private static final int ANIMATIONS_SIZE = 2;
 
-        Vector2 tmp = new Vector2();
-
-        float duration = 0.4f;
-        float stateTime = 0f;
-
-        State state = State.DONE;
+        public Direction direction = Direction.NONE;
+        public Animation[] animations;
+        int animationCount = 1;
         private Runnable onDone;
 
-        int numMovements = 1;
+        private Vector2 tmp = new Vector2();
 
-        public MoveState() {
-            movements[0] = new Movement();
-            movements[1] = new Movement();
+        private float duration = 0.4f;
+        private float stateTime = 0f;
+        private State state = State.DONE;
+
+        public MoveAnimation() {
+            animations = new Animation[ANIMATIONS_SIZE];
+            for (int i = 0; i < ANIMATIONS_SIZE; i++) {
+                animations[i] = new Animation();
+            }
         }
 
-        public void initMove(float startX, float startY, float targetX, float targetY, Runnable onDone) {
-            Gdx.app.log(tag, "initMove " + startX + " " + startY + " " + targetX + " " + targetY);
-            numMovements = 1;
-
-            movements[0].position.set(startX, startY);
-            movements[0].target.set(targetX, targetY);
-
+        public void initMove(Position start, Position end, Runnable onDone) {
+            animationCount = 1;
+            animations[0].position.set(start.x * Assets.TILE_SIZE, start.y * Assets.TILE_SIZE);
+            animations[0].target.set(end.x * Assets.TILE_SIZE, end.y * Assets.TILE_SIZE);
             stateTime = 0f;
-
             state = State.MOVE;
             this.onDone = onDone;
         }
 
-        public void initMove(float startX, float startY, float targetX, float targetY, float start2X, float start2Y, float target2X, float target2Y, Runnable onDone) {
-            Gdx.app.log(tag, "initMove " + startX + " " + startY + " " + targetX + " " + targetY);
-            numMovements = 2;
-
-            movements[0].position.set(startX, startY);
-            movements[0].target.set(targetX, targetY);
-
-
-            movements[1].position.set(start2X, start2Y);
-            movements[1].target.set(target2X, target2Y);
-
-
+        public void initMove(Position start, Position end, Position start2, Position end2, Runnable onDone) {
+            animationCount = 2;
+            animations[0].position.set(start.x * Assets.TILE_SIZE, start.y * Assets.TILE_SIZE);
+            animations[0].target.set(end.x * Assets.TILE_SIZE, end.y * Assets.TILE_SIZE);
+            animations[1].position.set(start2.x * Assets.TILE_SIZE, start2.y * Assets.TILE_SIZE);
+            animations[1].target.set(end2.x * Assets.TILE_SIZE, end2.y * Assets.TILE_SIZE);
             stateTime = 0f;
-
             state = State.MOVE;
             this.onDone = onDone;
         }
@@ -120,18 +109,18 @@ public class Entity {
             if (state == State.MOVE) {
                 float alpha = MathUtils.clamp(stateTime/duration, 0.0f, 1.0f);
                 boolean done = false;
-                for (int i = 0; i < numMovements; i++) {
-                    movements[i].position.lerp(movements[i].target, alpha);
-                    if (tmp.set(movements[i].position).dst(movements[i].target) < 0.1f) {
+                for (int i = 0; i < animationCount; i++) {
+                    animations[i].position.lerp(animations[i].target, alpha);
+                    if (tmp.set(animations[i].position).dst(animations[i].target) < 0.1f) {
                         done |= true;
                     }
                 }
                 if (done) {
                     onDone();
-                    if(numMovements == 2) {
-                        movements[0].position.set(movements[1].target);
+                    if(animationCount == 2) {
+                        animations[0].position.set(animations[1].target);
                     }
-                    numMovements = 1;
+                    animationCount = 1;
                 }
 
             } else if (state == State.TURN) {
