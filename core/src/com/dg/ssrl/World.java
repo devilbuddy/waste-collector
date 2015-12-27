@@ -1,5 +1,6 @@
 package com.dg.ssrl;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.IntArray;
 
@@ -10,6 +11,7 @@ import java.util.Iterator;
  * Created by magnus on 2015-12-21.
  */
 public class World {
+    private static final String tag = "World";
 
 
     public static class Cell {
@@ -56,6 +58,7 @@ public class World {
         }
 
         bounds.set(0, 0, width * Assets.TILE_SIZE, height * Assets.TILE_SIZE);
+        Gdx.app.log(tag, "bounds: " + bounds);
     }
 
     public int getWidth() {

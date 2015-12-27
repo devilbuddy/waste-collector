@@ -50,7 +50,7 @@ public class Entity {
         public Direction direction = Direction.NONE;
         private Runnable callback;
 
-        private float speed = 200f;
+        private float speed = 50f;
         private float currentDistance;
         private float distance;
         public void init(Position start, float distance, Direction direction, Runnable callback) {
@@ -85,6 +85,7 @@ public class Entity {
                 callback = null;
             }
         }
+
     }
 
     public static class MoveAnimation implements Component {
@@ -190,7 +191,7 @@ public class Entity {
     private HashMap<Class<? extends Component>, Component> components = new HashMap<Class<? extends Component>, Component>();
 
     public final int id;
-    public boolean alixe = true;
+    public boolean alive = true;
     @Override
     public String toString() {
         return "Entity{" +

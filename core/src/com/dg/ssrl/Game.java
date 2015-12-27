@@ -6,11 +6,9 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class Game extends ApplicationAdapter {
 
@@ -58,6 +56,12 @@ public class Game extends ApplicationAdapter {
 
 	private static final String tag = "Game";
 
+
+	private int width = 80;
+	private int height;
+
+	private OrthographicCamera camera = new OrthographicCamera();
+
 	private TimeStep timeStep = new TimeStep();
 
 	private InputMultiplexer inputMultiplexer = new InputMultiplexer();
@@ -68,7 +72,6 @@ public class Game extends ApplicationAdapter {
 	private SpriteBatch spriteBatch;
 	private MapRenderer mapRenderer;
 
-    private Stage stage;
 
 	private EntityFactory entityFactory;
 
@@ -95,15 +98,13 @@ public class Game extends ApplicationAdapter {
         assets.create();
         Gdx.input.setInputProcessor(inputMultiplexer);
 
-        stage = new Stage(new StretchViewport(160, 240));
-        stage.setDebugAll(true);
 
 		initWorld();
     }
 
 	private void initWorld() {
-		int width = 16;
-		int height = 16;
+		int width = 10;
+		int height = 10;
 		Generator.LevelData levelData = Generator.generate(System.currentTimeMillis(), width, height);
 
 		Point start = levelData.start;
@@ -120,15 +121,19 @@ public class Game extends ApplicationAdapter {
 		world.addEntity(player);
 	}
 
+
+
     @Override
-    public void resize(int width, int height) {
-		Gdx.app.log(tag, "resize " + width + " " + height);
+    public void resize(int w, int h) {
+		Gdx.app.log(tag, "resize " + w + " " + h);
+
+		float ratio = (float)h/(float)w;
+		height = (int)(width * ratio);
+
+		camera.setToOrtho(false, width, height);
+		camera.update();
+
         mapRenderer.resize(width, height);
-
-        stage.getViewport().update(width, height);
-		stage.getViewport().apply(true);
-
-		Gdx.app.log(tag, "viewport " + stage.getViewport().getWorldWidth() + " " + stage.getViewport().getWorldHeight());
 
     }
 
@@ -139,20 +144,16 @@ public class Game extends ApplicationAdapter {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        stage.draw();
 
-		Viewport viewport = stage.getViewport();
-		viewport.apply(true);
 		spriteBatch.begin();
-        spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
-		spriteBatch.draw(assets.tiles[0][7], 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+        spriteBatch.setProjectionMatrix(camera.combined);
 
-		assets.font.draw(spriteBatch, "Foo", 50, viewport.getWorldHeight() - assets.font.getLineHeight());
+		assets.font.draw(spriteBatch, "Foo", 50, height - assets.font.getLineHeight());
 
 		spriteBatch.end();
 
 		spriteBatch.begin();
-		mapRenderer.render(world, spriteBatch, player.id);
+		mapRenderer.render(world, spriteBatch);
 		spriteBatch.end();
 
 	}
@@ -160,7 +161,7 @@ public class Game extends ApplicationAdapter {
 	private void step(float delta) {
 		for (int i = world.entities.size() - 1; i >= 0; i--) {
 			Entity entity = world.entities.get(i);
-			if (entity.alixe) {
+			if (entity.alive) {
 				Entity.MoveAnimation moveAnimation = entity.getComponent(Entity.MoveAnimation.class);
 				if(moveAnimation != null) {
 					moveAnimation.update(delta);
@@ -259,7 +260,7 @@ public class Game extends ApplicationAdapter {
 					bullet.getComponent(Entity.MoveAnimation2.class).init(bulletStartPosition, distanceTiles * Assets.TILE_SIZE, playerMoveAnimation.direction, new Runnable() {
 						@Override
 						public void run() {
-							bullet.alixe = false;
+							bullet.alive = false;
 						}
 					});
 

@@ -5,8 +5,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * Created by magnus on 2015-10-04.
@@ -14,32 +12,40 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 public class MapRenderer {
     private static final String tag = "MapRenderer";
 
-    int mapSize = 16;
-    Viewport viewport = new FitViewport(Assets.TILE_SIZE * mapSize, Assets.TILE_SIZE * mapSize);
-
     private final Assets assets;
+
+    private int virtualWidth;
+    private int virtualHeight;
+
+    private Rectangle bounds = new Rectangle();
 
     public MapRenderer(Assets assets) {
         this.assets = assets;
     }
 
-    public void resize(int width, int height) {
-        viewport.update(width, height);
+    public void resize(int virtualWidth, int virtualHeight) {
+        this.virtualWidth = virtualWidth;
+        this.virtualHeight = virtualHeight;
+
     }
 
-    public void render(World world, SpriteBatch spriteBatch, int playerEntityId) {
-
-        viewport.apply(true);
-        spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
-
-        World.Cell[][] cells = world.getCells();
+    public void render(World world, SpriteBatch spriteBatch) {
 
         int width = world.getWidth();
         int height = world.getHeight();
 
-        int yy = 0;
+        bounds.width = width * Assets.TILE_SIZE;
+        bounds.height = width * Assets.TILE_SIZE;
+        bounds.x = virtualWidth/2 - bounds.width/2;
+        bounds.y = virtualHeight/2 - bounds.height/2;
+
+
+        World.Cell[][] cells = world.getCells();
+
+
+        float yy = bounds.y;
         for (int y = 0; y < height; y++) {
-            int xx = 0;
+            float xx = bounds.x;
             for (int x = 0; x < width; x++) {
                 World.Cell cell = cells[y][x];
                 TextureRegion region = null;
@@ -59,7 +65,7 @@ public class MapRenderer {
 
 
         for (Entity entity : world.entities) {
-            if (entity.alixe) {
+            if (entity.alive) {
                 Entity.MoveAnimation moveAnimation = entity.getComponent(Entity.MoveAnimation.class);
                 if (moveAnimation != null) {
                     int animationCount = moveAnimation.animationCount;
@@ -67,15 +73,15 @@ public class MapRenderer {
                         Vector2 position = moveAnimation.animations[i].position;
                         switch (moveAnimation.direction) {
                             case NORTH:
-                                spriteBatch.draw(assets.tiles[4][0], position.x, position.y, 4, 4, 8, 8, 1, 1, 270);
+                                spriteBatch.draw(assets.tiles[4][0], bounds.x + position.x, bounds.y + position.y, 4, 4, 8, 8, 1, 1, 270);
                                 break;
                             case SOUTH:
-                                spriteBatch.draw(assets.tiles[4][0], position.x, position.y, 4, 4, 8, 8, 1, 1, 90);
+                                spriteBatch.draw(assets.tiles[4][0], bounds.x + position.x, bounds.y + position.y, 4, 4, 8, 8, 1, 1, 90);
                                 break;
                             case EAST:
                                 spriteBatch.draw(assets.tilesTexture,
-                                        position.x,
-                                        position.y,
+                                        bounds.x + position.x,
+                                        bounds.y + position.y,
                                         Assets.TILE_SIZE,
                                         Assets.TILE_SIZE,
                                         0,
@@ -87,8 +93,8 @@ public class MapRenderer {
                                 break;
                             case WEST:
                                 spriteBatch.draw(assets.tilesTexture,
-                                        position.x,
-                                        position.y,
+                                        bounds.x + position.x,
+                                        bounds.y + position.y,
                                         Assets.TILE_SIZE,
                                         Assets.TILE_SIZE,
                                         0,
@@ -104,15 +110,16 @@ public class MapRenderer {
                 Entity.MoveAnimation2 moveAnimation2 = entity.getComponent(Entity.MoveAnimation2.class);
                 if (moveAnimation2 != null) {
 
-                    Rectangle bounds = moveAnimation2.bounds;
+                    Rectangle moveBounds = new Rectangle(moveAnimation2.bounds);
 
-                    spriteBatch.draw(assets.tiles[4][0], bounds.x, bounds.y, 4, 4, 8, 8, 1, 1, 270);
+                    spriteBatch.draw(assets.tiles[4][3], bounds.x + moveBounds.x, bounds.y + moveBounds.y, 4, 4, 8, 8, 1, 1, 270);
 
-                    if (world.bounds.overlaps(bounds)) {
+                    if (!world.bounds.contains(moveBounds)) {
+
                         float offsetX = moveAnimation2.direction.dx * world.bounds.width;
                         float offsetY = moveAnimation2.direction.dy * world.bounds.height;
 
-                        spriteBatch.draw(assets.tiles[4][0], bounds.x - offsetX, bounds.y - offsetY, 4, 4, 8, 8, 1, 1, 270);
+                        spriteBatch.draw(assets.tiles[4][3], moveBounds.x - offsetX,  bounds.y + moveBounds.y - offsetY, 4, 4, 8, 8, 1, 1, 270);
                     }
 
                 }
