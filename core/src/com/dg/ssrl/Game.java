@@ -158,7 +158,8 @@ public class Game extends ApplicationAdapter {
 	}
 
 	private void step(float delta) {
-		for (Entity entity : world.entities) {
+		for (int i = world.entities.size() - 1; i >= 0; i--) {
+			Entity entity = world.entities.get(i);
 			if (entity.alixe) {
 				Entity.MoveAnimation moveAnimation = entity.getComponent(Entity.MoveAnimation.class);
 				if(moveAnimation != null) {
@@ -168,6 +169,8 @@ public class Game extends ApplicationAdapter {
 				if (moveAnimation2 != null) {
 					moveAnimation2.update(delta, world.bounds);
 				}
+			} else {
+				world.entities.remove(i);
 			}
 		}
 

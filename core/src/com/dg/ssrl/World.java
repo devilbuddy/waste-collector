@@ -32,7 +32,7 @@ public class World {
         }
 
         boolean isWalkable() {
-            return type.walkable;
+            return type.walkable && entityIds.size == 0;
         }
 
     }
