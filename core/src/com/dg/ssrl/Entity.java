@@ -1,6 +1,7 @@
 package com.dg.ssrl;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.HashMap;
@@ -40,6 +41,49 @@ public class Entity {
                     "x=" + x +
                     ", y=" + y +
                     '}';
+        }
+    }
+
+    public static class MoveAnimation2 implements Component {
+
+        public Rectangle bounds = new Rectangle();
+        public Direction direction = Direction.NONE;
+        private Runnable callback;
+
+        private float speed = 50f;
+        private float currentDistance;
+        private float distance;
+        public void init(Position start, float distance, Direction direction, Runnable callback) {
+            bounds.x = start.x * Assets.TILE_SIZE;
+            bounds.y = start.y * Assets.TILE_SIZE;
+            bounds.width = Assets.TILE_SIZE;
+            bounds.height = Assets.TILE_SIZE;
+            this.distance = distance;
+            currentDistance = 0;
+
+            this.direction = direction;
+            this.callback = callback;
+        }
+
+        public void update(float delta, Rectangle worldBounds) {
+            float dx = direction.dx * speed * delta;
+            float dy = direction.dy * speed * delta;
+
+            currentDistance += dx;
+            currentDistance += dy;
+
+            bounds.x += dx;
+            bounds.y += dy;
+
+            if (!bounds.overlaps(worldBounds)) {
+                bounds.x -= direction.dx * worldBounds.width;
+                bounds.y -= direction.dy * worldBounds.height;
+            }
+
+            if (Math.abs(currentDistance) > distance) {
+                callback.run();
+                callback = null;
+            }
         }
     }
 
@@ -146,7 +190,7 @@ public class Entity {
     private HashMap<Class<? extends Component>, Component> components = new HashMap<Class<? extends Component>, Component>();
 
     public final int id;
-
+    public boolean alixe = true;
     @Override
     public String toString() {
         return "Entity{" +

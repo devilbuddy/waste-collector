@@ -1,5 +1,6 @@
 package com.dg.ssrl;
 
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.IntArray;
 
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ public class World {
 
     private final Cell[][] cells;
     public ArrayList<Entity> entities = new ArrayList<Entity>();
+    public Rectangle bounds = new Rectangle();
 
     public World(int width, int height) {
         this.width = width;
@@ -52,6 +54,8 @@ public class World {
                 cells[y][x] = new Cell();
             }
         }
+
+        bounds.set(0, 0, width * Assets.TILE_SIZE, height * Assets.TILE_SIZE);
     }
 
     public int getWidth() {

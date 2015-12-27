@@ -159,7 +159,16 @@ public class Game extends ApplicationAdapter {
 
 	private void step(float delta) {
 		for (Entity entity : world.entities) {
-			entity.getComponent(Entity.MoveAnimation.class).update(delta);
+			if (entity.alixe) {
+				Entity.MoveAnimation moveAnimation = entity.getComponent(Entity.MoveAnimation.class);
+				if(moveAnimation != null) {
+					moveAnimation.update(delta);
+				}
+				Entity.MoveAnimation2 moveAnimation2 = entity.getComponent(Entity.MoveAnimation2.class);
+				if (moveAnimation2 != null) {
+					moveAnimation2.update(delta, world.bounds);
+				}
+			}
 		}
 
 		Entity.MoveAnimation playerMoveAnimation = player.getComponent(Entity.MoveAnimation.class);
@@ -225,20 +234,29 @@ public class Game extends ApplicationAdapter {
 				if (action == MapMovementInputHandler.Action.FIRE) {
 					Gdx.app.log(tag, "FIRE");
 
-					Entity.Position bulletStartPosition = player.getComponent(Entity.Position.class).clone();
-					bulletStartPosition.translate(playerMoveAnimation.direction);
+					Entity.Position bulletStartPosition = player.getComponent(Entity.Position.class).clone().translate(playerMoveAnimation.direction);
 
-					Entity.Position bulletEndPosition = bulletStartPosition.clone().translate(playerMoveAnimation.direction);
+					Entity.Position endPosition = bulletStartPosition.clone();
+					boolean hitSomething = false;
+					int distanceTiles = 0;
+					while (!hitSomething) {
+						endPosition.x = endPosition.x % world.getWidth();
+						endPosition.y = endPosition.y % world.getHeight();
+						while (endPosition.x < 0) { endPosition.x += world.getWidth(); }
+						while (endPosition.y < 0) { endPosition.y += world.getHeight(); }
+						if (world.getCell(endPosition.x, endPosition.y).isWalkable()) {
+							endPosition.translate(playerMoveAnimation.direction);
+							distanceTiles++;
+						} else {
+							hitSomething = true;
+						}
+					}
 
-					Gdx.app.log(tag, "start:" + bulletStartPosition + " end:" + bulletEndPosition);
-
-					Entity bullet = entityFactory.makeBullet();
-					Entity.MoveAnimation bulletMove = bullet.getComponent(Entity.MoveAnimation.class);
-					bulletMove.direction = playerMoveAnimation.direction;
-					bulletMove.initMove(bulletStartPosition, bulletEndPosition, new Runnable() {
+					final Entity bullet = entityFactory.makeBullet2();
+					bullet.getComponent(Entity.MoveAnimation2.class).init(bulletStartPosition, distanceTiles * Assets.TILE_SIZE, playerMoveAnimation.direction, new Runnable() {
 						@Override
 						public void run() {
-							Gdx.app.log(tag, "bullet done");
+							bullet.alixe = false;
 						}
 					});
 
