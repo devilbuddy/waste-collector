@@ -18,12 +18,7 @@ public class EntityFactory {
     public Entity makePlayer() {
         Entity entity = new Entity(entityIdCounter.incrementAndGet());
         entity.addComponent(new Entity.Position());
-        entity.addComponent(new Entity.MoveAnimation());
-        return entity;
-    }
-
-    public Entity makeBullet() {
-        Entity entity = new Entity(entityIdCounter.incrementAndGet());
+        entity.addComponent(new Entity.Sprite(assets.tiles[4][2]));
         entity.addComponent(new Entity.MoveAnimation());
         return entity;
     }
@@ -31,6 +26,7 @@ public class EntityFactory {
     public Entity makeBullet2() {
         Entity entity = new Entity(entityIdCounter.incrementAndGet());
         entity.addComponent(new Entity.MoveAnimation());
+        entity.addComponent(new Entity.Sprite(assets.tiles[4][3]));
         return entity;
     }
 

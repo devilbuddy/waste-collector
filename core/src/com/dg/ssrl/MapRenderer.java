@@ -67,21 +67,22 @@ public class MapRenderer {
             if (entity.alive) {
 
                 Entity.MoveAnimation moveAnimation = entity.getComponent(Entity.MoveAnimation.class);
-                if (moveAnimation != null) {
+                Entity.Sprite sprite = entity.getComponent(Entity.Sprite.class);
+
+                if (moveAnimation != null && sprite != null) {
 
                     Rectangle moveBounds = new Rectangle(moveAnimation.bounds);
                     Vector2 position = new Vector2();
                     moveBounds.getPosition(position);
-                    renderWithFacing(position, moveAnimation.direction, spriteBatch);
+                    renderWithFacing(position, moveAnimation.direction, sprite, spriteBatch);
                     if (!world.bounds.contains(moveBounds)) {
 
                         float offsetX = moveAnimation.direction.dx * world.bounds.width;
                         float offsetY = moveAnimation.direction.dy * world.bounds.height;
 
                         position.set(moveBounds.x - offsetX, moveBounds.y - offsetY);
-                        renderWithFacing(position, moveAnimation.direction, spriteBatch);
+                        renderWithFacing(position, moveAnimation.direction, sprite, spriteBatch);
                     }
-
                 }
             }
 
@@ -93,35 +94,35 @@ public class MapRenderer {
 
     }
 
-    private void renderWithFacing(Vector2 position, Direction direction, SpriteBatch spriteBatch) {
+    private void renderWithFacing(Vector2 position, Direction direction, Entity.Sprite sprite, SpriteBatch spriteBatch) {
         switch (direction) {
             case NORTH:
-                spriteBatch.draw(assets.tiles[4][0], bounds.x + position.x, bounds.y + position.y, 4, 4, 8, 8, 1, 1, 270);
+                spriteBatch.draw(sprite.region, bounds.x + position.x, bounds.y + position.y, 4, 4, 8, 8, 1, 1, 270);
                 break;
             case SOUTH:
-                spriteBatch.draw(assets.tiles[4][0], bounds.x + position.x, bounds.y + position.y, 4, 4, 8, 8, 1, 1, 90);
+                spriteBatch.draw(sprite.region, bounds.x + position.x, bounds.y + position.y, 4, 4, 8, 8, 1, 1, 90);
                 break;
             case EAST:
-                spriteBatch.draw(assets.tilesTexture,
+                spriteBatch.draw(sprite.region.getTexture(),
                         bounds.x + position.x,
                         bounds.y + position.y,
                         Assets.TILE_SIZE,
                         Assets.TILE_SIZE,
-                        0,
-                        4 * Assets.TILE_SIZE,
+                        sprite.region.getRegionX(),
+                        sprite.region.getRegionY(),
                         Assets.TILE_SIZE,
                         Assets.TILE_SIZE,
                         true,
                         false);
                 break;
             case WEST:
-                spriteBatch.draw(assets.tilesTexture,
+                spriteBatch.draw(sprite.region.getTexture(),
                         bounds.x + position.x,
                         bounds.y + position.y,
                         Assets.TILE_SIZE,
                         Assets.TILE_SIZE,
-                        0,
-                        4 * Assets.TILE_SIZE,
+                        sprite.region.getRegionX(),
+                        sprite.region.getRegionY(),
                         Assets.TILE_SIZE,
                         Assets.TILE_SIZE,
                         false,
