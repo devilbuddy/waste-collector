@@ -150,7 +150,7 @@ public class Game extends ApplicationAdapter {
 		spriteBatch.begin();
         spriteBatch.setProjectionMatrix(camera.combined);
 
-		assets.font.draw(spriteBatch, "Foo", 50, height - assets.font.getLineHeight());
+		assets.font.draw(spriteBatch, "100", 4, height);
 
 		spriteBatch.end();
 
@@ -195,7 +195,7 @@ public class Game extends ApplicationAdapter {
 					Gdx.app.log(tag, "targetPosition:" + targetPosition);
 
 					if(world.getCell(targetPosition.x, targetPosition.y).isWalkable()) {
-						playerMoveAnimation.init(position, Assets.TILE_SIZE, moveDirection, new Runnable() {
+						playerMoveAnimation.startMove(position, Assets.TILE_SIZE, moveDirection, new Runnable() {
 							@Override
 							public void run() {
 								world.move(player, targetPosition.x, targetPosition.y);
@@ -205,7 +205,7 @@ public class Game extends ApplicationAdapter {
 					}
 
 				} else {
-					playerMoveAnimation.initTurn(moveDirection, new Runnable() {
+					playerMoveAnimation.startTurn(moveDirection, new Runnable() {
 						@Override
 						public void run() {
 
@@ -236,8 +236,8 @@ public class Game extends ApplicationAdapter {
 						}
 					}
 
-					final Entity bullet = entityFactory.makeBullet2();
-					bullet.getComponent(Entity.MoveAnimation.class).init(bulletStartPosition, distanceTiles * Assets.TILE_SIZE, playerMoveAnimation.direction, new Runnable() {
+					final Entity bullet = entityFactory.makeBullet();
+					bullet.getComponent(Entity.MoveAnimation.class).startMove(bulletStartPosition, distanceTiles * Assets.TILE_SIZE, playerMoveAnimation.direction, new Runnable() {
 						@Override
 						public void run() {
 							bullet.alive = false;

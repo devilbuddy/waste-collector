@@ -81,7 +81,7 @@ public class Entity {
             bounds.y = y;
         }
 
-        public void init(Position start, float distance, Direction direction, Runnable callback) {
+        public void startMove(Position start, float distance, Direction direction, Runnable callback) {
             bounds.x = start.x * Assets.TILE_SIZE;
             bounds.y = start.y * Assets.TILE_SIZE;
             this.distance = distance;
@@ -93,10 +93,10 @@ public class Entity {
             this.stateTime = 0;
         }
 
-        public void initTurn(Direction direction, Runnable runnable) {
+        public void startTurn(Direction direction, Runnable callback) {
             this.direction = direction;
             this.state = State.TURN;
-            this.callback = runnable;
+            this.callback = callback;
             this.stateTime = 0;
         }
 
@@ -143,6 +143,7 @@ public class Entity {
 
     public final int id;
     public boolean alive = true;
+
     @Override
     public String toString() {
         return "Entity{" +

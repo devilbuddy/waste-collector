@@ -1,5 +1,8 @@
 package com.dg.ssrl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Random;
 
 /**
@@ -45,13 +48,22 @@ public class Generator {
         }
 
         for (int i = 0; i < 10; i++) {
-            int x = random.nextInt(width);
-            int y = random.nextInt(height);
+            int x = 2 + random.nextInt(width - 4);
+            int y = 2 + random.nextInt(height - 4);
             levelData.tiles[y][x] = World.Cell.Type.Wall;
         }
 
-        levelData.start.x = 1;
-        levelData.start.y = 1;
+        ArrayList<Point> floors = new ArrayList<Point>();
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                if (levelData.tiles[y][x] == World.Cell.Type.Floor) {
+                    floors.add(new Point(x, y));
+                }
+            }
+        }
+        Collections.shuffle(floors);
+
+        levelData.start = floors.remove(0);
 
         return levelData;
     }
