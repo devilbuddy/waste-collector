@@ -19,13 +19,13 @@ public class EntityFactory {
         Entity entity = new Entity(entityIdCounter.incrementAndGet());
         entity.addComponent(new Entity.Position());
         entity.addComponent(new Entity.Sprite(assets.tiles[4][2]));
-        entity.addComponent(new Entity.MoveAnimation());
+        entity.addComponent(new Entity.MoveAnimation(50f));
         return entity;
     }
 
     public Entity makeBullet2() {
         Entity entity = new Entity(entityIdCounter.incrementAndGet());
-        entity.addComponent(new Entity.MoveAnimation());
+        entity.addComponent(new Entity.MoveAnimation(150f));
         entity.addComponent(new Entity.Sprite(assets.tiles[4][3]));
         return entity;
     }

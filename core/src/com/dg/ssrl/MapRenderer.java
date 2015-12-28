@@ -85,13 +85,7 @@ public class MapRenderer {
                     }
                 }
             }
-
-
-
-
         }
-
-
     }
 
     private void renderWithFacing(Vector2 position, Direction direction, Entity.Sprite sprite, SpriteBatch spriteBatch) {

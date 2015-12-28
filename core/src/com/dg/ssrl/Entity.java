@@ -64,13 +64,14 @@ public class Entity {
         public Direction direction = Direction.NONE;
         private Runnable callback;
 
-        private float speed = 50f;
+        private float speed;
         private float currentDistance;
         private float distance;
         private State state = State.DONE;
         private float stateTime = 0;
 
-        public MoveAnimation() {
+        public MoveAnimation(float speed) {
+            this.speed = speed;
             bounds.width = Assets.TILE_SIZE;
             bounds.height = Assets.TILE_SIZE;
         }
