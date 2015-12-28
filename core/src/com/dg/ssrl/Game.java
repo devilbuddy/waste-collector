@@ -87,8 +87,6 @@ public class Game extends ApplicationAdapter {
         inputMultiplexer.addProcessor(new GestureDetector(20, 0.1f, 1.1f, 0.15f, mapMovementInputHandler));
 		mapRenderer = new MapRenderer(assets);
 
-		entityFactory = new EntityFactory();
-		player = entityFactory.makePlayer();
 
 	}
 
@@ -98,18 +96,22 @@ public class Game extends ApplicationAdapter {
         assets.create();
         Gdx.input.setInputProcessor(inputMultiplexer);
 
+		entityFactory = new EntityFactory(assets);
 
 		initWorld();
     }
 
 	private void initWorld() {
+
+		player = entityFactory.makePlayer();
+
 		int width = 10;
 		int height = 10;
 		Generator.LevelData levelData = Generator.generate(System.currentTimeMillis(), width, height);
 
 		Point start = levelData.start;
 		player.getComponent(Entity.Position.class).set(start.x, start.y);
-		player.getComponent(Entity.MoveAnimation.class).animations[0].position.set(start.x * Assets.TILE_SIZE, start.y * Assets.TILE_SIZE);
+		player.getComponent(Entity.MoveAnimation.class).setPosition(start.x * Assets.TILE_SIZE, start.y * Assets.TILE_SIZE);
 		player.getComponent(Entity.MoveAnimation.class).direction = Direction.EAST;
 
 		world = new World(width, height);
@@ -163,19 +165,15 @@ public class Game extends ApplicationAdapter {
 			Entity entity = world.entities.get(i);
 			if (entity.alive) {
 				Entity.MoveAnimation moveAnimation = entity.getComponent(Entity.MoveAnimation.class);
-				if(moveAnimation != null) {
-					moveAnimation.update(delta);
-				}
-				Entity.MoveAnimation2 moveAnimation2 = entity.getComponent(Entity.MoveAnimation2.class);
-				if (moveAnimation2 != null) {
-					moveAnimation2.update(delta, world.bounds);
+				if (moveAnimation != null) {
+					moveAnimation.update(delta, world.bounds);
 				}
 			} else {
 				world.entities.remove(i);
 			}
 		}
 
-		Entity.MoveAnimation playerMoveAnimation = player.getComponent(Entity.MoveAnimation.class);
+		final Entity.MoveAnimation playerMoveAnimation = player.getComponent(Entity.MoveAnimation.class);
 
 		if(!playerMoveAnimation.isBusy()) {
 
@@ -186,44 +184,26 @@ public class Game extends ApplicationAdapter {
 
 				if (playerMoveAnimation.direction == moveDirection) {
 					Entity.Position position = player.getComponent(Entity.Position.class);
-					final Entity.Position targetPosition = position.clone();
 
+					final Entity.Position targetPosition = position.clone();
 					targetPosition.translate(moveDirection);
+					targetPosition.x = targetPosition.x % world.getWidth();
+					targetPosition.y = targetPosition.y % world.getHeight();
+					while (targetPosition.x < 0) { targetPosition.x += world.getWidth(); }
+					while (targetPosition.y < 0) { targetPosition.y += world.getHeight(); }
 
 					Gdx.app.log(tag, "targetPosition:" + targetPosition);
 
-					if(world.contains(targetPosition.x, targetPosition.y) && world.getCell(targetPosition.x, targetPosition.y).isWalkable()) {
-						playerMoveAnimation.initMove(position, targetPosition, new Runnable() {
+					if(world.getCell(targetPosition.x, targetPosition.y).isWalkable()) {
+						playerMoveAnimation.init(position, Assets.TILE_SIZE, moveDirection, new Runnable() {
 							@Override
 							public void run() {
 								world.move(player, targetPosition.x, targetPosition.y);
+								playerMoveAnimation.setPosition(targetPosition.x * Assets.TILE_SIZE, targetPosition.y * Assets.TILE_SIZE);
 							}
 						});
-					} else {
-						// wrap around
-						Entity.Position start1 = position.clone();
-						Entity.Position end1 = position.clone();
-						end1.translate(moveDirection);
-
-						Entity.Position end2 = end1.clone();
-						end2.x = end2.x % world.getWidth();
-						end2.y = end2.y % world.getHeight();
-						while (end2.x < 0) { end2.x += world.getWidth(); }
-						while (end2.y < 0) { end2.y += world.getHeight(); }
-
-						if (world.getCell(end2.x, end2.y).isWalkable()) {
-							Entity.Position start2 = end2.clone();
-							start2.translate(moveDirection.opposite());
-
-							final Entity.Position finalTarget = end2.clone();
-							playerMoveAnimation.initMove(start1, end1, start2, end2, new Runnable() {
-								@Override
-								public void run() {
-									world.move(player, finalTarget.x, finalTarget.y);
-								}
-							});
-						}
 					}
+
 				} else {
 					playerMoveAnimation.initTurn(moveDirection, new Runnable() {
 						@Override
@@ -257,7 +237,7 @@ public class Game extends ApplicationAdapter {
 					}
 
 					final Entity bullet = entityFactory.makeBullet2();
-					bullet.getComponent(Entity.MoveAnimation2.class).init(bulletStartPosition, distanceTiles * Assets.TILE_SIZE, playerMoveAnimation.direction, new Runnable() {
+					bullet.getComponent(Entity.MoveAnimation.class).init(bulletStartPosition, distanceTiles * Assets.TILE_SIZE, playerMoveAnimation.direction, new Runnable() {
 						@Override
 						public void run() {
 							bullet.alive = false;

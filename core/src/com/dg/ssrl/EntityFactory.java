@@ -9,6 +9,12 @@ public class EntityFactory {
 
     private AtomicInteger entityIdCounter = new AtomicInteger();
 
+    private final Assets assets;
+
+    public EntityFactory(Assets assets) {
+        this.assets = assets;
+    }
+
     public Entity makePlayer() {
         Entity entity = new Entity(entityIdCounter.incrementAndGet());
         entity.addComponent(new Entity.Position());
@@ -24,7 +30,7 @@ public class EntityFactory {
 
     public Entity makeBullet2() {
         Entity entity = new Entity(entityIdCounter.incrementAndGet());
-        entity.addComponent(new Entity.MoveAnimation2());
+        entity.addComponent(new Entity.MoveAnimation());
         return entity;
     }
 

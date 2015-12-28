@@ -1,5 +1,6 @@
 package com.dg.ssrl;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -44,7 +45,20 @@ public class Entity {
         }
     }
 
-    public static class MoveAnimation2 implements Component {
+    public static class Sprite implements Component {
+        public TextureRegion region;
+
+        public Sprite(TextureRegion textureRegion) {
+            this.region = textureRegion;
+        }
+    }
+
+    public static class MoveAnimation implements Component {
+        private enum State {
+            MOVE,
+            TURN,
+            DONE
+        }
 
         public Rectangle bounds = new Rectangle();
         public Direction direction = Direction.NONE;
@@ -53,139 +67,75 @@ public class Entity {
         private float speed = 50f;
         private float currentDistance;
         private float distance;
+        private State state = State.DONE;
+        private float stateTime = 0;
+
+        public MoveAnimation() {
+            bounds.width = Assets.TILE_SIZE;
+            bounds.height = Assets.TILE_SIZE;
+        }
+
+        public void setPosition(float x, float y) {
+            bounds.x = x;
+            bounds.y = y;
+        }
+
         public void init(Position start, float distance, Direction direction, Runnable callback) {
             bounds.x = start.x * Assets.TILE_SIZE;
             bounds.y = start.y * Assets.TILE_SIZE;
-            bounds.width = Assets.TILE_SIZE;
-            bounds.height = Assets.TILE_SIZE;
             this.distance = distance;
             currentDistance = 0;
 
             this.direction = direction;
             this.callback = callback;
+            this.state = State.MOVE;
+            this.stateTime = 0;
+        }
+
+        public void initTurn(Direction direction, Runnable runnable) {
+            this.direction = direction;
+            this.state = State.TURN;
+            this.callback = runnable;
+            this.stateTime = 0;
         }
 
         public void update(float delta, Rectangle worldBounds) {
-            float dx = direction.dx * speed * delta;
-            float dy = direction.dy * speed * delta;
-
-            currentDistance += dx;
-            currentDistance += dy;
-
-            bounds.x += dx;
-            bounds.y += dy;
-
-            if (!bounds.overlaps(worldBounds)) {
-                bounds.x -= direction.dx * worldBounds.width;
-                bounds.y -= direction.dy * worldBounds.height;
-            }
-
-            if (Math.abs(currentDistance) > distance) {
-                callback.run();
-                callback = null;
-            }
-        }
-
-    }
-
-    public static class MoveAnimation implements Component {
-        private static final String tag = "MoveAnimation";
-
-        private enum State {
-            MOVE,
-            TURN,
-            DONE
-        }
-
-        public static class Animation {
-            Vector2 target = new Vector2();
-            Vector2 position = new Vector2();
-        }
-
-        private static final int ANIMATIONS_SIZE = 2;
-
-        public Direction direction = Direction.NONE;
-        public Animation[] animations;
-        int animationCount = 1;
-        private Runnable onDone;
-
-        private Vector2 tmp = new Vector2();
-
-        private float duration = 0.4f;
-        private float stateTime = 0f;
-        private State state = State.DONE;
-
-        public MoveAnimation() {
-            animations = new Animation[ANIMATIONS_SIZE];
-            for (int i = 0; i < ANIMATIONS_SIZE; i++) {
-                animations[i] = new Animation();
-            }
-        }
-
-        public void initMove(Position start, Position end, Runnable onDone) {
-            animationCount = 1;
-            animations[0].position.set(start.x * Assets.TILE_SIZE, start.y * Assets.TILE_SIZE);
-            animations[0].target.set(end.x * Assets.TILE_SIZE, end.y * Assets.TILE_SIZE);
-            stateTime = 0f;
-            state = State.MOVE;
-            this.onDone = onDone;
-        }
-
-        public void initMove(Position start, Position end, Position start2, Position end2, Runnable onDone) {
-            animationCount = 2;
-            animations[0].position.set(start.x * Assets.TILE_SIZE, start.y * Assets.TILE_SIZE);
-            animations[0].target.set(end.x * Assets.TILE_SIZE, end.y * Assets.TILE_SIZE);
-            animations[1].position.set(start2.x * Assets.TILE_SIZE, start2.y * Assets.TILE_SIZE);
-            animations[1].target.set(end2.x * Assets.TILE_SIZE, end2.y * Assets.TILE_SIZE);
-            stateTime = 0f;
-            state = State.MOVE;
-            this.onDone = onDone;
-        }
-
-        public void initTurn(Direction direction, Runnable onDone) {
-            this.direction = direction;
-            stateTime = 0f;
-            this.onDone = onDone;
-            state = State.TURN;
-        }
-
-        public void update(float delta) {
-            stateTime += delta;
-
             if (state == State.MOVE) {
-                float alpha = MathUtils.clamp(stateTime/duration, 0.0f, 1.0f);
-                boolean done = false;
-                for (int i = 0; i < animationCount; i++) {
-                    animations[i].position.lerp(animations[i].target, alpha);
-                    if (tmp.set(animations[i].position).dst(animations[i].target) < 0.1f) {
-                        done |= true;
-                    }
-                }
-                if (done) {
-                    onDone();
-                    if(animationCount == 2) {
-                        animations[0].position.set(animations[1].target);
-                    }
-                    animationCount = 1;
+                float dx = direction.dx * speed * delta;
+                float dy = direction.dy * speed * delta;
+
+                currentDistance += dx;
+                currentDistance += dy;
+
+                bounds.x += dx;
+                bounds.y += dy;
+
+                if (!bounds.overlaps(worldBounds)) {
+                    bounds.x -= direction.dx * worldBounds.width;
+                    bounds.y -= direction.dy * worldBounds.height;
                 }
 
-            } else if (state == State.TURN) {
-                if (stateTime > duration) {
+                if (Math.abs(currentDistance) > distance) {
+                    onDone();
+                }
+            } else if (state == State.TURN){
+                stateTime += delta;
+                if(stateTime > 0.4f) {
                     onDone();
                 }
             }
-
-        }
-
-        private void onDone() {
-            state = State.DONE;
-            onDone.run();
-            onDone = null;
         }
 
         public boolean isBusy() {
             return state != State.DONE;
         }
+
+        private void onDone() {
+            callback.run();
+            callback = null;
+            state = State.DONE;
+        }
+
     }
 
     private HashMap<Class<? extends Component>, Component> components = new HashMap<Class<? extends Component>, Component>();

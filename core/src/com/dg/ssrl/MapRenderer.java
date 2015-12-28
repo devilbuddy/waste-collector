@@ -1,6 +1,5 @@
 package com.dg.ssrl;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -66,60 +65,21 @@ public class MapRenderer {
 
         for (Entity entity : world.entities) {
             if (entity.alive) {
+
                 Entity.MoveAnimation moveAnimation = entity.getComponent(Entity.MoveAnimation.class);
                 if (moveAnimation != null) {
-                    int animationCount = moveAnimation.animationCount;
-                    for (int i = 0; i < animationCount; i++) {
-                        Vector2 position = moveAnimation.animations[i].position;
-                        switch (moveAnimation.direction) {
-                            case NORTH:
-                                spriteBatch.draw(assets.tiles[4][0], bounds.x + position.x, bounds.y + position.y, 4, 4, 8, 8, 1, 1, 270);
-                                break;
-                            case SOUTH:
-                                spriteBatch.draw(assets.tiles[4][0], bounds.x + position.x, bounds.y + position.y, 4, 4, 8, 8, 1, 1, 90);
-                                break;
-                            case EAST:
-                                spriteBatch.draw(assets.tilesTexture,
-                                        bounds.x + position.x,
-                                        bounds.y + position.y,
-                                        Assets.TILE_SIZE,
-                                        Assets.TILE_SIZE,
-                                        0,
-                                        4 * Assets.TILE_SIZE,
-                                        Assets.TILE_SIZE,
-                                        Assets.TILE_SIZE,
-                                        true,
-                                        false);
-                                break;
-                            case WEST:
-                                spriteBatch.draw(assets.tilesTexture,
-                                        bounds.x + position.x,
-                                        bounds.y + position.y,
-                                        Assets.TILE_SIZE,
-                                        Assets.TILE_SIZE,
-                                        0,
-                                        4 * Assets.TILE_SIZE,
-                                        Assets.TILE_SIZE,
-                                        Assets.TILE_SIZE,
-                                        false,
-                                        false);
-                                break;
-                        }
-                    }
-                }
-                Entity.MoveAnimation2 moveAnimation2 = entity.getComponent(Entity.MoveAnimation2.class);
-                if (moveAnimation2 != null) {
 
-                    Rectangle moveBounds = new Rectangle(moveAnimation2.bounds);
-
-                    spriteBatch.draw(assets.tiles[4][3], bounds.x + moveBounds.x, bounds.y + moveBounds.y, 4, 4, 8, 8, 1, 1, 270);
-
+                    Rectangle moveBounds = new Rectangle(moveAnimation.bounds);
+                    Vector2 position = new Vector2();
+                    moveBounds.getPosition(position);
+                    renderWithFacing(position, moveAnimation.direction, spriteBatch);
                     if (!world.bounds.contains(moveBounds)) {
 
-                        float offsetX = moveAnimation2.direction.dx * world.bounds.width;
-                        float offsetY = moveAnimation2.direction.dy * world.bounds.height;
+                        float offsetX = moveAnimation.direction.dx * world.bounds.width;
+                        float offsetY = moveAnimation.direction.dy * world.bounds.height;
 
-                        spriteBatch.draw(assets.tiles[4][3], moveBounds.x - offsetX,  bounds.y + moveBounds.y - offsetY, 4, 4, 8, 8, 1, 1, 270);
+                        position.set(moveBounds.x - offsetX, moveBounds.y - offsetY);
+                        renderWithFacing(position, moveAnimation.direction, spriteBatch);
                     }
 
                 }
@@ -131,6 +91,43 @@ public class MapRenderer {
         }
 
 
+    }
+
+    private void renderWithFacing(Vector2 position, Direction direction, SpriteBatch spriteBatch) {
+        switch (direction) {
+            case NORTH:
+                spriteBatch.draw(assets.tiles[4][0], bounds.x + position.x, bounds.y + position.y, 4, 4, 8, 8, 1, 1, 270);
+                break;
+            case SOUTH:
+                spriteBatch.draw(assets.tiles[4][0], bounds.x + position.x, bounds.y + position.y, 4, 4, 8, 8, 1, 1, 90);
+                break;
+            case EAST:
+                spriteBatch.draw(assets.tilesTexture,
+                        bounds.x + position.x,
+                        bounds.y + position.y,
+                        Assets.TILE_SIZE,
+                        Assets.TILE_SIZE,
+                        0,
+                        4 * Assets.TILE_SIZE,
+                        Assets.TILE_SIZE,
+                        Assets.TILE_SIZE,
+                        true,
+                        false);
+                break;
+            case WEST:
+                spriteBatch.draw(assets.tilesTexture,
+                        bounds.x + position.x,
+                        bounds.y + position.y,
+                        Assets.TILE_SIZE,
+                        Assets.TILE_SIZE,
+                        0,
+                        4 * Assets.TILE_SIZE,
+                        Assets.TILE_SIZE,
+                        Assets.TILE_SIZE,
+                        false,
+                        false);
+                break;
+        }
     }
 
 }
