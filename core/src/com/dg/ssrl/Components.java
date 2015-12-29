@@ -12,17 +12,16 @@ public class Components {
         public int x;
         public int y;
 
-        public Position() {
-
-        }
+        public Position() {}
 
         public Position(int x, int y) {
             set(x, y);
         }
 
-        public void set(int x, int y) {
+        public Position set(int x, int y) {
             this.x = x;
             this.y = y;
+            return this;
         }
 
         public Position translate(Direction direction) {
@@ -143,7 +142,6 @@ public class Components {
             callback = null;
             state = State.DONE;
         }
-
     }
 
     public interface Brain {

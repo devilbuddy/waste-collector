@@ -7,9 +7,6 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
 
-/**
- * Created by magnus.ornebring on 31/05/15.
- */
 public class PlayerInput extends InputAdapter implements GestureDetector.GestureListener {
     private static final String tag = "PlayerInput";
 

@@ -5,9 +5,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-/**
- * Created by magnus on 2015-10-04.
- */
 public class MapRenderer {
     private static final String tag = "MapRenderer";
 

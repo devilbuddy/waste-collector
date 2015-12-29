@@ -11,8 +11,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 
-import javafx.geometry.Pos;
-
 import static com.dg.ssrl.Components.*;
 
 public class Game extends ApplicationAdapter {
@@ -61,7 +59,6 @@ public class Game extends ApplicationAdapter {
 
 	private static final String tag = "Game";
 
-
 	private int width = 80;
 	private int height;
 
@@ -78,9 +75,7 @@ public class Game extends ApplicationAdapter {
 	private Scheduler scheduler;
 
 	private EntityFactory entityFactory;
-
 	private World world;
-
 
 	public Game(Position[] debugScreenSizes) {
 		DebugInputSwitcher debugInputSwitcher = new DebugInputSwitcher(debugScreenSizes);
@@ -105,10 +100,7 @@ public class Game extends ApplicationAdapter {
 		initWorld();
     }
 
-
-
 	private void initWorld() {
-
 		scheduler.clear();
 
 		int width = 10;
@@ -121,7 +113,6 @@ public class Game extends ApplicationAdapter {
 				world.getCell(x, y).type = levelData.tiles[y][x];
 			}
 		}
-
 		Entity player = entityFactory.makePlayer();
 
 		Position start = levelData.start;
@@ -172,7 +163,6 @@ public class Game extends ApplicationAdapter {
 		spriteBatch.setColor(Color.BLACK);
 		spriteBatch.draw(assets.whitePixel, 0, 0, width, mapRenderer.bounds.y);
 		spriteBatch.draw(assets.whitePixel, 0, mapRenderer.bounds.y + mapRenderer.bounds.height, width, height - (mapRenderer.bounds.y + mapRenderer.bounds.height) );
-
 
 		spriteBatch.setColor(Color.WHITE);
 		assets.font.draw(spriteBatch, "100", 4, height);

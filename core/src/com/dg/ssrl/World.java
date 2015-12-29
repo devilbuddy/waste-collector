@@ -6,9 +6,6 @@ import com.badlogic.gdx.utils.IntArray;
 
 import java.util.ArrayList;
 
-/**
- * Created by magnus on 2015-12-21.
- */
 public class World {
     private static final String tag = "World";
 
