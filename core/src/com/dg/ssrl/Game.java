@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 
+import static com.dg.ssrl.Components.*;
+
 public class Game extends ApplicationAdapter {
 
 	private class DebugInputSwitcher extends InputAdapter {
@@ -65,7 +67,6 @@ public class Game extends ApplicationAdapter {
 	private TimeStep timeStep = new TimeStep();
 
 	private InputMultiplexer inputMultiplexer = new InputMultiplexer();
-	private DebugInputSwitcher debugInputSwitcher;
 	private MapMovementInputHandler mapMovementInputHandler;
 
     private Assets assets = new Assets();
@@ -79,23 +80,21 @@ public class Game extends ApplicationAdapter {
 	private World world;
 
 	public Game(Point[] debugScreenSizes) {
-		debugInputSwitcher = new DebugInputSwitcher(debugScreenSizes);
+		DebugInputSwitcher debugInputSwitcher = new DebugInputSwitcher(debugScreenSizes);
 		mapMovementInputHandler = new MapMovementInputHandler();
 
         inputMultiplexer.addProcessor(debugInputSwitcher);
 		inputMultiplexer.addProcessor(mapMovementInputHandler);
         inputMultiplexer.addProcessor(new GestureDetector(20, 0.1f, 1.1f, 0.15f, mapMovementInputHandler));
 		mapRenderer = new MapRenderer(assets);
-
-
 	}
 
 	@Override
 	public void create () {
-        spriteBatch = new SpriteBatch();
-        assets.create();
-        Gdx.input.setInputProcessor(inputMultiplexer);
+		Gdx.input.setInputProcessor(inputMultiplexer);
 
+		spriteBatch = new SpriteBatch();
+        assets.create();
 		entityFactory = new EntityFactory(assets);
 
 		initWorld();
@@ -110,9 +109,8 @@ public class Game extends ApplicationAdapter {
 		Generator.LevelData levelData = Generator.generate(System.currentTimeMillis(), width, height);
 
 		Point start = levelData.start;
-		player.getComponent(Entity.Position.class).set(start.x, start.y);
-		player.getComponent(Entity.MoveAnimation.class).setPosition(start.x * Assets.TILE_SIZE, start.y * Assets.TILE_SIZE);
-		player.getComponent(Entity.MoveAnimation.class).direction = Direction.EAST;
+		player.getComponent(Position.class).set(start.x, start.y);
+		player.getComponent(MoveAnimation.class).setPosition(start.x * Assets.TILE_SIZE, start.y * Assets.TILE_SIZE).setDirection(Direction.EAST);
 
 		world = new World(width, height);
 		for (int y = 0; y < height; y++) {
@@ -129,8 +127,6 @@ public class Game extends ApplicationAdapter {
 		}
 	}
 
-
-
     @Override
     public void resize(int w, int h) {
 		Gdx.app.log(tag, "resize " + w + " " + h);
@@ -142,7 +138,6 @@ public class Game extends ApplicationAdapter {
 		camera.update();
 
         mapRenderer.resize(width, height);
-
     }
 
 	@Override
@@ -170,7 +165,7 @@ public class Game extends ApplicationAdapter {
 		for (int i = world.entities.size() - 1; i >= 0; i--) {
 			Entity entity = world.entities.get(i);
 			if (entity.alive) {
-				Entity.MoveAnimation moveAnimation = entity.getComponent(Entity.MoveAnimation.class);
+				MoveAnimation moveAnimation = entity.getComponent(MoveAnimation.class);
 				if (moveAnimation != null) {
 					moveAnimation.update(delta, world.bounds);
 				}
@@ -179,7 +174,7 @@ public class Game extends ApplicationAdapter {
 			}
 		}
 
-		final Entity.MoveAnimation playerMoveAnimation = player.getComponent(Entity.MoveAnimation.class);
+		final MoveAnimation playerMoveAnimation = player.getComponent(MoveAnimation.class);
 
 		if(!playerMoveAnimation.isBusy()) {
 
@@ -189,9 +184,9 @@ public class Game extends ApplicationAdapter {
 				Gdx.app.log(tag, "moveDirection=" + moveDirection);
 
 				if (playerMoveAnimation.direction == moveDirection) {
-					Entity.Position position = player.getComponent(Entity.Position.class);
+					Position position = player.getComponent(Position.class);
 
-					final Entity.Position targetPosition = position.clone();
+					final Position targetPosition = position.clone();
 					targetPosition.translate(moveDirection);
 					targetPosition.x = targetPosition.x % world.getWidth();
 					targetPosition.y = targetPosition.y % world.getHeight();
@@ -224,9 +219,9 @@ public class Game extends ApplicationAdapter {
 				if (action == MapMovementInputHandler.Action.FIRE) {
 					Gdx.app.log(tag, "FIRE");
 
-					Entity.Position bulletStartPosition = player.getComponent(Entity.Position.class).clone().translate(playerMoveAnimation.direction);
+					Position bulletStartPosition = player.getComponent(Position.class).clone().translate(playerMoveAnimation.direction);
 
-					Entity.Position endPosition = bulletStartPosition.clone();
+					Position endPosition = bulletStartPosition.clone();
 					boolean hitSomething = false;
 					int distanceTiles = 0;
 					while (!hitSomething) {
@@ -243,7 +238,7 @@ public class Game extends ApplicationAdapter {
 					}
 
 					final Entity bullet = entityFactory.makeBullet();
-					bullet.getComponent(Entity.MoveAnimation.class).startMove(bulletStartPosition, distanceTiles * Assets.TILE_SIZE, playerMoveAnimation.direction, new Runnable() {
+					bullet.getComponent(MoveAnimation.class).startMove(bulletStartPosition, distanceTiles * Assets.TILE_SIZE, playerMoveAnimation.direction, new Runnable() {
 						@Override
 						public void run() {
 							bullet.alive = false;

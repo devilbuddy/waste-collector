@@ -1,7 +1,7 @@
 package com.dg.ssrl;
 
 import java.util.concurrent.atomic.AtomicInteger;
-
+import static com.dg.ssrl.Components.*;
 /**
  * Created by magnus on 2015-09-13.
  */
@@ -17,33 +17,32 @@ public class EntityFactory {
 
     public Entity makePlayer() {
         Entity entity = new Entity(entityIdCounter.incrementAndGet());
-        entity.addComponent(new Entity.Position());
-        entity.addComponent(new Entity.Sprite(assets.tiles[4][2]));
-        entity.addComponent(new Entity.MoveAnimation(50f));
+        entity.addComponent(new Position());
+        entity.addComponent(new Sprite(assets.tiles[4][2]));
+        entity.addComponent(new MoveAnimation(50f));
         return entity;
     }
 
     public Entity makeBullet() {
         Entity entity = new Entity(entityIdCounter.incrementAndGet());
-        entity.addComponent(new Entity.MoveAnimation(150f));
-        entity.addComponent(new Entity.Sprite(assets.tiles[4][3]));
+        entity.addComponent(new MoveAnimation(150f));
+        entity.addComponent(new Sprite(assets.tiles[4][3]));
         return entity;
     }
 
     public Entity makeMonster(int x, int y) {
 
-        Entity.Position position = new Entity.Position();
+        Components.Position position = new Position();
         position.set(x, y);
 
-        Entity.MoveAnimation moveAnimation = new Entity.MoveAnimation(50f);
+        Components.MoveAnimation moveAnimation = new MoveAnimation(50f);
         moveAnimation.setPosition(x * Assets.TILE_SIZE, y * Assets.TILE_SIZE);
         moveAnimation.direction = Direction.EAST;
 
         Entity entity = new Entity(entityIdCounter.incrementAndGet());
         entity.addComponent(position);
         entity.addComponent(moveAnimation);
-        entity.addComponent(new Entity.Sprite(assets.tiles[5][1]));
-
+        entity.addComponent(new Sprite(assets.tiles[5][1]));
 
         return entity;
     }

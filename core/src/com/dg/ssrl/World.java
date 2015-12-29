@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.IntArray;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  * Created by magnus on 2015-12-21.
@@ -80,7 +79,7 @@ public class World {
     public void addEntity(Entity entity) {
         entities.add(entity);
 
-        Entity.Position position = entity.getComponent(Entity.Position.class);
+        Components.Position position = entity.getComponent(Components.Position.class);
         if(position != null) {
             getCell(position.x, position.y).entityIds.add(entity.id);
         }
@@ -96,7 +95,7 @@ public class World {
     }
 
     public void move(Entity entity, int toX, int toY) {
-        Entity.Position position = entity.getComponent(Entity.Position.class);
+        Components.Position position = entity.getComponent(Components.Position.class);
         getCell(position.x, position.y).entityIds.removeValue(entity.id);
         position.set(toX, toY);
         getCell(position.x, position.y).entityIds.add(entity.id);

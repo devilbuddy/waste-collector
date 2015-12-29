@@ -66,8 +66,8 @@ public class MapRenderer {
         for (Entity entity : world.entities) {
             if (entity.alive) {
 
-                Entity.MoveAnimation moveAnimation = entity.getComponent(Entity.MoveAnimation.class);
-                Entity.Sprite sprite = entity.getComponent(Entity.Sprite.class);
+                Components.MoveAnimation moveAnimation = entity.getComponent(Components.MoveAnimation.class);
+                Components.Sprite sprite = entity.getComponent(Components.Sprite.class);
 
                 if (moveAnimation != null && sprite != null) {
 
@@ -88,7 +88,7 @@ public class MapRenderer {
         }
     }
 
-    private void renderWithFacing(Vector2 position, Direction direction, Entity.Sprite sprite, SpriteBatch spriteBatch) {
+    private void renderWithFacing(Vector2 position, Direction direction, Components.Sprite sprite, SpriteBatch spriteBatch) {
         switch (direction) {
             case NORTH:
                 spriteBatch.draw(sprite.region, bounds.x + position.x, bounds.y + position.y, 4, 4, 8, 8, 1, 1, 270);
