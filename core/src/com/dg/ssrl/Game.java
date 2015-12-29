@@ -72,11 +72,10 @@ public class Game extends ApplicationAdapter {
     private Assets assets = new Assets();
 	private SpriteBatch spriteBatch;
 	private MapRenderer mapRenderer;
-
+	private Scheduler scheduler;
 
 	private EntityFactory entityFactory;
 
-	Entity player;
 	private World world;
 
 	public Game(Point[] debugScreenSizes) {
@@ -87,6 +86,8 @@ public class Game extends ApplicationAdapter {
 		inputMultiplexer.addProcessor(mapMovementInputHandler);
         inputMultiplexer.addProcessor(new GestureDetector(20, 0.1f, 1.1f, 0.15f, mapMovementInputHandler));
 		mapRenderer = new MapRenderer(assets);
+
+		scheduler = new Scheduler();
 	}
 
 	@Override
@@ -102,15 +103,9 @@ public class Game extends ApplicationAdapter {
 
 	private void initWorld() {
 
-		player = entityFactory.makePlayer();
-
 		int width = 10;
 		int height = 10;
 		Generator.LevelData levelData = Generator.generate(System.currentTimeMillis(), width, height);
-
-		Point start = levelData.start;
-		player.getComponent(Position.class).set(start.x, start.y);
-		player.getComponent(MoveAnimation.class).setPosition(start.x * Assets.TILE_SIZE, start.y * Assets.TILE_SIZE).setDirection(Direction.EAST);
 
 		world = new World(width, height);
 		for (int y = 0; y < height; y++) {
@@ -118,7 +113,14 @@ public class Game extends ApplicationAdapter {
 				world.getCell(x, y).type = levelData.tiles[y][x];
 			}
 		}
-		world.addEntity(player);
+
+		Entity player = entityFactory.makePlayer();
+
+		Point start = levelData.start;
+		player.getComponent(Position.class).set(start.x, start.y);
+		player.getComponent(MoveAnimation.class).setPosition(start.x * Assets.TILE_SIZE, start.y * Assets.TILE_SIZE).setDirection(Direction.EAST);
+
+		world.addPlayer(player);
 
 		for (int i = 0; i < levelData.monsters.size(); i++) {
 			Point monsterPoint = levelData.monsters.get(i);
@@ -174,6 +176,11 @@ public class Game extends ApplicationAdapter {
 			}
 		}
 
+		handleInput();
+	}
+
+	private void handleInput() {
+		final Entity player = world.getEntity(world.playerEntityId);
 		final MoveAnimation playerMoveAnimation = player.getComponent(MoveAnimation.class);
 
 		if(!playerMoveAnimation.isBusy()) {

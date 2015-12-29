@@ -1,8 +1,5 @@
 package com.dg.ssrl;
 
-/**
- * Created by magnus.ornebring on 31/05/15.
- */
 public enum Direction {
 
     NONE(0, 0),

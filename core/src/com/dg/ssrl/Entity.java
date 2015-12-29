@@ -2,9 +2,6 @@ package com.dg.ssrl;
 
 import java.util.HashMap;
 
-/**
- * Created by magnus on 2015-09-13.
- */
 public class Entity {
 
     public interface Component {}

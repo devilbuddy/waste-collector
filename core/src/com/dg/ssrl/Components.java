@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Rectangle;
  * Created by magnus on 2015-12-29.
  */
 public class Components {
+
     public static class Position implements Entity.Component {
         public int x;
         public int y;
@@ -135,5 +136,16 @@ public class Components {
             state = State.DONE;
         }
 
+    }
+
+    public interface Brain {
+        void act(World world);
+    }
+
+    public static class Actor implements Entity.Component {
+        public Brain brain;
+        public Actor(Brain brain) {
+            this.brain = brain;
+        }
     }
 }

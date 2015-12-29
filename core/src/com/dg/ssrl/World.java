@@ -44,6 +44,7 @@ public class World {
     private final Cell[][] cells;
     public ArrayList<Entity> entities = new ArrayList<Entity>();
     public Rectangle bounds = new Rectangle();
+    public int playerEntityId;
 
     public World(int width, int height) {
         this.width = width;
@@ -74,6 +75,11 @@ public class World {
 
     public Cell getCell(int x, int y) {
         return cells[y][x];
+    }
+
+    public void addPlayer(Entity entity) {
+        playerEntityId = entity.id;
+        addEntity(entity);
     }
 
     public void addEntity(Entity entity) {

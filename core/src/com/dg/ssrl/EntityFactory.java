@@ -2,9 +2,7 @@ package com.dg.ssrl;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import static com.dg.ssrl.Components.*;
-/**
- * Created by magnus on 2015-09-13.
- */
+
 public class EntityFactory {
 
     private AtomicInteger entityIdCounter = new AtomicInteger();
@@ -36,8 +34,7 @@ public class EntityFactory {
         position.set(x, y);
 
         Components.MoveAnimation moveAnimation = new MoveAnimation(50f);
-        moveAnimation.setPosition(x * Assets.TILE_SIZE, y * Assets.TILE_SIZE);
-        moveAnimation.direction = Direction.EAST;
+        moveAnimation.setPosition(x * Assets.TILE_SIZE, y * Assets.TILE_SIZE).setDirection(Direction.EAST);
 
         Entity entity = new Entity(entityIdCounter.incrementAndGet());
         entity.addComponent(position);
