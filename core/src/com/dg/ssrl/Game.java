@@ -21,7 +21,7 @@ public class Game extends ApplicationAdapter {
 		@Override
 		public boolean keyDown (int keycode) {
 			if (keycode == Input.Keys.R) {
-				if (Gdx.graphics.supportsDisplayModeChange()) {
+				if (Gdx.graphics.supportsDisplayModeChange() && debugScreenSizes != null) {
 					index++;
 					if (index >= debugScreenSizes.length) {
 						index = 0;
@@ -121,6 +121,12 @@ public class Game extends ApplicationAdapter {
 			}
 		}
 		world.addEntity(player);
+
+		for (int i = 0; i < levelData.monsters.size(); i++) {
+			Point monsterPoint = levelData.monsters.get(i);
+			Entity monster = entityFactory.makeMonster(monsterPoint.x, monsterPoint.y);
+			world.addEntity(monster);
+		}
 	}
 
 

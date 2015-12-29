@@ -3,6 +3,7 @@ package com.dg.ssrl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -15,6 +16,7 @@ public class Generator {
         public int height;
         public World.Cell.Type[][] tiles;
         public Point start = new Point(0,0);
+        public List<Point> monsters = new ArrayList<Point>();
     }
 
     private static final String[] template = new String[] {
@@ -64,6 +66,11 @@ public class Generator {
         Collections.shuffle(floors);
 
         levelData.start = floors.remove(0);
+
+        for (int i = 0; i < 3; i++) {
+            Point monster = floors.remove(0);
+            levelData.monsters.add(monster);
+        }
 
         return levelData;
     }
