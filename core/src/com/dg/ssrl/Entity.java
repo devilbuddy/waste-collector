@@ -3,9 +3,7 @@ package com.dg.ssrl;
 import java.util.HashMap;
 
 public class Entity {
-
     public interface Component {}
-
 
     private HashMap<Class<? extends Component>, Component> components = new HashMap<Class<? extends Component>, Component>();
 

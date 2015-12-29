@@ -2,13 +2,15 @@ package com.dg.ssrl;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 
+import static com.dg.ssrl.Entity.Component;
 /**
  * Created by magnus on 2015-12-29.
  */
 public class Components {
 
-    public static class Position implements Entity.Component {
+    public static class Position implements Component {
         public int x;
         public int y;
 
@@ -45,7 +47,7 @@ public class Components {
         }
     }
 
-    public static class Sprite implements Entity.Component {
+    public static class Sprite implements Component {
         public TextureRegion region;
 
         public Sprite(TextureRegion textureRegion) {
@@ -53,7 +55,7 @@ public class Components {
         }
     }
 
-    public static class MoveAnimation implements Entity.Component {
+    public static class MoveAnimation implements Component {
         private enum State {
             MOVE,
             TURN,
@@ -148,13 +150,26 @@ public class Components {
         boolean act(World world);
     }
 
-    public static class Actor implements Entity.Component {
+    public static class Actor implements Component {
         public Brain brain;
         public Actor(Brain brain) {
             this.brain = brain;
         }
         public boolean act(World world) {
             return brain.act(world);
+        }
+    }
+
+    public static class Effect implements Component {
+
+        public Vector2 position = new Vector2();
+
+        public Effect(float x, float y) {
+            position.set(x, y);
+        }
+
+        public void update(float delta) {
+
         }
     }
 }

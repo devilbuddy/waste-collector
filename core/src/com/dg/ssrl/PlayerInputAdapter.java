@@ -7,8 +7,8 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
 
-public class PlayerInput extends InputAdapter implements GestureDetector.GestureListener {
-    private static final String tag = "PlayerInput";
+public class PlayerInputAdapter extends InputAdapter implements GestureDetector.GestureListener {
+    private static final String tag = "PlayerInputAdapter";
 
     public enum Action {
         FIRE,

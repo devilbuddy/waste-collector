@@ -67,7 +67,7 @@ public class Game extends ApplicationAdapter {
 	private TimeStep timeStep = new TimeStep();
 
 	private InputMultiplexer inputMultiplexer = new InputMultiplexer();
-	private PlayerInput playerInput;
+	private PlayerInputAdapter playerInputAdapter;
 
     private Assets assets = new Assets();
 	private SpriteBatch spriteBatch;
@@ -79,11 +79,11 @@ public class Game extends ApplicationAdapter {
 
 	public Game(Position[] debugScreenSizes) {
 		DebugInputSwitcher debugInputSwitcher = new DebugInputSwitcher(debugScreenSizes);
-		playerInput = new PlayerInput();
+		playerInputAdapter = new PlayerInputAdapter();
 
         inputMultiplexer.addProcessor(debugInputSwitcher);
-		inputMultiplexer.addProcessor(playerInput);
-        inputMultiplexer.addProcessor(new GestureDetector(20, 0.1f, 1.1f, 0.15f, playerInput));
+		inputMultiplexer.addProcessor(playerInputAdapter);
+        inputMultiplexer.addProcessor(new GestureDetector(20, 0.1f, 1.1f, 0.15f, playerInputAdapter));
 		mapRenderer = new MapRenderer(assets);
 
 		scheduler = new Scheduler();
@@ -119,7 +119,7 @@ public class Game extends ApplicationAdapter {
 		player.getComponent(Position.class).set(start.x, start.y);
 		player.getComponent(MoveAnimation.class).setPosition(start.x * Assets.TILE_SIZE, start.y * Assets.TILE_SIZE).setDirection(Direction.EAST);
 
-		Actor actor = new Actor(new PlayerBrain(playerInput, scheduler, entityFactory));
+		Actor actor = new Actor(new PlayerBrain(playerInputAdapter, scheduler, entityFactory));
 		player.addComponent(actor);
 
 		world.addPlayer(player);
@@ -178,6 +178,10 @@ public class Game extends ApplicationAdapter {
 				MoveAnimation moveAnimation = entity.getComponent(MoveAnimation.class);
 				if (moveAnimation != null) {
 					moveAnimation.update(delta, world.bounds);
+				}
+				Effect effect = entity.getComponent(Effect.class);
+				if (effect != null) {
+					effect.update(delta);
 				}
 			} else {
 				world.entities.remove(i);

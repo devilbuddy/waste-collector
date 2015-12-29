@@ -9,12 +9,17 @@ public class EntityFactory {
 
     private final Assets assets;
 
+    private Entity createEntity() {
+        Entity entity = new Entity(entityIdCounter.incrementAndGet());
+        return entity;
+    }
+
     public EntityFactory(Assets assets) {
         this.assets = assets;
     }
 
     public Entity makePlayer() {
-        Entity entity = new Entity(entityIdCounter.incrementAndGet());
+        Entity entity = createEntity();
         entity.addComponent(new Position());
         entity.addComponent(new Sprite(assets.tiles[4][2]));
         entity.addComponent(new MoveAnimation(50f));
@@ -22,7 +27,7 @@ public class EntityFactory {
     }
 
     public Entity makeBullet() {
-        Entity entity = new Entity(entityIdCounter.incrementAndGet());
+        Entity entity = createEntity();
         entity.addComponent(new MoveAnimation(150f));
         entity.addComponent(new Sprite(assets.tiles[4][3]));
         return entity;
@@ -34,11 +39,18 @@ public class EntityFactory {
         Components.MoveAnimation moveAnimation = new MoveAnimation(50f);
         moveAnimation.setPosition(x * Assets.TILE_SIZE, y * Assets.TILE_SIZE).setDirection(Direction.EAST);
 
-        Entity entity = new Entity(entityIdCounter.incrementAndGet());
+        Entity entity = createEntity();
         entity.addComponent(position);
         entity.addComponent(moveAnimation);
         entity.addComponent(new Sprite(assets.tiles[5][1]));
         entity.addComponent(new Actor(new MonsterBrain(entity.id)));
+        return entity;
+    }
+
+    public Entity makeExplosion(float x, float y) {
+        Entity entity = createEntity();
+        entity.addComponent(new Effect(x, y));
+
         return entity;
     }
 
