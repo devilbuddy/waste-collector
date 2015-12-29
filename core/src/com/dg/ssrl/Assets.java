@@ -23,8 +23,6 @@ public class Assets {
 
         tiles = TextureRegion.split(tilesTexture, TILE_SIZE, TILE_SIZE);
 
-
-
         wall = tiles[2][0];
         floor = tiles[0][8];
 

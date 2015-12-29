@@ -11,14 +11,16 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 
+import javafx.geometry.Pos;
+
 import static com.dg.ssrl.Components.*;
 
 public class Game extends ApplicationAdapter {
 
 	private class DebugInputSwitcher extends InputAdapter {
 		private int index = 0;
-		private final Point[] debugScreenSizes;
-		public  DebugInputSwitcher(Point[] debugScreenSizes) {
+		private final Position[] debugScreenSizes;
+		public  DebugInputSwitcher(Position[] debugScreenSizes) {
 			this.debugScreenSizes = debugScreenSizes;
 		}
 		@Override
@@ -29,7 +31,7 @@ public class Game extends ApplicationAdapter {
 					if (index >= debugScreenSizes.length) {
 						index = 0;
 					}
-					Point size = debugScreenSizes[index];
+					Position size = debugScreenSizes[index];
 					Gdx.graphics.setDisplayMode(size.x, size.y, false);
 				}
 			} else if (keycode == Input.Keys.G) {
@@ -68,7 +70,7 @@ public class Game extends ApplicationAdapter {
 	private TimeStep timeStep = new TimeStep();
 
 	private InputMultiplexer inputMultiplexer = new InputMultiplexer();
-	private MapMovementInputHandler mapMovementInputHandler;
+	private PlayerInput playerInput;
 
     private Assets assets = new Assets();
 	private SpriteBatch spriteBatch;
@@ -80,13 +82,13 @@ public class Game extends ApplicationAdapter {
 	private World world;
 
 
-	public Game(Point[] debugScreenSizes) {
+	public Game(Position[] debugScreenSizes) {
 		DebugInputSwitcher debugInputSwitcher = new DebugInputSwitcher(debugScreenSizes);
-		mapMovementInputHandler = new MapMovementInputHandler();
+		playerInput = new PlayerInput();
 
         inputMultiplexer.addProcessor(debugInputSwitcher);
-		inputMultiplexer.addProcessor(mapMovementInputHandler);
-        inputMultiplexer.addProcessor(new GestureDetector(20, 0.1f, 1.1f, 0.15f, mapMovementInputHandler));
+		inputMultiplexer.addProcessor(playerInput);
+        inputMultiplexer.addProcessor(new GestureDetector(20, 0.1f, 1.1f, 0.15f, playerInput));
 		mapRenderer = new MapRenderer(assets);
 
 		scheduler = new Scheduler();
@@ -122,11 +124,11 @@ public class Game extends ApplicationAdapter {
 
 		Entity player = entityFactory.makePlayer();
 
-		Point start = levelData.start;
+		Position start = levelData.start;
 		player.getComponent(Position.class).set(start.x, start.y);
 		player.getComponent(MoveAnimation.class).setPosition(start.x * Assets.TILE_SIZE, start.y * Assets.TILE_SIZE).setDirection(Direction.EAST);
 
-		Actor actor = new Actor(new PlayerBrain(mapMovementInputHandler, scheduler, entityFactory));
+		Actor actor = new Actor(new PlayerBrain(playerInput, scheduler, entityFactory));
 		player.addComponent(actor);
 
 		world.addPlayer(player);
@@ -134,8 +136,8 @@ public class Game extends ApplicationAdapter {
 		scheduler.addActor(actor);
 
 		for (int i = 0; i < levelData.monsters.size(); i++) {
-			Point monsterPoint = levelData.monsters.get(i);
-			Entity monster = entityFactory.makeMonster(monsterPoint.x, monsterPoint.y);
+			Position monsterPosition = levelData.monsters.get(i);
+			Entity monster = entityFactory.makeMonster(monsterPosition.x, monsterPosition.y);
 			world.addEntity(monster);
 
 			scheduler.addActor(monster.getComponent(Actor.class));

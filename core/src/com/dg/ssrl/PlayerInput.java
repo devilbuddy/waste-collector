@@ -1,21 +1,17 @@
 package com.dg.ssrl;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by magnus.ornebring on 31/05/15.
  */
-public class MapMovementInputHandler extends InputAdapter implements GestureDetector.GestureListener {
-
-    private static final String tag = "MapMovementInputHandler";
-
+public class PlayerInput extends InputAdapter implements GestureDetector.GestureListener {
+    private static final String tag = "PlayerInput";
 
     public enum Action {
         FIRE,

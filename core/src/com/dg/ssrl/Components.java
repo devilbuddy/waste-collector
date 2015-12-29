@@ -12,6 +12,14 @@ public class Components {
         public int x;
         public int y;
 
+        public Position() {
+
+        }
+
+        public Position(int x, int y) {
+            set(x, y);
+        }
+
         public void set(int x, int y) {
             this.x = x;
             this.y = y;

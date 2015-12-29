@@ -1,17 +1,18 @@
 package com.dg.ssrl;
 
 import com.badlogic.gdx.Gdx;
+import static com.dg.ssrl.Components.*;
 
-class PlayerBrain implements Components.Brain {
+class PlayerBrain implements Brain {
 
 	private static final String tag = "PlayerBrain";
 
-    private final MapMovementInputHandler mapMovementInputHandler;
+    private final PlayerInput playerInput;
     private final Scheduler scheduler;
     private final EntityFactory entityFactory;
 
-	public PlayerBrain(MapMovementInputHandler inputHandler, Scheduler scheduler, EntityFactory entityFactory) {
-        this.mapMovementInputHandler = inputHandler;
+	public PlayerBrain(PlayerInput playerInput, Scheduler scheduler, EntityFactory entityFactory) {
+        this.playerInput = playerInput;
         this.scheduler = scheduler;
         this.entityFactory = entityFactory;
     }
@@ -21,19 +22,19 @@ class PlayerBrain implements Components.Brain {
         boolean acted = false;
 
         final Entity player = world.getEntity(world.playerEntityId);
-        final Components.MoveAnimation playerMoveAnimation = player.getComponent(Components.MoveAnimation.class);
+        final MoveAnimation moveAnimation = player.getComponent(MoveAnimation.class);
 
-        if (!playerMoveAnimation.isBusy()) {
+        if (!moveAnimation.isBusy()) {
 
-            Direction moveDirection = mapMovementInputHandler.getMovementDirection();
+            Direction moveDirection = playerInput.getMovementDirection();
 
             if (moveDirection != Direction.NONE) {
                 Gdx.app.log(tag, "moveDirection=" + moveDirection);
 
-                if (playerMoveAnimation.direction == moveDirection) {
-                    Components.Position position = player.getComponent(Components.Position.class);
+                if (moveAnimation.direction == moveDirection) {
+                    Position position = player.getComponent(Position.class);
 
-                    final Components.Position targetPosition = position.clone();
+                    final Position targetPosition = position.clone();
                     targetPosition.translate(moveDirection);
                     targetPosition.x = targetPosition.x % world.getWidth();
                     targetPosition.y = targetPosition.y % world.getHeight();
@@ -47,10 +48,10 @@ class PlayerBrain implements Components.Brain {
                     Gdx.app.log(tag, "targetPosition:" + targetPosition);
 
                     if (world.getCell(targetPosition.x, targetPosition.y).isWalkable()) {
-                        playerMoveAnimation.startMove(position, Assets.TILE_SIZE, moveDirection, new Runnable() {
+                        moveAnimation.startMove(position, Assets.TILE_SIZE, moveDirection, new Runnable() {
                             @Override
                             public void run() {
-                                playerMoveAnimation.setPosition(targetPosition.x * Assets.TILE_SIZE, targetPosition.y * Assets.TILE_SIZE);
+                                moveAnimation.setPosition(targetPosition.x * Assets.TILE_SIZE, targetPosition.y * Assets.TILE_SIZE);
                             }
                         });
                         world.move(player, targetPosition.x, targetPosition.y);
@@ -58,7 +59,7 @@ class PlayerBrain implements Components.Brain {
                     }
 
                 } else {
-                    playerMoveAnimation.startTurn(moveDirection, new Runnable() {
+                    moveAnimation.startTurn(moveDirection, new Runnable() {
                         @Override
                         public void run() {
 
@@ -67,27 +68,27 @@ class PlayerBrain implements Components.Brain {
                     acted = true;
                 }
             }
-            MapMovementInputHandler.Action action;
-            while ((action = mapMovementInputHandler.popAction()) != null) {
-                if (action == MapMovementInputHandler.Action.FIRE) {
+            PlayerInput.Action action;
+            while ((action = playerInput.popAction()) != null) {
+                if (action == PlayerInput.Action.FIRE) {
                     Gdx.app.log(tag, "FIRE");
 
-                    Components.Position bulletStartPosition = player.getComponent(Components.Position.class).clone().translate(playerMoveAnimation.direction);
+                    Position bulletStart = player.getComponent(Position.class).clone().translate(moveAnimation.direction);
 
-                    Components.Position endPosition = bulletStartPosition.clone();
+                    Position bulletEnd = bulletStart.clone();
                     boolean hitSomething = false;
                     int distanceTiles = 0;
                     while (!hitSomething) {
-                        endPosition.x = endPosition.x % world.getWidth();
-                        endPosition.y = endPosition.y % world.getHeight();
-                        while (endPosition.x < 0) {
-							endPosition.x += world.getWidth();
+                        bulletEnd.x = bulletEnd.x % world.getWidth();
+                        bulletEnd.y = bulletEnd.y % world.getHeight();
+                        while (bulletEnd.x < 0) {
+							bulletEnd.x += world.getWidth();
 						}
-                        while (endPosition.y < 0) {
-							endPosition.y += world.getHeight();
+                        while (bulletEnd.y < 0) {
+							bulletEnd.y += world.getHeight();
 						}
-                        if (world.getCell(endPosition.x, endPosition.y).isWalkable()) {
-                            endPosition.translate(playerMoveAnimation.direction);
+                        if (world.getCell(bulletEnd.x, bulletEnd.y).isWalkable()) {
+                            bulletEnd.translate(moveAnimation.direction);
                             distanceTiles++;
                         } else {
                             hitSomething = true;
@@ -96,7 +97,7 @@ class PlayerBrain implements Components.Brain {
 
                     final Entity bullet = entityFactory.makeBullet();
                     scheduler.lock();
-                    bullet.getComponent(Components.MoveAnimation.class).startMove(bulletStartPosition, distanceTiles * Assets.TILE_SIZE, playerMoveAnimation.direction, new Runnable() {
+                    bullet.getComponent(MoveAnimation.class).startMove(bulletStart, distanceTiles * Assets.TILE_SIZE, moveAnimation.direction, new Runnable() {
                         @Override
                         public void run() {
                             bullet.alive = false;
@@ -107,7 +108,7 @@ class PlayerBrain implements Components.Brain {
                     world.addEntity(bullet);
                     acted = true;
 
-                } else if (action == MapMovementInputHandler.Action.BOMB) {
+                } else if (action == PlayerInput.Action.BOMB) {
                     Gdx.app.log(tag, "BOMB");
                 }
             }

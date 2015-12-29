@@ -4,18 +4,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import static com.dg.ssrl.Components.Position;
 
-/**
- * Created by magnus on 2015-12-25.
- */
 public class Generator {
 
     public static class LevelData {
         public int width;
         public int height;
         public World.Cell.Type[][] tiles;
-        public Point start = new Point(0,0);
-        public List<Point> monsters = new ArrayList<Point>();
+        public Position start = new Position(0,0);
+        public List<Position> monsters = new ArrayList<Position>();
     }
 
     private static final String[] template = new String[] {
@@ -54,11 +52,11 @@ public class Generator {
             levelData.tiles[y][x] = World.Cell.Type.Wall;
         }
 
-        ArrayList<Point> floors = new ArrayList<Point>();
+        ArrayList<Position> floors = new ArrayList<Position>();
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 if (levelData.tiles[y][x] == World.Cell.Type.Floor) {
-                    floors.add(new Point(x, y));
+                    floors.add(new Position(x, y));
                 }
             }
         }
@@ -67,7 +65,7 @@ public class Generator {
         levelData.start = floors.remove(0);
 
         for (int i = 0; i < 3; i++) {
-            Point monster = floors.remove(0);
+            Position monster = floors.remove(0);
             levelData.monsters.add(monster);
         }
 
