@@ -16,7 +16,7 @@ public class MapRenderer {
     private int virtualWidth;
     private int virtualHeight;
 
-    private Rectangle bounds = new Rectangle();
+    public Rectangle bounds = new Rectangle();
 
     public MapRenderer(Assets assets) {
         this.assets = assets;

@@ -51,13 +51,14 @@ public class EntityFactory {
                 while (targetPosition.x < 0) { targetPosition.x += world.getWidth(); }
                 while (targetPosition.y < 0) { targetPosition.y += world.getHeight(); }
 
-                if (world.contains(targetPosition.x, targetPosition.y) && world.getCell(targetPosition.x, targetPosition.y).isWalkable()) {
+                if (world.getCell(targetPosition.x, targetPosition.y).isWalkable()) {
                     moveAnimation.startMove(current, Assets.TILE_SIZE, direction, new Runnable() {
                         @Override
                         public void run() {
-                            world.move(entity, targetPosition.x, targetPosition.y);
+
                         }
                     });
+                    world.move(entity, targetPosition.x, targetPosition.y);
                 }
                 return true;
             } else {
