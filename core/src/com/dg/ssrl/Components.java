@@ -139,13 +139,16 @@ public class Components {
     }
 
     public interface Brain {
-        void act(World world);
+        boolean act(World world);
     }
 
     public static class Actor implements Entity.Component {
         public Brain brain;
         public Actor(Brain brain) {
             this.brain = brain;
+        }
+        public boolean act(World world) {
+            return brain.act(world);
         }
     }
 }

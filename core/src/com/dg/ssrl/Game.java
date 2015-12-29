@@ -103,6 +103,8 @@ public class Game extends ApplicationAdapter {
 
 	private void initWorld() {
 
+		scheduler.clear();
+
 		int width = 10;
 		int height = 10;
 		Generator.LevelData levelData = Generator.generate(System.currentTimeMillis(), width, height);
@@ -126,6 +128,8 @@ public class Game extends ApplicationAdapter {
 			Point monsterPoint = levelData.monsters.get(i);
 			Entity monster = entityFactory.makeMonster(monsterPoint.x, monsterPoint.y);
 			world.addEntity(monster);
+
+			scheduler.addActor(monster.getComponent(Actor.class));
 		}
 	}
 
@@ -176,6 +180,7 @@ public class Game extends ApplicationAdapter {
 			}
 		}
 
+		scheduler.update(world);
 		handleInput();
 	}
 
