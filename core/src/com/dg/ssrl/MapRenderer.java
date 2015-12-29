@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
+import static com.dg.ssrl.Components.*;
+
 public class MapRenderer {
     private static final String tag = "MapRenderer";
 
@@ -63,8 +65,9 @@ public class MapRenderer {
         for (Entity entity : world.entities) {
             if (entity.alive) {
 
-                Components.MoveAnimation moveAnimation = entity.getComponent(Components.MoveAnimation.class);
-                Components.Sprite sprite = entity.getComponent(Components.Sprite.class);
+                MoveAnimation moveAnimation = entity.getComponent(MoveAnimation.class);
+                Sprite sprite = entity.getComponent(Sprite.class);
+                Effect effect = entity.getComponent(Effect.class);
 
                 if (moveAnimation != null && sprite != null) {
 
@@ -81,11 +84,15 @@ public class MapRenderer {
                         renderWithFacing(position, moveAnimation.direction, sprite, spriteBatch);
                     }
                 }
+                if (effect != null) {
+                    Vector2 position = effect.position;
+                    spriteBatch.draw(assets.whitePixel, bounds.x + position.x, bounds.y + position.y, 4, 4, 8, 8, 1, 1, 270);
+                }
             }
         }
     }
 
-    private void renderWithFacing(Vector2 position, Direction direction, Components.Sprite sprite, SpriteBatch spriteBatch) {
+    private void renderWithFacing(Vector2 position, Direction direction, Sprite sprite, SpriteBatch spriteBatch) {
         switch (direction) {
             case NORTH:
                 spriteBatch.draw(sprite.region, bounds.x + position.x, bounds.y + position.y, 4, 4, 8, 8, 1, 1, 270);

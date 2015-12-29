@@ -161,7 +161,8 @@ public class Components {
     }
 
     public static class Effect implements Component {
-
+        private float duration = 1;
+        private float lifeTime = 0;
         public Vector2 position = new Vector2();
 
         public Effect(float x, float y) {
@@ -169,7 +170,11 @@ public class Components {
         }
 
         public void update(float delta) {
+            lifeTime += delta;
+        }
 
+        public boolean isDone() {
+            return lifeTime >= duration;
         }
     }
 }

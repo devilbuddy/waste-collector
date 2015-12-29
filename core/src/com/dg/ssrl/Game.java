@@ -182,6 +182,9 @@ public class Game extends ApplicationAdapter {
 				Effect effect = entity.getComponent(Effect.class);
 				if (effect != null) {
 					effect.update(delta);
+					if (effect.isDone()) {
+						entity.alive = false;
+					}
 				}
 			} else {
 				world.entities.remove(i);

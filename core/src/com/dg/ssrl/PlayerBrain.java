@@ -76,7 +76,7 @@ class PlayerBrain implements Brain {
         return acted;
     }
 
-    private boolean processActions(World world) {
+    private boolean processActions(final World world) {
         boolean acted = false;
 
         final Entity player = world.getEntity(world.playerEntityId);
@@ -118,6 +118,7 @@ class PlayerBrain implements Brain {
                         scheduler.unlock();
 
                         Entity explosion = entityFactory.makeExplosion(bulletEnd.x * Assets.TILE_SIZE, bulletEnd.y * Assets.TILE_SIZE);
+                        world.addEntity(explosion);
                     }
                 });
 
