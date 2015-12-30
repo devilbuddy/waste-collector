@@ -2,9 +2,13 @@ package com.dg.ssrl;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.IntArray;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import javafx.geometry.Pos;
 
 public class World {
     private static final String tag = "World";
@@ -16,8 +20,6 @@ public class World {
         public enum Type {
             Wall(false),
             Floor(true);
-
-
             private boolean walkable;
 
             Type(boolean walkable) {
@@ -56,6 +58,8 @@ public class World {
     public Rectangle bounds = new Rectangle();
     public int playerEntityId;
 
+    public int[][] dijkstraMap;
+
     public World(int width, int height) {
         this.width = width;
         this.height = height;
@@ -67,8 +71,68 @@ public class World {
             }
         }
 
+        dijkstraMap = new int[height][width];
+
         bounds.set(0, 0, width * Assets.TILE_SIZE, height * Assets.TILE_SIZE);
         Gdx.app.log(tag, "bounds: " + bounds);
+    }
+
+    public void updateDijkstraMap(int goalX, int goalY) {
+        // http://www.roguebasin.com/index.php?title=The_Incredible_Power_of_Dijkstra_Maps
+
+        // To get a Dijkstra map, you start with an integer array representing your map,
+        // with some set of goal cells set to zero and all the rest set to a very high number.
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                if(x == goalX && y == goalY) {
+                    dijkstraMap[y][x] = 0;
+                } else {
+                    dijkstraMap[y][x] = Integer.MAX_VALUE;
+                }
+            }
+        }
+
+        // Iterate through the map's "floor" cells -- skip the impassable wall cells.
+        // If any floor tile has a value that is at least 2 greater than its lowest-value floor neighbor,
+        // set it to be exactly 1 greater than its lowest value neighbor. Repeat until no changes are made.
+        boolean changed = true;
+        int iterations = 0;
+        while(changed) {
+            iterations++;
+            changed = false;
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    if (getCell(x, y).type == Cell.Type.Floor) {
+                        int value = dijkstraMap[y][x];
+                        int lowestNeighborValue = Integer.MAX_VALUE;
+                        for (Direction direction : Direction.CARDINAL_DIRECTIONS) {
+                            Components.Position p = new Components.Position();
+                            p.set(x, y).translate(direction);
+                            p.x = p.x % width;
+                            p.y = p.y % height;
+                            while (p.x < 0) {
+                                p.x += width;
+                            }
+                            while (p.y < 0) {
+                                p.y += height;
+                            }
+                            if (getCell(p.x, p.y).type == Cell.Type.Floor) {
+                                int neighborValue = dijkstraMap[p.y][p.x];
+                                if (neighborValue < lowestNeighborValue) {
+                                    lowestNeighborValue = neighborValue;
+                                }
+                            }
+                        }
+                        if (value - lowestNeighborValue >= 2) {
+                            dijkstraMap[y][x] = lowestNeighborValue + 1;
+                            changed = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        Gdx.app.log(tag, "iterations:" + iterations);
     }
 
     public int getWidth() {

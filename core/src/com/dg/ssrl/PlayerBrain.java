@@ -55,6 +55,7 @@ class PlayerBrain implements Brain {
                             }
                         });
                         world.move(player, targetPosition.x, targetPosition.y);
+                        world.updateDijkstraMap(targetPosition.x, targetPosition.y);
                         acted = true;
                     }
 

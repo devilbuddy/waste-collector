@@ -19,6 +19,11 @@ public class MonsterBrain implements Brain {
         MoveAnimation moveAnimation = entity.getComponent(MoveAnimation.class);
 
         if (!moveAnimation.isBusy()) {
+
+            Entity player = world.getPlayer();
+
+
+
             Direction direction = Direction.CARDINAL_DIRECTIONS[random.nextInt(Direction.CARDINAL_DIRECTIONS.length)];
             final Position current = entity.getComponent(Position.class);
             final Position targetPosition = current.clone().translate(direction);
