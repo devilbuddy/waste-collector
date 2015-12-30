@@ -117,7 +117,10 @@ class PlayerBrain implements Brain {
                         bullet.alive = false;
                         scheduler.unlock();
 
-                        Entity explosion = entityFactory.makeExplosion(bulletEnd.x * Assets.TILE_SIZE, bulletEnd.y * Assets.TILE_SIZE);
+                        float explosionX = bulletEnd.x * Assets.TILE_SIZE + Assets.TILE_SIZE/2;
+                        float explosionY = bulletEnd.y * Assets.TILE_SIZE + Assets.TILE_SIZE/2;
+
+                        Entity explosion = entityFactory.makeExplosion(explosionX, explosionY);
                         world.addEntity(explosion);
                     }
                 });

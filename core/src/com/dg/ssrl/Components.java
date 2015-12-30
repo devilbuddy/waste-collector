@@ -1,8 +1,11 @@
 package com.dg.ssrl;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+
+import java.util.Random;
 
 import static com.dg.ssrl.Entity.Component;
 /**
@@ -161,16 +164,51 @@ public class Components {
     }
 
     public static class Effect implements Component {
-        private float duration = 1;
-        private float lifeTime = 0;
-        public Vector2 position = new Vector2();
 
-        public Effect(float x, float y) {
-            position.set(x, y);
+        public static class Particle {
+            Vector2 velocity = new Vector2();
+            public Vector2 position = new Vector2();
+            public Color color = new Color(Color.WHITE);
+
+            public Particle(float x, float y) {
+                position.set(x, y);
+            }
+        }
+
+        private float duration = 0.5f;
+        private float lifeTime = 0;
+
+        public int numParticles = 10;
+        public Particle[] particles;
+
+        private Vector2 tmp = new Vector2();
+
+        Random r = new Random(System.currentTimeMillis());
+        Vector2 gravity = new Vector2(0, -5);
+
+        public Effect(float x, float y, int numParticles) {
+            this.numParticles = numParticles;
+            particles = new Particle[numParticles];
+
+            for (int i = 0; i < numParticles; i++) {
+                particles[i] = new Particle(x, y);
+
+
+                particles[i].velocity.set(r.nextBoolean()?-1:1 * r.nextInt(5), r.nextBoolean()?-1:1 * r.nextInt(5));
+            }
         }
 
         public void update(float delta) {
             lifeTime += delta;
+
+            for (int i = 0; i < numParticles; i++) {
+                Particle p = particles[i];
+                tmp.set(p.velocity).scl(delta);
+                particles[i].position.add(tmp);
+
+                tmp.set(gravity).scl(delta);
+                //particles[i].position.add(tmp);
+            }
         }
 
         public boolean isDone() {

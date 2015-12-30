@@ -49,7 +49,8 @@ public class EntityFactory {
 
     public Entity makeExplosion(float x, float y) {
         Entity entity = createEntity();
-        entity.addComponent(new Effect(x, y));
+        entity.addComponent(new Sprite(assets.whitePixel));
+        entity.addComponent(new Effect(x, y, 10));
 
         return entity;
     }

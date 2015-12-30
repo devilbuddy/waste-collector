@@ -1,5 +1,6 @@
 package com.dg.ssrl;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -40,7 +41,7 @@ public class MapRenderer {
 
         World.Cell[][] cells = world.getCells();
 
-
+        spriteBatch.setColor(Color.WHITE);
         float yy = bounds.y;
         for (int y = 0; y < height; y++) {
             float xx = bounds.x;
@@ -65,30 +66,40 @@ public class MapRenderer {
         for (Entity entity : world.entities) {
             if (entity.alive) {
 
-                MoveAnimation moveAnimation = entity.getComponent(MoveAnimation.class);
                 Sprite sprite = entity.getComponent(Sprite.class);
-                Effect effect = entity.getComponent(Effect.class);
 
-                if (moveAnimation != null && sprite != null) {
+                if (sprite != null) {
+                    MoveAnimation moveAnimation = entity.getComponent(MoveAnimation.class);
 
-                    Rectangle moveBounds = new Rectangle(moveAnimation.bounds);
-                    Vector2 position = new Vector2();
-                    moveBounds.getPosition(position);
-                    renderWithFacing(position, moveAnimation.direction, sprite, spriteBatch);
-                    if (!world.bounds.contains(moveBounds)) {
-
-                        float offsetX = moveAnimation.direction.dx * world.bounds.width;
-                        float offsetY = moveAnimation.direction.dy * world.bounds.height;
-
-                        position.set(moveBounds.x - offsetX, moveBounds.y - offsetY);
+                    if (moveAnimation != null) {
+                        Rectangle moveBounds = new Rectangle(moveAnimation.bounds);
+                        Vector2 position = new Vector2();
+                        moveBounds.getPosition(position);
                         renderWithFacing(position, moveAnimation.direction, sprite, spriteBatch);
+                        if (!world.bounds.contains(moveBounds)) {
+
+                            float offsetX = moveAnimation.direction.dx * world.bounds.width;
+                            float offsetY = moveAnimation.direction.dy * world.bounds.height;
+
+                            position.set(moveBounds.x - offsetX, moveBounds.y - offsetY);
+                            renderWithFacing(position, moveAnimation.direction, sprite, spriteBatch);
+                        }
+                    }
+                    Effect effect = entity.getComponent(Effect.class);
+                    if (effect != null) {
+                        renderEffect(effect, sprite, spriteBatch);
                     }
                 }
-                if (effect != null) {
-                    Vector2 position = effect.position;
-                    spriteBatch.draw(assets.whitePixel, bounds.x + position.x, bounds.y + position.y, 4, 4, 8, 8, 1, 1, 270);
-                }
+
             }
+        }
+    }
+
+    private void renderEffect(Effect effect, Sprite sprite, SpriteBatch spriteBatch) {
+        for (int i = 0; i < effect.numParticles; i++) {
+            Effect.Particle p = effect.particles[i];
+            spriteBatch.setColor(p.color);
+            spriteBatch.draw(sprite.region, bounds.x + p.position.x, bounds.y + p.position.y);
         }
     }
 
