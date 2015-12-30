@@ -11,6 +11,8 @@ public class World {
 
 
     public static class Cell {
+
+
         public enum Type {
             Wall(false),
             Floor(true);
@@ -33,6 +35,17 @@ public class World {
             return type.walkable && entityIds.size == 0;
         }
 
+        public int getEntityCount() {
+            return entityIds.size;
+        }
+
+        public int getEntityId(int index) {
+            return entityIds.get(index);
+        }
+
+        public void removeEntity(int entityId) {
+            entityIds.removeValue(entityId);
+        }
     }
 
     private final int width;
@@ -86,6 +99,10 @@ public class World {
         if(position != null) {
             getCell(position.x, position.y).entityIds.add(entity.id);
         }
+    }
+
+    public Entity getPlayer() {
+        return getEntity(playerEntityId);
     }
 
     public Entity getEntity(int id) {

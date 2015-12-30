@@ -1,6 +1,5 @@
 package com.dg.ssrl;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -13,6 +12,32 @@ import static com.dg.ssrl.Entity.Component;
  * Created by magnus on 2015-12-29.
  */
 public class Components {
+
+    public static class Stats implements Component {
+        private int maxHealth;
+        private int health;
+        public String healthString;
+
+        public Stats(int maxHealth) {
+            this.maxHealth = maxHealth;
+            this.health = maxHealth;
+            updateHealthString();
+        }
+        private void updateHealthString() {
+            this.healthString = "" + health + "/" + maxHealth;
+        }
+
+        public void damage(int amount) {
+            health -= amount;
+            if (health < 0) {
+                health = 0;
+            }
+        }
+
+        public boolean isAlive() {
+            return health > 0;
+        }
+    }
 
     public static class Position implements Component {
         public int x;
@@ -195,7 +220,7 @@ public class Components {
 
             for (int i = 0; i < numParticles; i++) {
                 particles[i] = new Particle(x, y);
-                particles[i].velocity.set((5 + r.nextInt(10)) * (r.nextBoolean()?-1:1), ((5 + r.nextInt(10)) * (r.nextBoolean()?-1:1)));
+                particles[i].velocity.set((5 + r.nextInt(10)) * (r.nextBoolean() ? -1 : 1), ((5 + r.nextInt(10)) * (r.nextBoolean() ? -1 : 1)));
             }
         }
 

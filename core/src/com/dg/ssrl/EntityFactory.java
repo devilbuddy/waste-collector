@@ -23,6 +23,7 @@ public class EntityFactory {
         entity.addComponent(new Position());
         entity.addComponent(new Sprite(assets.tiles[4][2]));
         entity.addComponent(new MoveAnimation(50f));
+        entity.addComponent(new Stats(3));
         return entity;
     }
 
@@ -44,6 +45,7 @@ public class EntityFactory {
         entity.addComponent(moveAnimation);
         entity.addComponent(new Sprite(assets.tiles[5][1]));
         entity.addComponent(new Actor(new MonsterBrain(entity.id)));
+        entity.addComponent(new Stats(2));
         return entity;
     }
 

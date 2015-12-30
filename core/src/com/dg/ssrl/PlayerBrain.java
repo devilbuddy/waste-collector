@@ -101,11 +101,24 @@ class PlayerBrain implements Brain {
                     while (bulletEnd.y < 0) {
                         bulletEnd.y += world.getHeight();
                     }
-                    if (world.getCell(bulletEnd.x, bulletEnd.y).isWalkable()) {
+                    World.Cell cell = world.getCell(bulletEnd.x, bulletEnd.y);
+                    if (cell.isWalkable()) {
                         bulletEnd.translate(moveAnimation.direction);
                         distanceTiles++;
                     } else {
                         hitSomething = true;
+
+                        int entityCount = cell.getEntityCount();
+                        for (int i = 0; i < entityCount; i++) {
+                            int entityId = cell.getEntityId(i);
+                            Entity entity = world.getEntity(entityId);
+                            Stats stats = entity.getComponent(Stats.class);
+                            if (stats != null) {
+                                stats.damage(2);
+                                entity.alive = stats.isAlive();
+                            }
+                        }
+
                     }
                 }
 

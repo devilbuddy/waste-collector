@@ -20,6 +20,10 @@ public class Scheduler {
         queue.add(actor);
     }
 
+    public void removeActor(Actor actor) {
+        queue.remove(actor);
+    }
+
     public void lock() {
         lockCount.incrementAndGet();
     }
@@ -41,4 +45,5 @@ public class Scheduler {
             queue.add(queue.remove(0));
         }
     }
+
 }

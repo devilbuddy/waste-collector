@@ -162,10 +162,12 @@ public class Game extends ApplicationAdapter {
 
 		spriteBatch.setColor(Color.BLACK);
 		spriteBatch.draw(assets.whitePixel, 0, 0, width, mapRenderer.bounds.y);
-		spriteBatch.draw(assets.whitePixel, 0, mapRenderer.bounds.y + mapRenderer.bounds.height, width, height - (mapRenderer.bounds.y + mapRenderer.bounds.height) );
+		spriteBatch.draw(assets.whitePixel, 0, mapRenderer.bounds.y + mapRenderer.bounds.height, width, height - (mapRenderer.bounds.y + mapRenderer.bounds.height));
 
 		spriteBatch.setColor(Color.WHITE);
-		assets.font.draw(spriteBatch, "100", 4, height);
+
+		Stats stats = world.getPlayer().getComponent(Stats.class);
+		assets.font.draw(spriteBatch, stats.healthString, 4, height);
 
 		spriteBatch.end();
 
@@ -187,6 +189,14 @@ public class Game extends ApplicationAdapter {
 					}
 				}
 			} else {
+				Actor actor = entity.getComponent(Actor.class);
+				if (actor != null) {
+					scheduler.removeActor(actor);
+				}
+				Position position = entity.getComponent(Position.class);
+				if (position != null) {
+					world.getCell(position.x, position.y).removeEntity(entity.id);
+				}
 				world.entities.remove(i);
 			}
 		}
