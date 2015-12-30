@@ -65,13 +65,15 @@ public class World {
         this.height = height;
 
         cells = new Cell[height][width];
+        dijkstraMap = new int[height][width];
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 cells[y][x] = new Cell();
+                dijkstraMap[y][x] = Integer.MAX_VALUE;
             }
         }
 
-        dijkstraMap = new int[height][width];
+
 
         bounds.set(0, 0, width * Assets.TILE_SIZE, height * Assets.TILE_SIZE);
         Gdx.app.log(tag, "bounds: " + bounds);
