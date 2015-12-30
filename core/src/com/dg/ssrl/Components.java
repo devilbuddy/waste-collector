@@ -1,5 +1,6 @@
 package com.dg.ssrl;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -165,17 +166,19 @@ public class Components {
 
     public static class Effect implements Component {
 
+        private static final String tag = "Effect";
+
         public static class Particle {
             Vector2 velocity = new Vector2();
             public Vector2 position = new Vector2();
-            public Color color = new Color(Color.WHITE);
+            public Color color = new Color(Color.ORANGE);
 
             public Particle(float x, float y) {
                 position.set(x, y);
             }
         }
 
-        private float duration = 0.5f;
+        private float duration = 0.2f;
         private float lifeTime = 0;
 
         public int numParticles = 10;
@@ -192,9 +195,7 @@ public class Components {
 
             for (int i = 0; i < numParticles; i++) {
                 particles[i] = new Particle(x, y);
-
-
-                particles[i].velocity.set(r.nextBoolean()?-1:1 * r.nextInt(5), r.nextBoolean()?-1:1 * r.nextInt(5));
+                particles[i].velocity.set((5 + r.nextInt(10)) * (r.nextBoolean()?-1:1), ((5 + r.nextInt(10)) * (r.nextBoolean()?-1:1)));
             }
         }
 

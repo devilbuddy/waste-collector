@@ -119,7 +119,20 @@ class PlayerBrain implements Brain {
 
                         float explosionX = bulletEnd.x * Assets.TILE_SIZE + Assets.TILE_SIZE/2;
                         float explosionY = bulletEnd.y * Assets.TILE_SIZE + Assets.TILE_SIZE/2;
-
+                        switch (moveAnimation.direction) {
+                            case NORTH:
+                                explosionY -= Assets.TILE_SIZE/2;
+                                break;
+                            case SOUTH:
+                                explosionY += Assets.TILE_SIZE/2;
+                                break;
+                            case EAST:
+                                explosionX -= Assets.TILE_SIZE/2;
+                                break;
+                            case WEST:
+                                explosionX += Assets.TILE_SIZE/2;
+                                break;
+                        }
                         Entity explosion = entityFactory.makeExplosion(explosionX, explosionY);
                         world.addEntity(explosion);
                     }
