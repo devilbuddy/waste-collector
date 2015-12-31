@@ -5,16 +5,15 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.IntArray;
 
 import static com.dg.ssrl.Components.Position;
+import static com.dg.ssrl.Components.Update;
+import static com.dg.ssrl.Components.Actor;
 
 import java.util.ArrayList;
 
 public class World {
     private static final String tag = "World";
 
-
     public static class Cell {
-
-
         public enum Type {
             Wall(false),
             Floor(true);
@@ -75,6 +74,30 @@ public class World {
 
         bounds.set(0, 0, width * Assets.TILE_SIZE, height * Assets.TILE_SIZE);
         Gdx.app.log(tag, "bounds: " + bounds);
+    }
+
+    public void update(float delta, Scheduler scheduler) {
+        for (int i = entities.size() - 1; i >= 0; i--) {
+            Entity entity = entities.get(i);
+            if (entity.alive) {
+                Update update = entity.getComponent(Update.class);
+                if (update != null) {
+                    update.update(delta, this);
+                }
+            } else {
+                Actor actor = entity.getComponent(Actor.class);
+                if (actor != null) {
+                    scheduler.removeActor(actor);
+                }
+                Position position = entity.getComponent(Position.class);
+                if (position != null) {
+                    getCell(position.x, position.y).removeEntity(entity.id);
+                }
+                entities.remove(i);
+            }
+        }
+
+        scheduler.update(this);
     }
 
     public Position translateWraparound(Position p, Direction direction) {

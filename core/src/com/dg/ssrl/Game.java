@@ -162,7 +162,9 @@ public class Game extends ApplicationAdapter {
 
 		spriteBatch.setColor(Color.BLACK);
 		spriteBatch.draw(assets.whitePixel, 0, 0, width, mapRenderer.bounds.y);
-		spriteBatch.draw(assets.whitePixel, 0, mapRenderer.bounds.y + mapRenderer.bounds.height, width, height - (mapRenderer.bounds.y + mapRenderer.bounds.height));
+
+		float mapTopY = mapRenderer.bounds.y + mapRenderer.bounds.height;
+		spriteBatch.draw(assets.whitePixel, 0, mapTopY, width, height - mapTopY);
 
 		spriteBatch.setColor(Color.WHITE);
 
@@ -174,27 +176,7 @@ public class Game extends ApplicationAdapter {
 	}
 
 	private void step(float delta) {
-		for (int i = world.entities.size() - 1; i >= 0; i--) {
-			Entity entity = world.entities.get(i);
-			if (entity.alive) {
-				Update update = entity.getComponent(Update.class);
-				if (update != null) {
-					update.update(delta, world);
-				}
-			} else {
-				Actor actor = entity.getComponent(Actor.class);
-				if (actor != null) {
-					scheduler.removeActor(actor);
-				}
-				Position position = entity.getComponent(Position.class);
-				if (position != null) {
-					world.getCell(position.x, position.y).removeEntity(entity.id);
-				}
-				world.entities.remove(i);
-			}
-		}
-
-		scheduler.update(world);
+		world.update(delta, scheduler);
 	}
 
 }
