@@ -196,9 +196,9 @@ public class Components {
     public static class Actor implements Component {
 
         public enum Speed {
-            SLOW(3),
-            MEDIUM(2),
-            FAST(1);
+            SLOW(4),
+            MEDIUM(3),
+            FAST(2);
 
             final int ticksToAct;
             Speed(int ticksToAct) {

@@ -1,5 +1,6 @@
 package com.dg.ssrl;
 
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import static com.dg.ssrl.Components.*;
 
@@ -54,6 +55,8 @@ public class EntityFactory {
         return entity;
     }
 
+    Random r = new Random(System.currentTimeMillis());
+
     public Entity makeMonster(int x, int y) {
         Position position = new Position(x, y);
 
@@ -63,8 +66,15 @@ public class EntityFactory {
         Entity entity = createEntity();
         entity.addComponent(position);
         entity.addComponent(moveAnimation);
-        entity.addComponent(new Sprite(assets.tiles[5][1]));
-        entity.addComponent(new Actor(new MonsterBrain(entity.id), Actor.Speed.SLOW));
+        if (r.nextBoolean()) {
+            entity.addComponent(new Sprite(assets.tiles[5][1]));
+            entity.addComponent(new Actor(new MonsterBrain(entity.id), Actor.Speed.SLOW));
+
+        } else {
+            entity.addComponent(new Sprite(assets.tiles[7][1]));
+            entity.addComponent(new Actor(new MonsterBrain(entity.id), Actor.Speed.FAST));
+
+        }
         entity.addComponent(new Stats(2));
 
         entity.addComponent(new Update(new Updater() {

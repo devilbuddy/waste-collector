@@ -185,6 +185,9 @@ public class World {
     public void addPlayer(Entity entity) {
         playerEntityId = entity.id;
         addEntity(entity);
+
+        Components.Position position = entity.getComponent(Components.Position.class);
+        updateDijkstraMap(position.x, position.y);
     }
 
     public void addEntity(Entity entity) {

@@ -64,7 +64,7 @@ public class Generator {
 
         levelData.start = floors.remove(0);
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             Position monster = floors.remove(0);
             levelData.monsters.add(monster);
         }
