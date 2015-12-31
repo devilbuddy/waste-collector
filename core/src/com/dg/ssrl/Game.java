@@ -177,16 +177,9 @@ public class Game extends ApplicationAdapter {
 		for (int i = world.entities.size() - 1; i >= 0; i--) {
 			Entity entity = world.entities.get(i);
 			if (entity.alive) {
-				MoveAnimation moveAnimation = entity.getComponent(MoveAnimation.class);
-				if (moveAnimation != null) {
-					moveAnimation.update(delta, world.bounds);
-				}
-				Effect effect = entity.getComponent(Effect.class);
-				if (effect != null) {
-					effect.update(delta);
-					if (effect.isDone()) {
-						entity.alive = false;
-					}
+				Update update = entity.getComponent(Update.class);
+				if (update != null) {
+					update.update(delta, world);
 				}
 			} else {
 				Actor actor = entity.getComponent(Actor.class);

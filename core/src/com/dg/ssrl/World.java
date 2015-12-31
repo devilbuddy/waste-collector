@@ -2,13 +2,11 @@ package com.dg.ssrl;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.IntArray;
 
-import java.util.ArrayList;
-import java.util.List;
+import static com.dg.ssrl.Components.Position;
 
-import javafx.geometry.Pos;
+import java.util.ArrayList;
 
 public class World {
     private static final String tag = "World";
@@ -79,6 +77,20 @@ public class World {
         Gdx.app.log(tag, "bounds: " + bounds);
     }
 
+    public Position translateWraparound(Position p, Direction direction) {
+        p.translate(direction);
+        p.x = p.x % width;
+        p.y = p.y % height;
+        while (p.x < 0) {
+            p.x += width;
+        }
+        while (p.y < 0) {
+            p.y += height;
+        }
+        return p;
+    }
+
+
     public void updateDijkstraMap(int goalX, int goalY) {
         // http://www.roguebasin.com/index.php?title=The_Incredible_Power_of_Dijkstra_Maps
 
@@ -109,15 +121,9 @@ public class World {
                         int lowestNeighborValue = Integer.MAX_VALUE;
                         for (Direction direction : Direction.CARDINAL_DIRECTIONS) {
                             Components.Position p = new Components.Position();
-                            p.set(x, y).translate(direction);
-                            p.x = p.x % width;
-                            p.y = p.y % height;
-                            while (p.x < 0) {
-                                p.x += width;
-                            }
-                            while (p.y < 0) {
-                                p.y += height;
-                            }
+                            p.set(x, y);
+                            p = translateWraparound(p, direction);
+
                             if (getCell(p.x, p.y).type == Cell.Type.Floor) {
                                 int neighborValue = dijkstraMap[p.y][p.x];
                                 if (neighborValue < lowestNeighborValue) {

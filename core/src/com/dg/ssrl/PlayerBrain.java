@@ -35,15 +35,7 @@ class PlayerBrain implements Brain {
                     Position position = player.getComponent(Position.class);
 
                     final Position targetPosition = position.clone();
-                    targetPosition.translate(moveDirection);
-                    targetPosition.x = targetPosition.x % world.getWidth();
-                    targetPosition.y = targetPosition.y % world.getHeight();
-                    while (targetPosition.x < 0) {
-						targetPosition.x += world.getWidth();
-					}
-                    while (targetPosition.y < 0) {
-						targetPosition.y += world.getHeight();
-					}
+                    world.translateWraparound(targetPosition, moveDirection);
 
                     Gdx.app.log(tag, "targetPosition:" + targetPosition);
 

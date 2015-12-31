@@ -8,10 +8,22 @@ import com.badlogic.gdx.math.Vector2;
 import java.util.Random;
 
 import static com.dg.ssrl.Entity.Component;
-/**
- * Created by magnus on 2015-12-29.
- */
+
 public class Components {
+
+    public interface Updater {
+        void update(float delta, World world);
+    }
+
+    public static class Update implements Component {
+        private final Updater updater;
+        public Update(Updater updater) {
+            this.updater = updater;
+        }
+        public void update(float delta, World world) {
+            updater.update(delta, world);
+        }
+    }
 
     public static class Stats implements Component {
         private int maxHealth;
@@ -137,7 +149,9 @@ public class Components {
             this.stateTime = 0;
         }
 
-        public void update(float delta, Rectangle worldBounds) {
+        public void update(float delta, World world) {
+            Rectangle worldBounds = world.bounds;
+
             if (state == State.MOVE) {
                 float dx = direction.dx * speed * delta;
                 float dy = direction.dy * speed * delta;
