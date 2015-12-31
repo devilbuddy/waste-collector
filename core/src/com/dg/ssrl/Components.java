@@ -194,10 +194,39 @@ public class Components {
     }
 
     public static class Actor implements Component {
-        public Brain brain;
-        public Actor(Brain brain) {
-            this.brain = brain;
+
+        public enum Speed {
+            SLOW(3),
+            MEDIUM(2),
+            FAST(1);
+
+            final int ticksToAct;
+            Speed(int ticksToAct) {
+                this.ticksToAct = ticksToAct;
+            }
         }
+
+        public Brain brain;
+        private final Speed speed;
+        private int ticks;
+        public Actor(Brain brain, Speed speed) {
+            this.brain = brain;
+            this.speed = speed;
+        }
+
+        public boolean tick() {
+            ticks++;
+            if (ticks >= speed.ticksToAct) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        public void reset() {
+            ticks = 0;
+        }
+
         public boolean act(World world) {
             return brain.act(world);
         }
@@ -217,16 +246,16 @@ public class Components {
             }
         }
 
-        private float duration = 0.2f;
+        private float duration = 0.3f;
         private float lifeTime = 0;
 
-        public int numParticles = 10;
+        public int numParticles = 20;
         public Particle[] particles;
 
         private Vector2 tmp = new Vector2();
 
         Random r = new Random(System.currentTimeMillis());
-        Vector2 gravity = new Vector2(0, -5);
+        Vector2 gravity = new Vector2(0, -20);
 
         public Effect(float x, float y, int numParticles) {
             this.numParticles = numParticles;
@@ -234,7 +263,7 @@ public class Components {
 
             for (int i = 0; i < numParticles; i++) {
                 particles[i] = new Particle(x, y);
-                particles[i].velocity.set((5 + r.nextInt(10)) * (r.nextBoolean() ? -1 : 1), ((5 + r.nextInt(10)) * (r.nextBoolean() ? -1 : 1)));
+                particles[i].velocity.set((5 + r.nextInt(10)) * (r.nextBoolean() ? -1 : 1), ((5 + r.nextInt(10)) /* * (r.nextBoolean() ? -1 : 1)*/));
             }
         }
 
@@ -247,7 +276,7 @@ public class Components {
                 particles[i].position.add(tmp);
 
                 tmp.set(gravity).scl(delta);
-                //particles[i].position.add(tmp);
+                particles[i].position.add(tmp);
             }
         }
 

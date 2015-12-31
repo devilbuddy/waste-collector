@@ -36,14 +36,31 @@ public class Scheduler {
     }
 
     public void update(World world) {
+
+
         if (queue.size() == 0 || lockCount.get() > 0) {
             return;
         }
-        Actor toAct = queue.get(0);
-        boolean acted = toAct.act(world);
-        if (acted) {
-            queue.add(queue.remove(0));
+
+
+        int iterations = 0;
+        while (iterations < 5) {
+            Actor actor = queue.remove(0);
+            if (actor.tick()) {
+                if (actor.act(world)) {
+                    actor.reset();
+                    queue.add(actor);
+                } else {
+                    queue.add(0, actor);
+                    break;
+                }
+            } else {
+                queue.add(actor);
+            }
+            iterations++;
         }
+
+        
     }
 
 }

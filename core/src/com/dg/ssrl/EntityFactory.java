@@ -64,7 +64,7 @@ public class EntityFactory {
         entity.addComponent(position);
         entity.addComponent(moveAnimation);
         entity.addComponent(new Sprite(assets.tiles[5][1]));
-        entity.addComponent(new Actor(new MonsterBrain(entity.id)));
+        entity.addComponent(new Actor(new MonsterBrain(entity.id), Actor.Speed.SLOW));
         entity.addComponent(new Stats(2));
 
         entity.addComponent(new Update(new Updater() {
