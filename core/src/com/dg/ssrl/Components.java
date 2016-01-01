@@ -68,6 +68,10 @@ public class Components {
             return this;
         }
 
+        public Position set(Position other) {
+            return set(other.x, other.y);
+        }
+
         public Position translate(Direction direction) {
             x += direction.dx;
             y += direction.dy;

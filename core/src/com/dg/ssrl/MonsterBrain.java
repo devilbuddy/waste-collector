@@ -19,7 +19,7 @@ public class MonsterBrain implements Brain {
     @Override
     public boolean act(final World world) {
         final Entity entity = world.getEntity(entityId);
-        MoveAnimation moveAnimation = entity.getComponent(MoveAnimation.class);
+        final MoveAnimation moveAnimation = entity.getComponent(MoveAnimation.class);
 
         if (!moveAnimation.isBusy()) {
 
@@ -39,28 +39,8 @@ public class MonsterBrain implements Brain {
             }
 
             Gdx.app.log(tag, "targetDirection:" + targetDirection);
-            if (targetDirection == moveAnimation.direction) {
-                Position targetPosition = current.clone();
-                targetPosition = world.translateWraparound(targetPosition, targetDirection);
-
-                if (world.getCell(targetPosition.x, targetPosition.y).isWalkable()) {
-                    moveAnimation.startMove(current, Assets.TILE_SIZE, targetDirection, new Runnable() {
-                        @Override
-                        public void run() {
-
-                        }
-                    });
-                    world.move(entity, targetPosition.x, targetPosition.y);
-                }
-            } else {
-                moveAnimation.startTurn(targetDirection, new Runnable() {
-                    @Override
-                    public void run() {
-
-                    }
-                });
-            }
-
+            BrainCore.MoveResult moveResult = BrainCore.move(world, entity, targetDirection);
+            //return moveResult.acted;
             return true;
         } else {
             return false;

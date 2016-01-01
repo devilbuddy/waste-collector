@@ -104,4 +104,24 @@ public class EntityFactory {
         return entity;
     }
 
+    public Entity makeItem(int x, int y) {
+        Entity entity = createEntity();
+        entity.addComponent(new Position(x, y));
+        entity.addComponent(new Sprite(assets.tiles[9][0]));
+
+        final MoveAnimation moveAnimation = new MoveAnimation(50f);
+        moveAnimation.setPosition(x * Assets.TILE_SIZE, y * Assets.TILE_SIZE).setDirection(Direction.EAST);
+        entity.addComponent(moveAnimation);
+
+        /*
+        entity.addComponent(new Update(new Updater() {
+            @Override
+            public void update(float delta, World world) {
+                moveAnimation.update(delta, world);
+            }
+        }));
+        */
+        return entity;
+    }
+
 }

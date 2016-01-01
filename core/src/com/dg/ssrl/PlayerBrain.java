@@ -31,34 +31,10 @@ class PlayerBrain implements Brain {
             if (moveDirection != Direction.NONE) {
                 Gdx.app.log(tag, "moveDirection=" + moveDirection);
 
-                if (moveAnimation.direction == moveDirection) {
-                    Position position = player.getComponent(Position.class);
-
-                    final Position targetPosition = position.clone();
-                    world.translateWraparound(targetPosition, moveDirection);
-
-                    Gdx.app.log(tag, "targetPosition:" + targetPosition);
-
-                    if (world.getCell(targetPosition.x, targetPosition.y).isWalkable()) {
-                        moveAnimation.startMove(position, Assets.TILE_SIZE, moveDirection, new Runnable() {
-                            @Override
-                            public void run() {
-                                moveAnimation.setPosition(targetPosition.x * Assets.TILE_SIZE, targetPosition.y * Assets.TILE_SIZE);
-                            }
-                        });
-                        world.move(player, targetPosition.x, targetPosition.y);
-                        world.updateDijkstraMap(targetPosition.x, targetPosition.y);
-                        acted = true;
-                    }
-
-                } else {
-                    moveAnimation.startTurn(moveDirection, new Runnable() {
-                        @Override
-                        public void run() {
-
-                        }
-                    });
-                    acted = true;
+                BrainCore.MoveResult moveResult = BrainCore.move(world, player, moveDirection);
+                acted = moveResult.acted;
+                if (moveResult.moved) {
+                    world.updateDijkstraMap(moveResult.endPosition.x, moveResult.endPosition.y);
                 }
             }
 

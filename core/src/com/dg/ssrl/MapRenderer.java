@@ -105,6 +105,7 @@ public class MapRenderer {
                     if (effect != null) {
                         renderEffect(effect, sprite, spriteBatch);
                     }
+
                 }
 
             }
