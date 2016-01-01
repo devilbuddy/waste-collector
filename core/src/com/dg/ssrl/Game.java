@@ -140,7 +140,6 @@ public class Game extends ApplicationAdapter {
 			Position monsterPosition = levelData.monsters.get(i);
 			Entity monster = entityFactory.makeMonster(monsterPosition.x, monsterPosition.y, monsterType);
 			world.addEntity(monster);
-
 			scheduler.addActor(monster.getComponent(Actor.class));
 		}
 	}
@@ -186,14 +185,10 @@ public class Game extends ApplicationAdapter {
 	}
 
 	private void renderHud() {
-
 		spriteBatch.setProjectionMatrix(hudCamera.combined);
-
 		spriteBatch.setColor(Color.WHITE);
 		Stats stats = world.getPlayer().getComponent(Stats.class);
 		assets.font.draw(spriteBatch, stats.healthString, 4, hudHeight);
-
-
 	}
 
 	private void step(float delta) {

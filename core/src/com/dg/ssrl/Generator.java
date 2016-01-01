@@ -16,21 +16,45 @@ public class Generator {
         public List<Position> monsters = new ArrayList<Position>();
     }
 
-    private static final String[] template = new String[] {
-            "####..####",
-            "#........#",
-            "#........#",
-            "#........#",
-            "..........",
-            "..........",
-            "#........#",
-            "#........#",
-            "#........#",
-            "####..####",
+    private static class TemplateData {
+        String[] template;
+
+        public TemplateData(String[] template) {
+            this.template = template;
+        }
+    }
+
+    private static TemplateData[] templates = {
+        new TemplateData(new String[] {
+                "####..####",
+                "#........#",
+                "#........#",
+                "#........#",
+                "..........",
+                "..........",
+                "#........#",
+                "#........#",
+                "#........#",
+                "####..####"
+        }),
+        new TemplateData(new String[] {
+                "##########",
+                "..........",
+                "#........#",
+                "####..####",
+                "#........#",
+                "#........#",
+                "#........#",
+                "#........#",
+                "..........",
+                "##########"
+        }),
     };
 
     public static LevelData generate(long seed, int width, int height) {
         Random random = new Random(seed);
+
+        TemplateData templateData = templates[random.nextInt(templates.length)];
 
         LevelData levelData = new LevelData();
 
@@ -40,8 +64,7 @@ public class Generator {
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                char c  = template[y].charAt(x);
-
+                char c  = templateData.template[height - y - 1].charAt(x);
                 levelData.tiles[y][x] = c == '#' ? World.Cell.Type.Wall : World.Cell.Type.Floor ;
             }
         }
