@@ -111,7 +111,7 @@ public class Game extends ApplicationAdapter {
 
 		int width = 10;
 		int height = 10;
-		Generator.LevelData levelData = Generator.generate(System.currentTimeMillis(), width, height);
+		Generator.LevelData levelData = Generator.generate(System.currentTimeMillis(), width, height, entityFactory);
 
 		world = new World(width, height);
 		for (int y = 0; y < height; y++) {
@@ -132,13 +132,9 @@ public class Game extends ApplicationAdapter {
 
 		scheduler.addActor(actor);
 
-		Random random = new Random(System.currentTimeMillis());
-		MonsterType[] monsterTypes = MonsterType.values();
-		MonsterType monsterType = monsterTypes[random.nextInt(monsterTypes.length - 1)];
-
 		for (int i = 0; i < levelData.monsters.size(); i++) {
-			Position monsterPosition = levelData.monsters.get(i);
-			Entity monster = entityFactory.makeMonster(monsterPosition.x, monsterPosition.y, monsterType);
+			Entity monster = levelData.monsters.get(i);
+
 			world.addEntity(monster);
 			scheduler.addActor(monster.getComponent(Actor.class));
 		}

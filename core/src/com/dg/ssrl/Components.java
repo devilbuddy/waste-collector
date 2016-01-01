@@ -44,6 +44,7 @@ public class Components {
             if (health < 0) {
                 health = 0;
             }
+            updateHealthString();
         }
 
         public boolean isAlive() {

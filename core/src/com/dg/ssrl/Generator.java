@@ -13,7 +13,7 @@ public class Generator {
         public int height;
         public World.Cell.Type[][] tiles;
         public Position start = new Position(0,0);
-        public List<Position> monsters = new ArrayList<Position>();
+        public List<Entity> monsters = new ArrayList<Entity>();
     }
 
     private static class TemplateData {
@@ -51,7 +51,7 @@ public class Generator {
         }),
     };
 
-    public static LevelData generate(long seed, int width, int height) {
+    public static LevelData generate(long seed, int width, int height, EntityFactory entityFactory) {
         Random random = new Random(seed);
 
         TemplateData templateData = templates[random.nextInt(templates.length)];
@@ -83,12 +83,18 @@ public class Generator {
                 }
             }
         }
-        Collections.shuffle(floors);
+        Collections.shuffle(floors, random);
 
         levelData.start = floors.remove(0);
 
         for (int i = 0; i < 4; i++) {
-            Position monster = floors.remove(0);
+            Position monsterPosition = floors.remove(0);
+
+            MonsterType[] monsterTypes = MonsterType.values();
+            MonsterType monsterType = monsterTypes[random.nextInt(monsterTypes.length)];
+
+            Entity monster = entityFactory.makeMonster(monsterPosition.x, monsterPosition.y, monsterType);
+
             levelData.monsters.add(monster);
         }
 
