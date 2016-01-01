@@ -39,18 +39,28 @@ public class MonsterBrain implements Brain {
             }
 
             Gdx.app.log(tag, "targetDirection:" + targetDirection);
-            Position targetPosition = current.clone();
-            targetPosition = world.translateWraparound(targetPosition, targetDirection);
+            if (targetDirection == moveAnimation.direction) {
+                Position targetPosition = current.clone();
+                targetPosition = world.translateWraparound(targetPosition, targetDirection);
 
-            if (world.getCell(targetPosition.x, targetPosition.y).isWalkable()) {
-                moveAnimation.startMove(current, Assets.TILE_SIZE, targetDirection, new Runnable() {
+                if (world.getCell(targetPosition.x, targetPosition.y).isWalkable()) {
+                    moveAnimation.startMove(current, Assets.TILE_SIZE, targetDirection, new Runnable() {
+                        @Override
+                        public void run() {
+
+                        }
+                    });
+                    world.move(entity, targetPosition.x, targetPosition.y);
+                }
+            } else {
+                moveAnimation.startTurn(targetDirection, new Runnable() {
                     @Override
                     public void run() {
 
                     }
                 });
-                world.move(entity, targetPosition.x, targetPosition.y);
             }
+
             return true;
         } else {
             return false;

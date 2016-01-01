@@ -25,7 +25,6 @@ public class MapRenderer {
     public void resize(int virtualWidth, int virtualHeight) {
         this.virtualWidth = virtualWidth;
         this.virtualHeight = virtualHeight;
-
     }
 
     public void render(World world, SpriteBatch spriteBatch) {
@@ -34,9 +33,13 @@ public class MapRenderer {
         int height = world.getHeight();
 
         bounds.width = width * Assets.TILE_SIZE;
-        bounds.height = width * Assets.TILE_SIZE;
+        bounds.height = height * Assets.TILE_SIZE;
+
+        float verticalSpaceLeft = virtualHeight - bounds.height;
+        int topGutterHeight = (int) (verticalSpaceLeft/3);
+
         bounds.x = virtualWidth/2 - bounds.width/2;
-        bounds.y = virtualHeight/2 - bounds.height/2;
+        bounds.y = virtualHeight - bounds.height - topGutterHeight;
 
 
         World.Cell[][] cells = world.getCells();

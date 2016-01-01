@@ -62,7 +62,11 @@ public class Game extends ApplicationAdapter {
 	private int width = 80;
 	private int height;
 
-	private OrthographicCamera camera = new OrthographicCamera();
+	private int hudWidth = width * 2;
+	private int hudHeight;
+
+	private OrthographicCamera mapCamera = new OrthographicCamera();
+	private OrthographicCamera hudCamera = new OrthographicCamera();
 
 	private TimeStep timeStep = new TimeStep();
 
@@ -142,10 +146,14 @@ public class Game extends ApplicationAdapter {
 		float ratio = (float)h/(float)w;
 		height = (int)(width * ratio);
 
-		camera.setToOrtho(false, width, height);
-		camera.update();
+		mapCamera.setToOrtho(false, width, height);
+		mapCamera.update();
 
         mapRenderer.resize(width, height);
+
+		hudHeight = height * 2;
+		hudCamera.setToOrtho(false, hudWidth, hudHeight);
+		hudCamera.update();
     }
 
 	@Override
@@ -156,7 +164,7 @@ public class Game extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		spriteBatch.begin();
-        spriteBatch.setProjectionMatrix(camera.combined);
+        spriteBatch.setProjectionMatrix(mapCamera.combined);
 
 		mapRenderer.render(world, spriteBatch);
 
@@ -166,13 +174,21 @@ public class Game extends ApplicationAdapter {
 		float mapTopY = mapRenderer.bounds.y + mapRenderer.bounds.height;
 		spriteBatch.draw(assets.whitePixel, 0, mapTopY, width, height - mapTopY);
 
-		spriteBatch.setColor(Color.WHITE);
-
-		Stats stats = world.getPlayer().getComponent(Stats.class);
-		assets.font.draw(spriteBatch, stats.healthString, 4, height);
-
 		spriteBatch.end();
 
+		renderHud();
+	}
+
+	private void renderHud() {
+
+		spriteBatch.begin();
+		spriteBatch.setProjectionMatrix(hudCamera.combined);
+
+		spriteBatch.setColor(Color.WHITE);
+		Stats stats = world.getPlayer().getComponent(Stats.class);
+		assets.font.draw(spriteBatch, stats.healthString, 4, hudHeight);
+
+		spriteBatch.end();
 	}
 
 	private void step(float delta) {
