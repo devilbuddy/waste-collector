@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.IntArray;
 import static com.dg.ssrl.Components.Position;
 import static com.dg.ssrl.Components.Update;
 import static com.dg.ssrl.Components.Actor;
+import static com.dg.ssrl.Components.Solid;
 
 import java.util.ArrayList;
 
@@ -229,7 +230,18 @@ public class World {
         if (contains(position.x, position.y)) {
             Cell cell = getCell(position.x, position.y);
             if (cell.type.walkable) {
-                return cell.entityIds.size == 0;
+                boolean containsSolidEntities = false;
+
+                for (int i = 0; i < cell.entityIds.size; i++) {
+                    int entityId = cell.entityIds.get(i);
+                    Entity entity = getEntity(entityId);
+                    Solid solid = entity.getComponent(Solid.class);
+                    if (solid != null && solid.isSolid()) {
+                        containsSolidEntities = true;
+                        break;
+                    }
+                }
+                return !containsSolidEntities;
             }
         }
         return false;

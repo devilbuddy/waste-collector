@@ -11,6 +11,18 @@ import static com.dg.ssrl.Entity.Component;
 
 public class Components {
 
+    public static class Solid implements Component {
+        private boolean solid;
+
+        public Solid(boolean solid) {
+            this.solid = solid;
+        }
+
+        public boolean isSolid() {
+            return solid;
+        }
+    }
+
     public interface Updater {
         void update(float delta, World world);
     }

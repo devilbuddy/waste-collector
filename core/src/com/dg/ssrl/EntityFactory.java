@@ -10,6 +10,7 @@ import static com.dg.ssrl.Components.Sprite;
 import static com.dg.ssrl.Components.Stats;
 import static com.dg.ssrl.Components.Update;
 import static com.dg.ssrl.Components.Updater;
+import static com.dg.ssrl.Components.Solid;
 
 public class EntityFactory {
 
@@ -28,6 +29,7 @@ public class EntityFactory {
     public Entity makePlayer() {
         Entity entity = createEntity();
         entity.addComponent(new Position());
+        entity.addComponent(new Solid(true));
         entity.addComponent(new Sprite(assets.tiles[4][2]));
         entity.addComponent(new Stats(3));
 
@@ -70,6 +72,7 @@ public class EntityFactory {
         Entity entity = createEntity();
         entity.addComponent(position);
         entity.addComponent(moveAnimation);
+        entity.addComponent(new Solid(true));
         entity.addComponent(new Sprite(assets.getMonsterTextureRegion(monsterType)));
         entity.addComponent(new Actor(new MonsterBrain(entity.id), monsterType.speed));
         entity.addComponent(new Stats(monsterType.hitPoints));
