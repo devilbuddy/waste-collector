@@ -5,6 +5,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Assets {
 
     public static final int TILE_SIZE = 8;
@@ -20,6 +23,8 @@ public class Assets {
 
     public TextureRegion whitePixel;
 
+    private Map<MonsterType, TextureRegion> monsterSprites = new HashMap<MonsterType, TextureRegion>();
+
     public void create() {
         tilesTexture = new Texture(Gdx.files.internal("tiles.png"));
 
@@ -32,7 +37,13 @@ public class Assets {
         whitePixel = new TextureRegion(tilesTexture, 18,18,1,1);
 
         font = new BitmapFont(Gdx.files.internal("kongtext.fnt"));
+
+        monsterSprites.put(MonsterType.Snake, tiles[5][1]);
+        monsterSprites.put(MonsterType.Rat, tiles[7][1]);
     }
 
+    public TextureRegion getMonsterTextureRegion(MonsterType monsterType) {
+        return monsterSprites.get(monsterType);
+    }
 
 }

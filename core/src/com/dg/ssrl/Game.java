@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 
+import java.util.Random;
+
 import static com.dg.ssrl.Components.*;
 
 public class Game extends ApplicationAdapter {
@@ -130,9 +132,13 @@ public class Game extends ApplicationAdapter {
 
 		scheduler.addActor(actor);
 
+		Random random = new Random(System.currentTimeMillis());
+		MonsterType[] monsterTypes = MonsterType.values();
+		MonsterType monsterType = monsterTypes[random.nextInt(monsterTypes.length - 1)];
+
 		for (int i = 0; i < levelData.monsters.size(); i++) {
 			Position monsterPosition = levelData.monsters.get(i);
-			Entity monster = entityFactory.makeMonster(monsterPosition.x, monsterPosition.y);
+			Entity monster = entityFactory.makeMonster(monsterPosition.x, monsterPosition.y, monsterType);
 			world.addEntity(monster);
 
 			scheduler.addActor(monster.getComponent(Actor.class));

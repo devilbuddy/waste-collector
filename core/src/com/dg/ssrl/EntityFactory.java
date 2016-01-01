@@ -1,22 +1,28 @@
 package com.dg.ssrl;
 
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
-import static com.dg.ssrl.Components.*;
+
+import static com.dg.ssrl.Components.Actor;
+import static com.dg.ssrl.Components.Effect;
+import static com.dg.ssrl.Components.MoveAnimation;
+import static com.dg.ssrl.Components.Position;
+import static com.dg.ssrl.Components.Sprite;
+import static com.dg.ssrl.Components.Stats;
+import static com.dg.ssrl.Components.Update;
+import static com.dg.ssrl.Components.Updater;
 
 public class EntityFactory {
 
-    private AtomicInteger entityIdCounter = new AtomicInteger();
-
     private final Assets assets;
-
-    private Entity createEntity() {
-        Entity entity = new Entity(entityIdCounter.incrementAndGet());
-        return entity;
-    }
+    private final AtomicInteger entityIdCounter;
 
     public EntityFactory(Assets assets) {
         this.assets = assets;
+        entityIdCounter = new AtomicInteger();
+    }
+
+    private Entity createEntity() {
+        return new Entity(entityIdCounter.incrementAndGet());
     }
 
     public Entity makePlayer() {
@@ -55,9 +61,7 @@ public class EntityFactory {
         return entity;
     }
 
-    Random r = new Random(System.currentTimeMillis());
-
-    public Entity makeMonster(int x, int y) {
+    public Entity makeMonster(int x, int y, MonsterType monsterType) {
         Position position = new Position(x, y);
 
         final MoveAnimation moveAnimation = new MoveAnimation(50f);
@@ -66,16 +70,9 @@ public class EntityFactory {
         Entity entity = createEntity();
         entity.addComponent(position);
         entity.addComponent(moveAnimation);
-        if (r.nextBoolean()) {
-            entity.addComponent(new Sprite(assets.tiles[5][1]));
-            entity.addComponent(new Actor(new MonsterBrain(entity.id), Actor.Speed.SLOW));
-
-        } else {
-            entity.addComponent(new Sprite(assets.tiles[7][1]));
-            entity.addComponent(new Actor(new MonsterBrain(entity.id), Actor.Speed.FAST));
-
-        }
-        entity.addComponent(new Stats(2));
+        entity.addComponent(new Sprite(assets.getMonsterTextureRegion(monsterType)));
+        entity.addComponent(new Actor(new MonsterBrain(entity.id), monsterType.speed));
+        entity.addComponent(new Stats(monsterType.hitPoints));
 
         entity.addComponent(new Update(new Updater() {
             @Override
