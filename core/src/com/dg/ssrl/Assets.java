@@ -13,6 +13,8 @@ public class Assets {
     public TextureRegion[][] tiles;
     public BitmapFont font;
 
+    public TextureRegion wallSolid;
+
     public TextureRegion wall;
     public TextureRegion floor;
 
@@ -23,7 +25,8 @@ public class Assets {
 
         tiles = TextureRegion.split(tilesTexture, TILE_SIZE, TILE_SIZE);
 
-        wall = tiles[2][0];
+        wallSolid = tiles[2][0];
+        wall = tiles[2][1];
         floor = tiles[0][8];
 
         whitePixel = new TextureRegion(tilesTexture, 18,18,1,1);

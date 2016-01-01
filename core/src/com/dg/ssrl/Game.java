@@ -174,21 +174,20 @@ public class Game extends ApplicationAdapter {
 		float mapTopY = mapRenderer.bounds.y + mapRenderer.bounds.height;
 		spriteBatch.draw(assets.whitePixel, 0, mapTopY, width, height - mapTopY);
 
-		spriteBatch.end();
-
 		renderHud();
+
+		spriteBatch.end();
 	}
 
 	private void renderHud() {
 
-		spriteBatch.begin();
 		spriteBatch.setProjectionMatrix(hudCamera.combined);
 
 		spriteBatch.setColor(Color.WHITE);
 		Stats stats = world.getPlayer().getComponent(Stats.class);
 		assets.font.draw(spriteBatch, stats.healthString, 4, hudHeight);
 
-		spriteBatch.end();
+
 	}
 
 	private void step(float delta) {

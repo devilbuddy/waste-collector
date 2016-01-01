@@ -56,7 +56,12 @@ public class MapRenderer {
                         region = assets.floor;
                         break;
                     case Wall:
-                        region = assets.wall;
+                        region = assets.wallSolid;
+                        if (world.contains(x, y - 1)) {
+                            if (world.getCell(x, y - 1).type == World.Cell.Type.Floor) {
+                                region = assets.wall;
+                            }
+                        }
                         break;
                 }
                 spriteBatch.draw(region, xx, yy);
