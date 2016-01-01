@@ -58,12 +58,13 @@ public class MapRenderer {
                 }
                 spriteBatch.draw(region, xx, yy);
 
+                /*
                 assets.font.setColor(1, 0, 0, 0.5f);
                 if (world.dijkstraMap[y][x] != Integer.MAX_VALUE) {
                     assets.font.draw(spriteBatch, "" + world.dijkstraMap[y][x], xx, yy + 8);
                 }
                 assets.font.setColor(Color.WHITE);
-
+                */
                 xx += Assets.TILE_SIZE;
             }
             yy += Assets.TILE_SIZE;

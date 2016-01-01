@@ -101,21 +101,13 @@ class PlayerBrain implements Brain {
                     } else {
                         hitSomething = true;
 
-                        int entityCount = cell.getEntityCount();
-                        for (int i = 0; i < entityCount; i++) {
-                            int entityId = cell.getEntityId(i);
-                            Entity entity = world.getEntity(entityId);
-                            Stats stats = entity.getComponent(Stats.class);
-                            if (stats != null) {
-                                stats.damage(2);
-                                entity.alive = stats.isAlive();
-                            }
-                        }
+
 
                     }
                 }
 
                 final Entity bullet = entityFactory.makeBullet();
+                final boolean hit = hitSomething;
                 scheduler.lock();
                 bullet.getComponent(MoveAnimation.class).startMove(bulletStart, distanceTiles * Assets.TILE_SIZE, moveAnimation.direction, new Runnable() {
                     @Override
@@ -141,6 +133,20 @@ class PlayerBrain implements Brain {
                         }
                         Entity explosion = entityFactory.makeExplosion(explosionX, explosionY);
                         world.addEntity(explosion);
+
+                        if (hit) {
+                            World.Cell cell = world.getCell(bulletEnd.x, bulletEnd.y);
+                            int entityCount = cell.getEntityCount();
+                            for (int i = 0; i < entityCount; i++) {
+                                int entityId = cell.getEntityId(i);
+                                Entity entity = world.getEntity(entityId);
+                                Stats stats = entity.getComponent(Stats.class);
+                                if (stats != null) {
+                                    stats.damage(2);
+                                    entity.alive = stats.isAlive();
+                                }
+                            }
+                        }
                     }
                 });
 
