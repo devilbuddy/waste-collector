@@ -118,7 +118,7 @@ class PlayerBrain implements Brain {
                                 Entity entity = world.getEntity(entityId);
                                 Stats stats = entity.getComponent(Stats.class);
                                 if (stats != null) {
-                                    stats.damage(2);
+                                    stats.damage(1);
                                     entity.alive = stats.isAlive();
                                 }
                             }

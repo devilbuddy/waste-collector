@@ -222,4 +222,16 @@ public class World {
     public boolean contains(int x, int y) {
         return x >= 0 && x <= width - 1 && y >= 0 && y <= height - 1;
     }
+
+
+
+    public boolean isWalkable(Position position) {
+        if (contains(position.x, position.y)) {
+            Cell cell = getCell(position.x, position.y);
+            if (cell.type.walkable) {
+                return cell.entityIds.size == 0;
+            }
+        }
+        return false;
+    }
 }

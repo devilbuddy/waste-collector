@@ -32,7 +32,7 @@ public class BrainCore {
 
             Gdx.app.log(tag, "targetPosition:" + targetPosition);
 
-            if (world.getCell(targetPosition.x, targetPosition.y).isWalkable()) {
+            if (world.isWalkable(targetPosition)) {
                 moveAnimation.startMove(currentPosition, Assets.TILE_SIZE, moveDirection, new Runnable() {
                     @Override
                     public void run() {
