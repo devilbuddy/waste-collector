@@ -24,6 +24,7 @@ public class Assets {
     public TextureRegion whitePixel;
 
     public TextureRegion key;
+    public TextureRegion egg;
 
     private Map<MonsterType, TextureRegion> monsterSprites = new HashMap<MonsterType, TextureRegion>();
 
@@ -42,6 +43,7 @@ public class Assets {
 
         monsterSprites.put(MonsterType.Snake, tiles[5][1]);
         monsterSprites.put(MonsterType.Rat, tiles[7][1]);
+        monsterSprites.put(MonsterType.Egg, tiles[11][0]);
 
         key = tiles[9][0];
     }

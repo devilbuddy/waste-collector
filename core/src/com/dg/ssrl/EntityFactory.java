@@ -76,7 +76,7 @@ public class EntityFactory {
         entity.addComponent(moveAnimation);
         entity.addComponent(new Solid(true));
         entity.addComponent(new Sprite(assets.getMonsterTextureRegion(monsterType)));
-        entity.addComponent(new Actor(new MonsterBrain(entity.id), monsterType.speed));
+        entity.addComponent(new Actor(new MonsterBrain(monsterType, entity.id), monsterType.speed));
         entity.addComponent(new Stats(monsterType.hitPoints));
         entity.addComponent(new ItemContainer());
         entity.addComponent(new Update(new Updater() {
