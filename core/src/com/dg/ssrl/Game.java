@@ -111,7 +111,7 @@ public class Game extends ApplicationAdapter {
 		int height = 10;
 		Generator.LevelData levelData = Generator.generate(System.currentTimeMillis(), width, height, entityFactory);
 
-		world = new World(width, height);
+		world = new World(width, height, entityFactory);
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				world.getCell(x, y).type = levelData.tiles[y][x];
@@ -137,7 +137,6 @@ public class Game extends ApplicationAdapter {
 			if(entity.getComponent(Actor.class) != null) {
 				scheduler.addActor(entity.getComponent(Actor.class));
 			}
-
 		}
 	}
 

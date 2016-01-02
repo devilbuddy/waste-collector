@@ -8,6 +8,7 @@ import static com.dg.ssrl.Components.Position;
 import static com.dg.ssrl.Components.Update;
 import static com.dg.ssrl.Components.Actor;
 import static com.dg.ssrl.Components.Solid;
+import static com.dg.ssrl.Components.ItemContainer;
 
 import java.util.ArrayList;
 
@@ -51,6 +52,7 @@ public class World {
 
     private final int width;
     private final int height;
+    private final EntityFactory entityFactory;
 
     private final Cell[][] cells;
     public ArrayList<Entity> entities = new ArrayList<Entity>();
@@ -59,9 +61,10 @@ public class World {
 
     public int[][] dijkstraMap;
 
-    public World(int width, int height) {
+    public World(int width, int height, EntityFactory entityFactory) {
         this.width = width;
         this.height = height;
+        this.entityFactory = entityFactory;
 
         cells = new Cell[height][width];
         dijkstraMap = new int[height][width];
@@ -71,8 +74,6 @@ public class World {
                 dijkstraMap[y][x] = Integer.MAX_VALUE;
             }
         }
-
-
 
         bounds.set(0, 0, width * Assets.TILE_SIZE, height * Assets.TILE_SIZE);
         Gdx.app.log(tag, "bounds: " + bounds);
@@ -95,6 +96,15 @@ public class World {
                 if (position != null) {
                     getCell(position.x, position.y).removeEntity(entity.id);
                 }
+                // dropped items
+                ItemContainer itemContainer = entity.getComponent(ItemContainer.class);
+                if (itemContainer != null && position != null) {
+                    for (ItemType itemType : itemContainer.content.keySet()) {
+                        Entity item = entityFactory.makeItem(position.x, position.y, itemType);
+                        addEntity(item);
+                    }
+                }
+
                 entities.remove(i);
             }
         }

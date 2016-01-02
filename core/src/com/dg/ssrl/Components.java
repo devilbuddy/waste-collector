@@ -15,7 +15,7 @@ public class Components {
 
     public static class ItemContainer implements Component {
 
-        private Map<ItemType, Integer> content = new HashMap<ItemType, Integer>();
+        public Map<ItemType, Integer> content = new HashMap<ItemType, Integer>();
 
         private final Runnable onEmptied;
 
@@ -25,6 +25,7 @@ public class Components {
                 public void run() {}
             });
         }
+
         public ItemContainer(Runnable onEmptied) {
             this.onEmptied = onEmptied;
         }
