@@ -27,15 +27,18 @@ public class EntityFactory {
         return new Entity(entityIdCounter.incrementAndGet());
     }
 
-    public Entity makePlayer() {
+    public Entity makePlayer(int x, int y, PlayerInputAdapter playerInputAdapter, Scheduler scheduler) {
         Entity entity = createEntity();
-        entity.addComponent(new Position());
+        entity.addComponent(new Position(x, y));
         entity.addComponent(new Solid(true));
         entity.addComponent(new Sprite(assets.tiles[4][2]));
-        entity.addComponent(new Stats(3));
+        entity.addComponent(new Stats(MonsterType.Player.hitPoints));
         entity.addComponent(new ItemContainer());
 
-        final MoveAnimation moveAnimation = new MoveAnimation(50f);
+        Actor actor = new Actor(new PlayerBrain(playerInputAdapter, scheduler), MonsterType.Player.speed);
+        entity.addComponent(actor);
+
+        final MoveAnimation moveAnimation = new MoveAnimation(50f).setPosition(x * Assets.TILE_SIZE, y * Assets.TILE_SIZE).setDirection(Direction.EAST);
         entity.addComponent(moveAnimation);
 
         entity.addComponent(new Update(new Updater() {

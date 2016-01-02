@@ -13,6 +13,7 @@ public class Generator {
         public int height;
         public World.Cell.Type[][] tiles;
         public Position start = new Position(0,0);
+        public Position exit = new Position(0,0);
         public List<Entity> entities = new ArrayList<Entity>();
     }
 
@@ -119,12 +120,12 @@ public class Generator {
         Collections.shuffle(floors, random);
 
         levelData.start = floors.remove(0);
+        levelData.exit = floors.remove(0);
 
         // monsters
-        MonsterType[] monsterTypes = MonsterType.values();
         for (int i = 0; i < 4; i++) {
             Position monsterPosition = floors.remove(0);
-            MonsterType monsterType = monsterTypes[random.nextInt(monsterTypes.length)];
+            MonsterType monsterType = MonsterType.ENEMIES[random.nextInt(MonsterType.ENEMIES.length)];
             Entity monster = entityFactory.makeMonster(monsterPosition.x, monsterPosition.y, monsterType);
             levelData.entities.add(monster);
         }

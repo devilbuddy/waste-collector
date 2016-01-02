@@ -117,17 +117,8 @@ public class Game extends ApplicationAdapter {
 				world.getCell(x, y).type = levelData.tiles[y][x];
 			}
 		}
-		Entity player = entityFactory.makePlayer();
 
-		Position start = levelData.start;
-		player.getComponent(Position.class).set(start.x, start.y);
-		player.getComponent(MoveAnimation.class).setPosition(start.x * Assets.TILE_SIZE, start.y * Assets.TILE_SIZE).setDirection(Direction.EAST);
-
-		Actor actor = new Actor(new PlayerBrain(playerInputAdapter, scheduler), Actor.Speed.MEDIUM);
-		player.addComponent(actor);
-
-		world.addPlayer(player);
-
+		world.addPlayer(entityFactory.makePlayer(levelData.start.x, levelData.start.y, playerInputAdapter, scheduler));
 
 		for (int i = 0; i < levelData.entities.size(); i++) {
 			Entity entity = levelData.entities.get(i);
