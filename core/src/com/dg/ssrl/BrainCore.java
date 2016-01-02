@@ -75,4 +75,68 @@ public class BrainCore {
         return moveResult;
     }
 
+    public static void fire(final World world, final Entity entity, final Direction direction, final EntityFactory entityFactory, final Scheduler scheduler) {
+        Position bulletStart = entity.getComponent(Position.class).clone().translate(direction);
+
+        final Position bulletEnd = bulletStart.clone();
+        boolean hitSomething = false;
+        int distanceTiles = 0;
+        while (!hitSomething) {
+            world.wraparound(bulletEnd);
+
+            if (world.isWalkable(bulletEnd)) {
+                bulletEnd.translate(direction);
+                distanceTiles++;
+            } else {
+                hitSomething = true;
+            }
+        }
+
+        final Entity bullet = entityFactory.makeBullet();
+        final boolean hit = hitSomething;
+        scheduler.lock();
+        bullet.getComponent(MoveAnimation.class).startMove(bulletStart, distanceTiles * Assets.TILE_SIZE, direction, new Runnable() {
+            @Override
+            public void run() {
+                bullet.alive = false;
+                scheduler.unlock();
+
+                float explosionX = bulletEnd.x * Assets.TILE_SIZE + Assets.TILE_SIZE/2;
+                float explosionY = bulletEnd.y * Assets.TILE_SIZE + Assets.TILE_SIZE/2;
+                switch (direction) {
+                    case NORTH:
+                        explosionY -= Assets.TILE_SIZE/2;
+                        break;
+                    case SOUTH:
+                        explosionY += Assets.TILE_SIZE/2;
+                        break;
+                    case EAST:
+                        explosionX -= Assets.TILE_SIZE/2;
+                        break;
+                    case WEST:
+                        explosionX += Assets.TILE_SIZE/2;
+                        break;
+                }
+                Entity explosion = entityFactory.makeExplosion(explosionX, explosionY);
+                world.addEntity(explosion);
+
+                if (hit) {
+                    World.Cell cell = world.getCell(bulletEnd.x, bulletEnd.y);
+                    int entityCount = cell.getEntityCount();
+                    for (int i = 0; i < entityCount; i++) {
+                        int entityId = cell.getEntityId(i);
+                        Entity entity = world.getEntity(entityId);
+                        Components.Stats stats = entity.getComponent(Components.Stats.class);
+                        if (stats != null) {
+                            stats.damage(1);
+                            entity.alive = stats.isAlive();
+                        }
+                    }
+                }
+            }
+        });
+
+        world.addEntity(bullet);
+    }
+
 }

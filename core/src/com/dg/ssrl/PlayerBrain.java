@@ -25,7 +25,6 @@ class PlayerBrain implements Brain {
         final MoveAnimation moveAnimation = player.getComponent(MoveAnimation.class);
 
         if (!moveAnimation.isBusy()) {
-
             Direction moveDirection = playerInputAdapter.getMovementDirection();
 
             if (moveDirection != Direction.NONE) {
@@ -56,67 +55,8 @@ class PlayerBrain implements Brain {
             if (action == PlayerInputAdapter.Action.FIRE) {
                 Gdx.app.log(tag, "FIRE");
 
-                Position bulletStart = player.getComponent(Position.class).clone().translate(moveAnimation.direction);
+                BrainCore.fire(world, player, moveAnimation.direction, entityFactory, scheduler);
 
-                final Position bulletEnd = bulletStart.clone();
-                boolean hitSomething = false;
-                int distanceTiles = 0;
-                while (!hitSomething) {
-                    world.wraparound(bulletEnd);
-
-                    if (world.isWalkable(bulletEnd)) {
-                        bulletEnd.translate(moveAnimation.direction);
-                        distanceTiles++;
-                    } else {
-                        hitSomething = true;
-                    }
-                }
-
-                final Entity bullet = entityFactory.makeBullet();
-                final boolean hit = hitSomething;
-                scheduler.lock();
-                bullet.getComponent(MoveAnimation.class).startMove(bulletStart, distanceTiles * Assets.TILE_SIZE, moveAnimation.direction, new Runnable() {
-                    @Override
-                    public void run() {
-                        bullet.alive = false;
-                        scheduler.unlock();
-
-                        float explosionX = bulletEnd.x * Assets.TILE_SIZE + Assets.TILE_SIZE/2;
-                        float explosionY = bulletEnd.y * Assets.TILE_SIZE + Assets.TILE_SIZE/2;
-                        switch (moveAnimation.direction) {
-                            case NORTH:
-                                explosionY -= Assets.TILE_SIZE/2;
-                                break;
-                            case SOUTH:
-                                explosionY += Assets.TILE_SIZE/2;
-                                break;
-                            case EAST:
-                                explosionX -= Assets.TILE_SIZE/2;
-                                break;
-                            case WEST:
-                                explosionX += Assets.TILE_SIZE/2;
-                                break;
-                        }
-                        Entity explosion = entityFactory.makeExplosion(explosionX, explosionY);
-                        world.addEntity(explosion);
-
-                        if (hit) {
-                            World.Cell cell = world.getCell(bulletEnd.x, bulletEnd.y);
-                            int entityCount = cell.getEntityCount();
-                            for (int i = 0; i < entityCount; i++) {
-                                int entityId = cell.getEntityId(i);
-                                Entity entity = world.getEntity(entityId);
-                                Stats stats = entity.getComponent(Stats.class);
-                                if (stats != null) {
-                                    stats.damage(1);
-                                    entity.alive = stats.isAlive();
-                                }
-                            }
-                        }
-                    }
-                });
-
-                world.addEntity(bullet);
                 acted = true;
 
             } else if (action == PlayerInputAdapter.Action.BOMB) {
