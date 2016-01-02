@@ -4,7 +4,6 @@ import static com.dg.ssrl.Components.Actor;
 
 public enum MonsterType {
 
-
     Snake(Actor.Speed.SLOW, 2, false),
     Rat(Actor.Speed.FAST, 1, false),
     Egg(Actor.Speed.MEDIUM, 3, true);

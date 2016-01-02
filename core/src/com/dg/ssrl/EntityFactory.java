@@ -65,6 +65,29 @@ public class EntityFactory {
         return entity;
     }
 
+    private static class EggBrain implements Components.Brain {
+        private final int entityId;
+        int ticksToActivate = 3;
+
+        public EggBrain(int entityId) {
+            this.entityId = entityId;
+        }
+
+        @Override
+        public boolean act(World world) {
+            Entity entity = world.getEntity(entityId);
+
+            ticksToActivate--;
+            if (ticksToActivate == 0) {
+                entity.alive = false;
+                Position position = entity.getComponent(Position.class).clone();
+                Entity monster = world.getEntityFactory().makeMonster(position.x, position.y, MonsterType.Snake);
+                world.addEntity(monster);
+            }
+            return true;
+        }
+    }
+
     public Entity makeMonster(int x, int y, MonsterType monsterType) {
         Position position = new Position(x, y);
 
@@ -76,7 +99,12 @@ public class EntityFactory {
         entity.addComponent(moveAnimation);
         entity.addComponent(new Solid(true));
         entity.addComponent(new Sprite(assets.getMonsterTextureRegion(monsterType)));
-        entity.addComponent(new Actor(new MonsterBrain(monsterType, entity.id), monsterType.speed));
+
+        if (monsterType == MonsterType.Egg) {
+            entity.addComponent(new Actor(new EggBrain(entity.id), monsterType.speed));
+        } else {
+            entity.addComponent(new Actor(new MonsterBrain(monsterType, entity.id), monsterType.speed));
+        }
         entity.addComponent(new Stats(monsterType.hitPoints));
         entity.addComponent(new ItemContainer());
         entity.addComponent(new Update(new Updater() {

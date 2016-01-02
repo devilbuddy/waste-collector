@@ -28,7 +28,6 @@ public class MonsterBrain implements Brain {
             final MoveAnimation moveAnimation = entity.getComponent(MoveAnimation.class);
 
             if (!moveAnimation.isBusy()) {
-
                 final Position current = entity.getComponent(Position.class);
 
                 Direction targetDirection = Direction.NONE;

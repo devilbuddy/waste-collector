@@ -53,6 +53,7 @@ public class World {
     private final int width;
     private final int height;
     private final EntityFactory entityFactory;
+    private final Scheduler scheduler;
 
     private final Cell[][] cells;
     public ArrayList<Entity> entities = new ArrayList<Entity>();
@@ -61,10 +62,11 @@ public class World {
 
     public int[][] dijkstraMap;
 
-    public World(int width, int height, EntityFactory entityFactory) {
+    public World(int width, int height, EntityFactory entityFactory, Scheduler scheduler) {
         this.width = width;
         this.height = height;
         this.entityFactory = entityFactory;
+        this.scheduler = scheduler;
 
         cells = new Cell[height][width];
         dijkstraMap = new int[height][width];
@@ -77,6 +79,10 @@ public class World {
 
         bounds.set(0, 0, width * Assets.TILE_SIZE, height * Assets.TILE_SIZE);
         Gdx.app.log(tag, "bounds: " + bounds);
+    }
+
+    public EntityFactory getEntityFactory() {
+        return entityFactory;
     }
 
     public void update(float delta, Scheduler scheduler) {
@@ -216,6 +222,9 @@ public class World {
         Components.Position position = entity.getComponent(Components.Position.class);
         if(position != null) {
             getCell(position.x, position.y).entityIds.add(entity.id);
+        }
+        if(entity.getComponent(Actor.class) != null) {
+            scheduler.addActor(entity.getComponent(Actor.class));
         }
     }
 
