@@ -1,5 +1,7 @@
 package com.dg.ssrl;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.dg.ssrl.Components.Actor;
@@ -134,6 +136,27 @@ public class EntityFactory {
         });
         itemContainer.add(itemType, 1);
         entity.addComponent(itemContainer);
+
+        return entity;
+    }
+
+    public Entity makeExit(int x, int y) {
+        final Entity entity = createEntity();
+        entity.addComponent(new Position(x, y));
+
+        final MoveAnimation moveAnimation = new MoveAnimation(50f);
+        moveAnimation.setPosition(x * Assets.TILE_SIZE, y * Assets.TILE_SIZE).setDirection(Direction.EAST);
+        entity.addComponent(moveAnimation);
+
+        final Sprite sprite = new Sprite(assets.exitFrames, 0.2f);
+        entity.addComponent(sprite);
+
+        entity.addComponent(new Update(new Updater() {
+            @Override
+            public void update(float delta, World world) {
+                sprite.update(delta);
+            }
+        }));
 
         return entity;
     }

@@ -154,10 +154,28 @@ public class Components {
     }
 
     public static class Sprite implements Component {
-        public TextureRegion region;
+        private final TextureRegion[] textureRegions;
+        private final float frameDuration;
+
+        private float stateTime;
 
         public Sprite(TextureRegion textureRegion) {
-            this.region = textureRegion;
+            this(new TextureRegion[]{ textureRegion}, 1);
+        }
+
+        public Sprite(TextureRegion[] textureRegions, float frameDuration) {
+            this.textureRegions = textureRegions;
+            this.frameDuration = frameDuration;
+        }
+
+        public void update(float delta) {
+            stateTime += delta;
+        }
+
+        public TextureRegion getTextureRegion() {
+            int frameNumber = (int)(stateTime / frameDuration);
+            frameNumber = frameNumber % textureRegions.length;
+            return textureRegions[frameNumber];
         }
     }
 

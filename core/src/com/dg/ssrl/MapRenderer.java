@@ -116,39 +116,39 @@ public class MapRenderer {
         for (int i = 0; i < effect.numParticles; i++) {
             Effect.Particle p = effect.particles[i];
             spriteBatch.setColor(p.color);
-            spriteBatch.draw(sprite.region, bounds.x + p.position.x, bounds.y + p.position.y);
+            spriteBatch.draw(sprite.getTextureRegion(), bounds.x + p.position.x, bounds.y + p.position.y);
         }
     }
 
     private void renderWithFacing(Vector2 position, Direction direction, Sprite sprite, SpriteBatch spriteBatch) {
         switch (direction) {
             case NORTH:
-                spriteBatch.draw(sprite.region, bounds.x + position.x, bounds.y + position.y, 4, 4, 8, 8, 1, 1, 270);
+                spriteBatch.draw(sprite.getTextureRegion(), bounds.x + position.x, bounds.y + position.y, 4, 4, 8, 8, 1, 1, 270);
                 break;
             case SOUTH:
-                spriteBatch.draw(sprite.region, bounds.x + position.x, bounds.y + position.y, 4, 4, 8, 8, 1, 1, 90);
+                spriteBatch.draw(sprite.getTextureRegion(), bounds.x + position.x, bounds.y + position.y, 4, 4, 8, 8, 1, 1, 90);
                 break;
             case EAST:
-                spriteBatch.draw(sprite.region.getTexture(),
+                spriteBatch.draw(sprite.getTextureRegion().getTexture(),
                         bounds.x + position.x,
                         bounds.y + position.y,
                         Assets.TILE_SIZE,
                         Assets.TILE_SIZE,
-                        sprite.region.getRegionX(),
-                        sprite.region.getRegionY(),
+                        sprite.getTextureRegion().getRegionX(),
+                        sprite.getTextureRegion().getRegionY(),
                         Assets.TILE_SIZE,
                         Assets.TILE_SIZE,
                         true,
                         false);
                 break;
             case WEST:
-                spriteBatch.draw(sprite.region.getTexture(),
+                spriteBatch.draw(sprite.getTextureRegion().getTexture(),
                         bounds.x + position.x,
                         bounds.y + position.y,
                         Assets.TILE_SIZE,
                         Assets.TILE_SIZE,
-                        sprite.region.getRegionX(),
-                        sprite.region.getRegionY(),
+                        sprite.getTextureRegion().getRegionX(),
+                        sprite.getTextureRegion().getRegionY(),
                         Assets.TILE_SIZE,
                         Assets.TILE_SIZE,
                         false,
