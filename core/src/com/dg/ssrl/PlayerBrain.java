@@ -62,23 +62,13 @@ class PlayerBrain implements Brain {
                 boolean hitSomething = false;
                 int distanceTiles = 0;
                 while (!hitSomething) {
-                    bulletEnd.x = bulletEnd.x % world.getWidth();
-                    bulletEnd.y = bulletEnd.y % world.getHeight();
-                    while (bulletEnd.x < 0) {
-                        bulletEnd.x += world.getWidth();
-                    }
-                    while (bulletEnd.y < 0) {
-                        bulletEnd.y += world.getHeight();
-                    }
-                    World.Cell cell = world.getCell(bulletEnd.x, bulletEnd.y);
-                    if (cell.isWalkable()) {
+                    world.wraparound(bulletEnd);
+
+                    if (world.isWalkable(bulletEnd)) {
                         bulletEnd.translate(moveAnimation.direction);
                         distanceTiles++;
                     } else {
                         hitSomething = true;
-
-
-
                     }
                 }
 

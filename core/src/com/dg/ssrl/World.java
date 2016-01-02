@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class World {
     private static final String tag = "World";
 
+
     public static class Cell {
         public enum Type {
             Wall(false),
@@ -32,7 +33,7 @@ public class World {
         }
 
         boolean isWalkable() {
-            return type.walkable && entityIds.size == 0;
+            return type.walkable;
         }
 
         public int getEntityCount() {
@@ -103,6 +104,10 @@ public class World {
 
     public Position translateWraparound(Position p, Direction direction) {
         p.translate(direction);
+        return wraparound(p);
+    }
+
+    public Position wraparound(Position p) {
         p.x = p.x % width;
         p.y = p.y % height;
         while (p.x < 0) {
@@ -113,7 +118,6 @@ public class World {
         }
         return p;
     }
-
 
     public void updateDijkstraMap(int goalX, int goalY) {
         // http://www.roguebasin.com/index.php?title=The_Incredible_Power_of_Dijkstra_Maps
@@ -181,6 +185,11 @@ public class World {
 
     public Cell getCell(int x, int y) {
         return cells[y][x];
+    }
+
+
+    public Cell getCell(Position p) {
+        return getCell(p.x, p.y);
     }
 
     public void addPlayer(Entity entity) {

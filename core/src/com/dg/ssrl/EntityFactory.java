@@ -11,6 +11,7 @@ import static com.dg.ssrl.Components.Stats;
 import static com.dg.ssrl.Components.Update;
 import static com.dg.ssrl.Components.Updater;
 import static com.dg.ssrl.Components.Solid;
+import static com.dg.ssrl.Components.Inventory;
 
 public class EntityFactory {
 
@@ -32,7 +33,8 @@ public class EntityFactory {
         entity.addComponent(new Solid(true));
         entity.addComponent(new Sprite(assets.tiles[4][2]));
         entity.addComponent(new Stats(3));
-
+        entity.addComponent(new Inventory());
+        
         final MoveAnimation moveAnimation = new MoveAnimation(50f);
         entity.addComponent(moveAnimation);
 
@@ -76,7 +78,7 @@ public class EntityFactory {
         entity.addComponent(new Sprite(assets.getMonsterTextureRegion(monsterType)));
         entity.addComponent(new Actor(new MonsterBrain(entity.id), monsterType.speed));
         entity.addComponent(new Stats(monsterType.hitPoints));
-
+        entity.addComponent(new Inventory());
         entity.addComponent(new Update(new Updater() {
             @Override
             public void update(float delta, World world) {
@@ -110,7 +112,7 @@ public class EntityFactory {
     public Entity makeItem(int x, int y) {
         Entity entity = createEntity();
         entity.addComponent(new Position(x, y));
-        entity.addComponent(new Sprite(assets.tiles[9][0]));
+        entity.addComponent(new Sprite(assets.key));
 
         final MoveAnimation moveAnimation = new MoveAnimation(50f);
         moveAnimation.setPosition(x * Assets.TILE_SIZE, y * Assets.TILE_SIZE).setDirection(Direction.EAST);

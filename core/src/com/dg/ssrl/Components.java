@@ -11,6 +11,10 @@ import static com.dg.ssrl.Entity.Component;
 
 public class Components {
 
+    public static class Inventory implements Component {
+
+    }
+
     public static class Solid implements Component {
         private boolean solid;
 
