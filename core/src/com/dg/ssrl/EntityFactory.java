@@ -80,7 +80,7 @@ public class EntityFactory {
         if (monsterType == MonsterType.Egg) {
             entity.addComponent(new Actor(new MonsterBrain.EggBrain(entity.id), monsterType.speed));
         } else {
-            entity.addComponent(new Actor(new MonsterBrain(monsterType, entity.id), monsterType.speed));
+            entity.addComponent(new Actor(new MonsterBrain(entity.id), monsterType.speed));
         }
         entity.addComponent(new Stats(monsterType.hitPoints));
         entity.addComponent(new ItemContainer());
