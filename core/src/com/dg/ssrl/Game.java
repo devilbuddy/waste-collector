@@ -119,7 +119,6 @@ public class Game extends ApplicationAdapter {
 		}
 
 		world.addPlayer(entityFactory.makePlayer(levelData.start.x, levelData.start.y, playerInputAdapter, scheduler));
-
         world.addEntity(entityFactory.makeExit(levelData.exit.x, levelData.exit.y));
 
 		for (int i = 0; i < levelData.entities.size(); i++) {

@@ -46,7 +46,7 @@ public class Assets {
         monsterSprites.put(MonsterType.Egg, tiles[11][0]);
 
         key = tiles[9][0];
-        exitFrames = new TextureRegion[] {tiles[12][0], tiles[12][1]};
+        exitFrames = new TextureRegion[] {tiles[12][2], tiles[12][1], tiles[12][0]};
     }
 
     public TextureRegion getMonsterTextureRegion(MonsterType monsterType) {
