@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 
 import static com.dg.ssrl.Components.MoveAnimation;
 import static com.dg.ssrl.Components.Position;
-import static com.dg.ssrl.Components.Inventory;
+import static com.dg.ssrl.Components.ItemContainer;
 
 public class BrainCore {
 
@@ -41,15 +41,16 @@ public class BrainCore {
                     }
                 });
 
-                Inventory inventory = entity.getComponent(Inventory.class);
-                if (inventory != null) {
+                ItemContainer itemContainer = entity.getComponent(ItemContainer.class);
+                if (itemContainer != null) {
                     World.Cell cell = world.getCell(targetPosition);
                     for (int i = 0; i < cell.getEntityCount(); i++) {
                         int entityId = cell.getEntityId(i);
                         Entity e = world.getEntity(entityId);
-                        // TODO - proper criteria for picking up
-                        if (e.getComponent(Components.Solid.class) == null) {
-                            e.alive = false;
+                        ItemContainer pickupItem = e.getComponent(ItemContainer.class);
+                        if (pickupItem != null) {
+                            pickupItem.emptyInto(itemContainer);
+                            Gdx.app.log(tag, itemContainer.toString());
                         }
                     }
                 }

@@ -132,7 +132,7 @@ public class Generator {
         // items
         for (int i = 0; i < 4; i++) {
             Position itemPosition = floors.remove(0);
-            Entity item = entityFactory.makeItem(itemPosition.x, itemPosition.y);
+            Entity item = entityFactory.makeItem(itemPosition.x, itemPosition.y, ItemType.Key);
             levelData.entities.add(item);
         }
 

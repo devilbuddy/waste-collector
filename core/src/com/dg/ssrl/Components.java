@@ -5,14 +5,60 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import static com.dg.ssrl.Entity.Component;
 
 public class Components {
 
-    public static class Inventory implements Component {
+    public static class ItemContainer implements Component {
 
+
+        private Map<ItemType, Integer> content = new HashMap<ItemType, Integer>();
+
+        private final Runnable onEmptied;
+
+        public ItemContainer() {
+            this(new Runnable() {
+                @Override
+                public void run() {
+
+                }
+            });
+        }
+        public ItemContainer(Runnable onEmptied) {
+            this.onEmptied = onEmptied;
+        }
+
+        public void add(ItemType itemType, int amount) {
+            int newAmount = amount;
+            if (content.containsKey(itemType)) {
+                newAmount += content.get(itemType);
+            }
+            content.put(itemType, newAmount);
+        }
+
+        public void clear() {
+            content.clear();
+        }
+
+        public void emptyInto(ItemContainer other) {
+            for (ItemType key : content.keySet()) {
+                int amountToAdd = content.get(key);
+                other.add(key, amountToAdd);
+            }
+            clear();
+            onEmptied.run();
+        }
+
+        @Override
+        public String toString() {
+            return "ItemContainer{" +
+                    "content=" + content +
+                    '}';
+        }
     }
 
     public static class Solid implements Component {

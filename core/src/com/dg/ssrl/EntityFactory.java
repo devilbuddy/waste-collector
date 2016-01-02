@@ -11,7 +11,7 @@ import static com.dg.ssrl.Components.Stats;
 import static com.dg.ssrl.Components.Update;
 import static com.dg.ssrl.Components.Updater;
 import static com.dg.ssrl.Components.Solid;
-import static com.dg.ssrl.Components.Inventory;
+import static com.dg.ssrl.Components.ItemContainer;
 
 public class EntityFactory {
 
@@ -33,8 +33,8 @@ public class EntityFactory {
         entity.addComponent(new Solid(true));
         entity.addComponent(new Sprite(assets.tiles[4][2]));
         entity.addComponent(new Stats(3));
-        entity.addComponent(new Inventory());
-        
+        entity.addComponent(new ItemContainer());
+
         final MoveAnimation moveAnimation = new MoveAnimation(50f);
         entity.addComponent(moveAnimation);
 
@@ -78,7 +78,7 @@ public class EntityFactory {
         entity.addComponent(new Sprite(assets.getMonsterTextureRegion(monsterType)));
         entity.addComponent(new Actor(new MonsterBrain(entity.id), monsterType.speed));
         entity.addComponent(new Stats(monsterType.hitPoints));
-        entity.addComponent(new Inventory());
+        entity.addComponent(new ItemContainer());
         entity.addComponent(new Update(new Updater() {
             @Override
             public void update(float delta, World world) {
@@ -109,8 +109,8 @@ public class EntityFactory {
         return entity;
     }
 
-    public Entity makeItem(int x, int y) {
-        Entity entity = createEntity();
+    public Entity makeItem(int x, int y, ItemType itemType) {
+        final Entity entity = createEntity();
         entity.addComponent(new Position(x, y));
         entity.addComponent(new Sprite(assets.key));
 
@@ -118,14 +118,15 @@ public class EntityFactory {
         moveAnimation.setPosition(x * Assets.TILE_SIZE, y * Assets.TILE_SIZE).setDirection(Direction.EAST);
         entity.addComponent(moveAnimation);
 
-        /*
-        entity.addComponent(new Update(new Updater() {
+        final ItemContainer itemContainer = new ItemContainer(new Runnable() {
             @Override
-            public void update(float delta, World world) {
-                moveAnimation.update(delta, world);
+            public void run() {
+                entity.alive = false;
             }
-        }));
-        */
+        });
+        itemContainer.add(itemType, 1);
+        entity.addComponent(itemContainer);
+
         return entity;
     }
 
