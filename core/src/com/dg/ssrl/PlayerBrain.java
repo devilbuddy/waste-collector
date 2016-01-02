@@ -9,12 +9,10 @@ class PlayerBrain implements Brain {
 
     private final PlayerInputAdapter playerInputAdapter;
     private final Scheduler scheduler;
-    private final EntityFactory entityFactory;
 
-	public PlayerBrain(PlayerInputAdapter playerInputAdapter, Scheduler scheduler, EntityFactory entityFactory) {
+	public PlayerBrain(PlayerInputAdapter playerInputAdapter, Scheduler scheduler) {
         this.playerInputAdapter = playerInputAdapter;
         this.scheduler = scheduler;
-        this.entityFactory = entityFactory;
     }
 
     @Override
@@ -55,7 +53,7 @@ class PlayerBrain implements Brain {
             if (action == PlayerInputAdapter.Action.FIRE) {
                 Gdx.app.log(tag, "FIRE");
 
-                BrainCore.fire(world, player, moveAnimation.direction, entityFactory, scheduler);
+                BrainCore.fire(world, player, moveAnimation.direction, scheduler);
 
                 acted = true;
 

@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import static com.dg.ssrl.Components.MoveAnimation;
 import static com.dg.ssrl.Components.Position;
 import static com.dg.ssrl.Components.ItemContainer;
+import static com.dg.ssrl.Components.Stats;
 
 public class BrainCore {
 
@@ -19,6 +20,7 @@ public class BrainCore {
     private static MoveResult moveResult = new MoveResult();
 
     public static MoveResult move(final World world, final Entity entity, final Direction moveDirection) {
+        EntityFactory entityFactory = world.getEntityFactory();
         final MoveAnimation moveAnimation = entity.getComponent(MoveAnimation.class);
         final Position currentPosition = entity.getComponent(Position.class);
 
@@ -60,6 +62,21 @@ public class BrainCore {
                 moveResult.acted = true;
                 moveResult.moved = true;
                 moveResult.endPosition.set(targetPosition);
+            } else {
+                // bump
+                World.Cell cell = world.getCell(targetPosition);
+                for (int i = 0; i < cell.getEntityCount(); i++) {
+                    int entityId = cell.getEntityId(i);
+                    Entity e = world.getEntity(entityId);
+                    Stats stats = e.getComponent(Stats.class);
+                    if (stats != null) {
+                        Entity explosion = entityFactory.makeExplosion(targetPosition.x * Assets.TILE_SIZE + Assets.TILE_SIZE/2, targetPosition.y * Assets.TILE_SIZE + Assets.TILE_SIZE/2);
+                        world.addEntity(explosion);
+
+                        stats.damage(1);
+                        e.alive = stats.isAlive();
+                    }
+                }
             }
 
         } else {
@@ -75,7 +92,8 @@ public class BrainCore {
         return moveResult;
     }
 
-    public static void fire(final World world, final Entity entity, final Direction direction, final EntityFactory entityFactory, final Scheduler scheduler) {
+    public static void fire(final World world, final Entity entity, final Direction direction, final Scheduler scheduler) {
+        final EntityFactory entityFactory = world.getEntityFactory();
         Position bulletStart = entity.getComponent(Position.class).clone().translate(direction);
 
         final Position bulletEnd = bulletStart.clone();

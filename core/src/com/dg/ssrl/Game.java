@@ -123,7 +123,7 @@ public class Game extends ApplicationAdapter {
 		player.getComponent(Position.class).set(start.x, start.y);
 		player.getComponent(MoveAnimation.class).setPosition(start.x * Assets.TILE_SIZE, start.y * Assets.TILE_SIZE).setDirection(Direction.EAST);
 
-		Actor actor = new Actor(new PlayerBrain(playerInputAdapter, scheduler, entityFactory), Actor.Speed.MEDIUM);
+		Actor actor = new Actor(new PlayerBrain(playerInputAdapter, scheduler), Actor.Speed.MEDIUM);
 		player.addComponent(actor);
 
 		world.addPlayer(player);

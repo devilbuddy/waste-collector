@@ -36,12 +36,9 @@ public class Scheduler {
     }
 
     public void update(World world) {
-
-
         if (queue.size() == 0 || lockCount.get() > 0) {
             return;
         }
-
 
         int iterations = 0;
         while (iterations < 5) {
@@ -59,8 +56,6 @@ public class Scheduler {
             }
             iterations++;
         }
-
-
     }
 
 }
