@@ -53,4 +53,32 @@ public class MonsterBrain implements Brain {
 
         }
     }
+
+    static class EggBrain implements Brain {
+        private final int entityId;
+        int ticksToActivate = 3;
+
+        public EggBrain(int entityId) {
+            this.entityId = entityId;
+        }
+
+        @Override
+        public boolean act(World world) {
+            EntityFactory entityFactory = world.getEntityFactory();
+            Entity entity = world.getEntity(entityId);
+
+            ticksToActivate--;
+            Position position = entity.getComponent(Position.class).clone();
+
+            Entity explosion = entityFactory.makeExplosion(position.x * Assets.TILE_SIZE + Assets.TILE_SIZE/2, position.y * Assets.TILE_SIZE + Assets.TILE_SIZE/2);
+            world.addEntity(explosion);
+
+            if (ticksToActivate == 0) {
+                entity.alive = false;
+                Entity monster = entityFactory.makeMonster(position.x, position.y, MonsterType.Snake);
+                world.addEntity(monster);
+            }
+            return true;
+        }
+    }
 }
