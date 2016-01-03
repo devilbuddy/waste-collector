@@ -58,9 +58,6 @@ public class BrainCore {
                     }
                 }
 
-
-
-
                 world.move(entity, targetPosition.x, targetPosition.y);
 
                 moveResult.acted = true;
@@ -96,7 +93,7 @@ public class BrainCore {
         return moveResult;
     }
 
-    public static void fire(final World world, final Entity entity, final Direction direction, final Scheduler scheduler) {
+    public static void fire(final World world, final Entity entity, final Direction direction, final Scheduler scheduler, final Assets.Sounds sounds) {
         final EntityFactory entityFactory = world.getEntityFactory();
         Position bulletStart = entity.getComponent(Position.class).clone().translate(direction);
 
@@ -114,6 +111,7 @@ public class BrainCore {
             }
         }
 
+        sounds.play(Assets.Sounds.SoundId.LASER);
         final Entity bullet = entityFactory.makeBullet();
         final boolean hit = hitSomething;
         scheduler.lock();
@@ -142,6 +140,7 @@ public class BrainCore {
                 Entity explosion = entityFactory.makeExplosion(explosionX, explosionY);
                 world.addEntity(explosion);
 
+                sounds.play(Assets.Sounds.SoundId.HIT);
                 if (hit) {
                     World.Cell cell = world.getCell(bulletEnd.x, bulletEnd.y);
                     int entityCount = cell.getEntityCount();

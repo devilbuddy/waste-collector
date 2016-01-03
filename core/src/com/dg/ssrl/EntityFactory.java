@@ -26,7 +26,7 @@ public class EntityFactory {
         entity.addComponent(new Stats(MonsterType.Player.hitPoints));
         entity.addComponent(new ItemContainer());
 
-        Actor actor = new Actor(new PlayerBrain(playerInputAdapter, scheduler), MonsterType.Player.speed);
+        Actor actor = new Actor(new PlayerBrain(playerInputAdapter, scheduler, assets.sounds), MonsterType.Player.speed);
         entity.addComponent(actor);
 
         final MoveAnimation moveAnimation = new MoveAnimation(50f).setPosition(x * Assets.TILE_SIZE, y * Assets.TILE_SIZE).setDirection(Direction.EAST);
