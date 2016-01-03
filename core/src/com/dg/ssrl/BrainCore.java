@@ -96,6 +96,8 @@ public class BrainCore {
                         Entity explosion = entityFactory.makeExplosion(targetPosition.x * Assets.TILE_SIZE + Assets.TILE_SIZE/2, targetPosition.y * Assets.TILE_SIZE + Assets.TILE_SIZE/2);
                         world.addEntity(explosion);
 
+                        sounds.play(Assets.Sounds.SoundId.HIT);
+
                         stats.damage(1);
                         e.alive = stats.isAlive();
                     }

@@ -91,6 +91,10 @@ public class World {
         return completed;
     }
 
+    public boolean isGameOver() {
+        return playerEntityId == -1;
+    }
+
     public EntityFactory getEntityFactory() {
         return entityFactory;
     }
@@ -99,7 +103,7 @@ public class World {
         return scheduler;
     }
 
-    public void update(float delta, Scheduler scheduler) {
+    public void update(float delta) {
         for (int i = entities.size() - 1; i >= 0; i--) {
             Entity entity = entities.get(i);
             if (entity.alive) {
@@ -123,6 +127,10 @@ public class World {
                         Entity item = entityFactory.makeItem(position.x, position.y, itemType);
                         addEntity(item);
                     }
+                }
+
+                if (entity.id == playerEntityId) {
+                    playerEntityId = -1;
                 }
 
                 entities.remove(i);

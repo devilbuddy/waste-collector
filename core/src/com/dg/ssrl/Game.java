@@ -8,6 +8,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 
@@ -84,6 +85,7 @@ public class Game extends ApplicationAdapter {
 
     private enum State {
         PLAY,
+        GAME_OVER,
         FADE_OUT_LEVEL,
         FADE_IN_LEVEL
     }
@@ -185,8 +187,13 @@ public class Game extends ApplicationAdapter {
             float hiddenHeight = percentage * mapRenderer.bounds.height;
             float hiddenY = mapRenderer.bounds.y + mapRenderer.bounds.height - hiddenHeight;
             spriteBatch.draw(assets.whitePixel, mapRenderer.bounds.x, hiddenY, mapRenderer.bounds.width, hiddenHeight);
+        } else if (state == State.GAME_OVER) {
+            String gameOver = "Game Over";
+            GlyphLayout glyphLayout = new GlyphLayout(assets.font, gameOver);
+            float x = mapRenderer.bounds.x + mapRenderer.bounds.width/2 - glyphLayout.width/2;
+            float y = mapRenderer.bounds.y + mapRenderer.bounds.height/2 + glyphLayout.height;
+            assets.font.draw(spriteBatch, gameOver, x, y);
         }
-
 
 		renderHud();
 
@@ -194,10 +201,14 @@ public class Game extends ApplicationAdapter {
 	}
 
 	private void renderHud() {
-		spriteBatch.setProjectionMatrix(hudCamera.combined);
-		spriteBatch.setColor(Color.WHITE);
-		Stats stats = world.getPlayer().getComponent(Stats.class);
-		assets.font.draw(spriteBatch, stats.healthString, 4, hudHeight);
+        Entity player = world.getPlayer();
+        if (player != null) {
+            spriteBatch.setProjectionMatrix(hudCamera.combined);
+            spriteBatch.setColor(Color.WHITE);
+            Stats stats = world.getPlayer().getComponent(Stats.class);
+            assets.font.draw(spriteBatch, stats.healthString, 4, hudHeight);
+        }
+
 	}
 
     private static final float SWITCH_LEVEL_ANIMATION_TIME = 0.75f;
@@ -216,8 +227,10 @@ public class Game extends ApplicationAdapter {
             case PLAY: {
                 if (world.isCompleted()) {
                     setState(State.FADE_OUT_LEVEL);
+                } else if(world.isGameOver()) {
+                    setState(State.GAME_OVER);
                 } else {
-                    world.update(delta, scheduler);
+                    world.update(delta);
                 }
                 break;
             }
@@ -230,6 +243,14 @@ public class Game extends ApplicationAdapter {
             }
             case FADE_IN_LEVEL: {
                 if (stateTime > SWITCH_LEVEL_ANIMATION_TIME) {
+                    setState(State.PLAY);
+                }
+                break;
+            }
+            case GAME_OVER: {
+                world.update(delta);
+                if (playerInputAdapter.popAction() == PlayerInputAdapter.Action.FIRE) {
+                    initWorld();
                     setState(State.PLAY);
                 }
                 break;
