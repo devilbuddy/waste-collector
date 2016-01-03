@@ -130,6 +130,7 @@ public class EntityFactory {
     }
 
     public Entity makeExit(int x, int y) {
+
         final Entity entity = createEntity();
         entity.addComponent(new Position(x, y));
 
@@ -145,6 +146,7 @@ public class EntityFactory {
             public void run(final World world, Entity triggeredBy) {
                 if (world.getPlayer().id == triggeredBy.id) {
                     world.setCompleted();
+                    assets.sounds.play(Assets.Sounds.SoundId.EXIT);
                 }
             }
         }));

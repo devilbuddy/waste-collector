@@ -200,7 +200,7 @@ public class Game extends ApplicationAdapter {
 		assets.font.draw(spriteBatch, stats.healthString, 4, hudHeight);
 	}
 
-    private static final float SWITCH_LEVEL_ANIMATION_TIME = 1;
+    private static final float SWITCH_LEVEL_ANIMATION_TIME = 0.75f;
     private float stateTime = 0;
 
     private void setState(State state) {
