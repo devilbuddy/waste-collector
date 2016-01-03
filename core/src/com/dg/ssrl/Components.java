@@ -96,14 +96,20 @@ public class Components {
         }
     }
 
+    public interface OnDied {
+        void onDied();
+    }
+
     public static class Stats implements Component {
         private int maxHealth;
+        private final OnDied onDied;
         private int health;
         public String healthString;
 
-        public Stats(int maxHealth) {
+        public Stats(int maxHealth, OnDied onDied) {
             this.maxHealth = maxHealth;
             this.health = maxHealth;
+            this.onDied = onDied;
             updateHealthString();
         }
         private void updateHealthString() {
@@ -114,6 +120,7 @@ public class Components {
             health -= amount;
             if (health < 0) {
                 health = 0;
+                onDied.onDied();
             }
             updateHealthString();
         }
@@ -303,6 +310,7 @@ public class Components {
         public Brain brain;
         private final Speed speed;
         private int ticks;
+        public boolean alive = true;
         public Actor(Brain brain, Speed speed) {
             this.brain = brain;
             this.speed = speed;

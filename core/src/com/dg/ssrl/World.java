@@ -134,6 +134,7 @@ public class World {
                 }
 
                 entities.remove(i);
+
             }
         }
 

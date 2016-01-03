@@ -90,16 +90,19 @@ public class BrainCore {
                 World.Cell cell = world.getCell(targetPosition);
                 for (int i = 0; i < cell.getEntityCount(); i++) {
                     int entityId = cell.getEntityId(i);
-                    Entity e = world.getEntity(entityId);
-                    Stats stats = e.getComponent(Stats.class);
-                    if (stats != null) {
+                    Entity targetEntity = world.getEntity(entityId);
+                    Stats targetStats = targetEntity.getComponent(Stats.class);
+                    if (targetStats != null) {
                         Entity explosion = entityFactory.makeExplosion(targetPosition.x * Assets.TILE_SIZE + Assets.TILE_SIZE/2, targetPosition.y * Assets.TILE_SIZE + Assets.TILE_SIZE/2);
                         world.addEntity(explosion);
 
                         sounds.play(Assets.Sounds.SoundId.HIT);
 
-                        stats.damage(1);
-                        e.alive = stats.isAlive();
+                        targetStats.damage(1);
+                        targetEntity.alive = targetStats.isAlive();
+
+                        moveResult.acted = true;
+                        moveResult.moved = false;
                     }
                 }
             }

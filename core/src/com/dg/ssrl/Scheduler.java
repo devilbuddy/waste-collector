@@ -43,7 +43,7 @@ public class Scheduler {
         int iterations = 0;
         while (iterations < 5) {
             Actor actor = queue.remove(0);
-            if (actor.tick()) {
+            if (actor.alive && actor.tick()) {
                 if (actor.act(world)) {
                     actor.reset();
                     queue.add(actor);

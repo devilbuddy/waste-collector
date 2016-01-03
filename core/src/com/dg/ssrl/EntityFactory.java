@@ -19,15 +19,23 @@ public class EntityFactory {
     }
 
     public Entity makePlayer(int x, int y, PlayerInputAdapter playerInputAdapter, Scheduler scheduler) {
-        Entity entity = createEntity();
+        final Entity entity = createEntity();
         entity.addComponent(new Position(x, y));
         entity.addComponent(new Solid(true));
         entity.addComponent(new Sprite(assets.tiles[4][2]));
-        entity.addComponent(new Stats(MonsterType.Player.hitPoints));
+
+        final Actor actor = new Actor(new PlayerBrain(playerInputAdapter, scheduler, assets.sounds), MonsterType.Player.speed);
+        entity.addComponent(actor);
+
+        entity.addComponent(new Stats(MonsterType.Player.hitPoints, new OnDied() {
+            @Override
+            public void onDied() {
+                entity.alive = false;
+                actor.alive = false;
+            }
+        }));
         entity.addComponent(new ItemContainer());
 
-        Actor actor = new Actor(new PlayerBrain(playerInputAdapter, scheduler, assets.sounds), MonsterType.Player.speed);
-        entity.addComponent(actor);
 
         final MoveAnimation moveAnimation = new MoveAnimation(50f).setPosition(x * Assets.TILE_SIZE, y * Assets.TILE_SIZE).setDirection(Direction.EAST);
         entity.addComponent(moveAnimation);
@@ -65,7 +73,7 @@ public class EntityFactory {
         final MoveAnimation moveAnimation = new MoveAnimation(50f);
         moveAnimation.setPosition(x * Assets.TILE_SIZE, y * Assets.TILE_SIZE).setDirection(Direction.EAST);
 
-        Entity entity = createEntity();
+        final Entity entity = createEntity();
         entity.addComponent(position);
         entity.addComponent(moveAnimation);
         entity.addComponent(new Solid(true));
@@ -76,7 +84,13 @@ public class EntityFactory {
         } else {
             entity.addComponent(new Actor(new MonsterBrain(entity.id, assets.sounds), monsterType.speed));
         }
-        entity.addComponent(new Stats(monsterType.hitPoints));
+        entity.addComponent(new Stats(monsterType.hitPoints, new OnDied() {
+            @Override
+            public void onDied() {
+                entity.alive = false;
+                entity.getComponent(Actor.class).alive = false;
+            }
+        }));
         entity.addComponent(new ItemContainer());
         entity.addComponent(new Update(new Updater() {
             @Override
