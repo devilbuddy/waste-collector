@@ -34,7 +34,7 @@ public class Game extends ApplicationAdapter {
 					Gdx.graphics.setDisplayMode(size.x, size.y, false);
 				}
 			} else if (keycode == Input.Keys.G) {
-				initWorld();
+				initWorld(true);
 			}
 			return false;
 		}
@@ -82,7 +82,6 @@ public class Game extends ApplicationAdapter {
 	private EntityFactory entityFactory;
 	private World world;
 
-
     private enum State {
         PLAY,
         GAME_OVER,
@@ -91,7 +90,6 @@ public class Game extends ApplicationAdapter {
     }
 
     private State state = State.PLAY;
-
 
 	public Game(Position[] debugScreenSizes) {
 		DebugInputSwitcher debugInputSwitcher = new DebugInputSwitcher(debugScreenSizes);
@@ -113,16 +111,21 @@ public class Game extends ApplicationAdapter {
         assets.create();
 		entityFactory = new EntityFactory(assets);
 
-		initWorld();
+		initWorld(true);
     }
 
-	private void initWorld() {
+	private void initWorld(boolean resetPlayer) {
         playerInputAdapter.clear();
 		scheduler.clear();
 
 		int width = 10;
 		int height = 10;
 		Generator.LevelData levelData = Generator.generate(System.currentTimeMillis(), width, height, entityFactory);
+
+        Entity oldPlayer = null;
+        if (world != null) {
+            oldPlayer = world.getPlayer();
+        }
 
 		world = new World(width, height, entityFactory, scheduler);
 		for (int y = 0; y < height; y++) {
@@ -131,8 +134,14 @@ public class Game extends ApplicationAdapter {
 			}
 		}
 
-		world.addPlayer(entityFactory.makePlayer(levelData.start.x, levelData.start.y, playerInputAdapter, scheduler));
-        world.addEntity(entityFactory.makeExit(levelData.exit.x, levelData.exit.y));
+        if (resetPlayer) {
+            world.addPlayer(entityFactory.makePlayer(levelData.start.x, levelData.start.y, playerInputAdapter, scheduler));
+        } else {
+            oldPlayer.getComponent(Position.class).set(levelData.start);
+            oldPlayer.getComponent(MoveAnimation.class).setPosition(levelData.start.x * Assets.TILE_SIZE, levelData.start.y * Assets.TILE_SIZE);
+            world.addPlayer(oldPlayer);
+        }
+		world.addEntity(entityFactory.makeExit(levelData.exit.x, levelData.exit.y));
 
 		for (int i = 0; i < levelData.entities.size(); i++) {
 			Entity entity = levelData.entities.get(i);
@@ -154,7 +163,7 @@ public class Game extends ApplicationAdapter {
 
 		hudHeight = height * 2;
 		hudCamera.setToOrtho(false, hudWidth, hudHeight);
-		hudCamera.update();
+        hudCamera.update();
     }
 
 	@Override
@@ -236,7 +245,7 @@ public class Game extends ApplicationAdapter {
             }
             case FADE_OUT_LEVEL: {
                 if (stateTime > SWITCH_LEVEL_ANIMATION_TIME) {
-                    initWorld();
+                    initWorld(false);
                     setState(State.FADE_IN_LEVEL);
                 }
                 break;
@@ -250,7 +259,7 @@ public class Game extends ApplicationAdapter {
             case GAME_OVER: {
                 world.update(delta);
                 if (playerInputAdapter.popAction() == PlayerInputAdapter.Action.FIRE) {
-                    initWorld();
+                    initWorld(true);
                     setState(State.PLAY);
                 }
                 break;
