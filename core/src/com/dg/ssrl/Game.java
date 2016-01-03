@@ -175,6 +175,10 @@ public class Game extends ApplicationAdapter {
 	}
 
 	private void step(float delta) {
+		if (world.isCompleted()) {
+			initWorld();
+		}
+
 		world.update(delta, scheduler);
 	}
 

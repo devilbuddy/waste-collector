@@ -9,6 +9,7 @@ import static com.dg.ssrl.Components.Update;
 import static com.dg.ssrl.Components.Actor;
 import static com.dg.ssrl.Components.Solid;
 import static com.dg.ssrl.Components.ItemContainer;
+import static com.dg.ssrl.Components.Trigger;
 
 import java.util.ArrayList;
 
@@ -62,6 +63,8 @@ public class World {
 
     public int[][] dijkstraMap;
 
+    private boolean completed;
+
     public World(int width, int height, EntityFactory entityFactory, Scheduler scheduler) {
         this.width = width;
         this.height = height;
@@ -79,6 +82,14 @@ public class World {
 
         bounds.set(0, 0, width * Assets.TILE_SIZE, height * Assets.TILE_SIZE);
         Gdx.app.log(tag, "bounds: " + bounds);
+    }
+
+    public void setCompleted() {
+        completed = true;
+    }
+
+    public boolean isCompleted() {
+        return completed;
     }
 
     public EntityFactory getEntityFactory() {
@@ -246,6 +257,15 @@ public class World {
         getCell(position.x, position.y).entityIds.removeValue(entity.id);
         position.set(toX, toY);
         getCell(position.x, position.y).entityIds.add(entity.id);
+
+        Cell cell = getCell(position);
+        for (int i = 0; i < cell.getEntityCount(); i++) {
+            int entityId = cell.getEntityId(i);
+            Trigger trigger = getEntity(entityId).getComponent(Trigger.class);
+            if (trigger != null) {
+                trigger.triggerAction.run(this, entity);
+            }
+        }
     }
 
     public boolean contains(int x, int y) {

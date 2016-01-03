@@ -13,6 +13,17 @@ import static com.dg.ssrl.Entity.Component;
 
 public class Components {
 
+    public interface TriggerAction {
+        void run(World world, Entity triggeredBy);
+    }
+
+    public static class Trigger implements Component {
+        public final TriggerAction triggerAction;
+        public Trigger(TriggerAction triggerAction) {
+            this.triggerAction = triggerAction;
+        }
+    }
+
     public static class ItemContainer implements Component {
 
         public Map<ItemType, Integer> content = new HashMap<ItemType, Integer>();

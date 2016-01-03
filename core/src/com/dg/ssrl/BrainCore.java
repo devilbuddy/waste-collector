@@ -6,6 +6,7 @@ import static com.dg.ssrl.Components.MoveAnimation;
 import static com.dg.ssrl.Components.Position;
 import static com.dg.ssrl.Components.ItemContainer;
 import static com.dg.ssrl.Components.Stats;
+import static com.dg.ssrl.Components.Trigger;
 
 public class BrainCore {
 
@@ -56,6 +57,9 @@ public class BrainCore {
                         }
                     }
                 }
+
+
+
 
                 world.move(entity, targetPosition.x, targetPosition.y);
 

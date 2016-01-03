@@ -1,19 +1,8 @@
 package com.dg.ssrl;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.dg.ssrl.Components.Actor;
-import static com.dg.ssrl.Components.Effect;
-import static com.dg.ssrl.Components.MoveAnimation;
-import static com.dg.ssrl.Components.Position;
-import static com.dg.ssrl.Components.Sprite;
-import static com.dg.ssrl.Components.Stats;
-import static com.dg.ssrl.Components.Update;
-import static com.dg.ssrl.Components.Updater;
-import static com.dg.ssrl.Components.Solid;
-import static com.dg.ssrl.Components.ItemContainer;
+import static com.dg.ssrl.Components.*;
 
 public class EntityFactory {
 
@@ -150,6 +139,15 @@ public class EntityFactory {
 
         final Sprite sprite = new Sprite(assets.exitFrames, 0.2f);
         entity.addComponent(sprite);
+
+        entity.addComponent(new Trigger(new TriggerAction() {
+            @Override
+            public void run(final World world, Entity triggeredBy) {
+                if (world.getPlayer().id == triggeredBy.id) {
+                    world.setCompleted();
+                }
+            }
+        }));
 
         entity.addComponent(new Update(new Updater() {
             @Override
