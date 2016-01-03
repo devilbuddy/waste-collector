@@ -81,6 +81,16 @@ public class Game extends ApplicationAdapter {
 	private EntityFactory entityFactory;
 	private World world;
 
+
+    private enum State {
+        PLAY,
+        FADE_OUT_LEVEL,
+        FADE_IN_LEVEL
+    }
+
+    private State state = State.PLAY;
+
+
 	public Game(Position[] debugScreenSizes) {
 		DebugInputSwitcher debugInputSwitcher = new DebugInputSwitcher(debugScreenSizes);
 		playerInputAdapter = new PlayerInputAdapter();
@@ -162,6 +172,21 @@ public class Game extends ApplicationAdapter {
 		float mapTopY = mapRenderer.bounds.y + mapRenderer.bounds.height;
 		spriteBatch.draw(assets.whitePixel, 0, mapTopY, width, height - mapTopY);
 
+        if (state == State.FADE_OUT_LEVEL) {
+            spriteBatch.setColor(Color.BLACK);
+            float percentage = stateTime / SWITCH_LEVEL_ANIMATION_TIME;
+            float hiddenHeight = percentage * mapRenderer.bounds.height;
+            float hiddenY = mapRenderer.bounds.y + mapRenderer.bounds.height - hiddenHeight;
+            spriteBatch.draw(assets.whitePixel, mapRenderer.bounds.x, hiddenY, mapRenderer.bounds.width, hiddenHeight);
+        } else if (state == State.FADE_IN_LEVEL) {
+            spriteBatch.setColor(Color.BLACK);
+            float percentage = 1f - stateTime / SWITCH_LEVEL_ANIMATION_TIME;
+            float hiddenHeight = percentage * mapRenderer.bounds.height;
+            float hiddenY = mapRenderer.bounds.y + mapRenderer.bounds.height - hiddenHeight;
+            spriteBatch.draw(assets.whitePixel, mapRenderer.bounds.x, hiddenY, mapRenderer.bounds.width, hiddenHeight);
+        }
+
+
 		renderHud();
 
 		spriteBatch.end();
@@ -174,12 +199,43 @@ public class Game extends ApplicationAdapter {
 		assets.font.draw(spriteBatch, stats.healthString, 4, hudHeight);
 	}
 
-	private void step(float delta) {
-		if (world.isCompleted()) {
-			initWorld();
-		}
+    private static final float SWITCH_LEVEL_ANIMATION_TIME = 1;
+    private float stateTime = 0;
 
-		world.update(delta, scheduler);
+    private void setState(State state) {
+        this.state = state;
+        stateTime = 0;
+    }
+
+	private void step(float delta) {
+
+        stateTime += delta;
+
+        switch (state) {
+            case PLAY: {
+                if (world.isCompleted()) {
+                    setState(State.FADE_OUT_LEVEL);
+                } else {
+                    world.update(delta, scheduler);
+                }
+                break;
+            }
+            case FADE_OUT_LEVEL: {
+                if (stateTime > SWITCH_LEVEL_ANIMATION_TIME) {
+                    initWorld();
+                    setState(State.FADE_IN_LEVEL);
+                }
+                break;
+            }
+            case FADE_IN_LEVEL: {
+                if (stateTime > SWITCH_LEVEL_ANIMATION_TIME) {
+                    setState(State.PLAY);
+                }
+                break;
+            }
+        }
+
+
 	}
 
 }
