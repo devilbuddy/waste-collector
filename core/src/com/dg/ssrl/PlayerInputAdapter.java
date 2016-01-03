@@ -144,7 +144,7 @@ public class PlayerInputAdapter extends InputAdapter implements GestureDetector.
                 }
 
                 Direction swipeDirection = directionFromAngle(angle);
-                if(swipeDirection != Direction.NONE && !swiped) {
+                if(swipeDirection != Direction.NONE /*&& !swiped*/) {
                     swiped = true;
                     setMovementDirection(swipeDirection);
                 }
