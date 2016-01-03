@@ -118,7 +118,7 @@ public class Components {
 
         public void damage(int amount) {
             health -= amount;
-            if (health < 0) {
+            if (health <= 0) {
                 health = 0;
                 onDied.onDied();
             }
@@ -127,6 +127,14 @@ public class Components {
 
         public boolean isAlive() {
             return health > 0;
+        }
+
+        @Override
+        public String toString() {
+            return "Stats{" +
+                    "health=" + health +
+                    ", maxHealth=" + maxHealth +
+                    '}';
         }
     }
 

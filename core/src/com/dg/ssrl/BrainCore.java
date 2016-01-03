@@ -35,7 +35,7 @@ public class BrainCore {
             final Position targetPosition = currentPosition.clone();
             world.translateWraparound(targetPosition, moveDirection);
 
-            Gdx.app.log(tag, "targetPosition:" + targetPosition);
+           // Gdx.app.log(tag, "targetPosition:" + targetPosition);
 
             if (world.isWalkable(targetPosition)) {
 
@@ -121,6 +121,7 @@ public class BrainCore {
     }
 
     public static void fire(final World world, final Entity entity, final Direction direction, final Assets.Sounds sounds) {
+        Gdx.app.log(tag, "fire " + entity + " " + direction);
         final EntityFactory entityFactory = world.getEntityFactory();
         final Scheduler scheduler = world.getScheduler();
 
@@ -171,15 +172,20 @@ public class BrainCore {
 
                 sounds.play(Assets.Sounds.SoundId.HIT);
                 if (hit) {
+                    Gdx.app.log(tag, "hit in cell " + bulletEnd);
                     World.Cell cell = world.getCell(bulletEnd.x, bulletEnd.y);
                     int entityCount = cell.getEntityCount();
                     for (int i = 0; i < entityCount; i++) {
                         int entityId = cell.getEntityId(i);
-                        Entity entity = world.getEntity(entityId);
-                        Components.Stats stats = entity.getComponent(Components.Stats.class);
-                        if (stats != null) {
-                            stats.damage(1);
-                            entity.alive = stats.isAlive();
+                        Entity hitEntity = world.getEntity(entityId);
+
+                        Gdx.app.log(tag, "hit entity " + hitEntity);
+
+                        Components.Stats hitEntityStats = hitEntity.getComponent(Components.Stats.class);
+                        if (hitEntityStats != null) {
+                            Gdx.app.log(tag, "hit stats " + hitEntityStats);
+                            hitEntityStats.damage(1);
+
                         }
                     }
                 }

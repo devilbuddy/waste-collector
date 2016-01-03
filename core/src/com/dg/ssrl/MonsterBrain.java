@@ -21,6 +21,9 @@ public class MonsterBrain implements Brain {
     @Override
     public boolean act(final World world) {
         final Entity entity = world.getEntity(entityId);
+        if (!entity.alive) {
+            return true;
+        }
         final MoveAnimation moveAnimation = entity.getComponent(MoveAnimation.class);
 
         if (!moveAnimation.isBusy()) {
@@ -39,7 +42,7 @@ public class MonsterBrain implements Brain {
                 }
             }
 
-            Gdx.app.log(tag, "targetDirection:" + targetDirection);
+            //Gdx.app.log(tag, "targetDirection:" + targetDirection);
             BrainCore.MoveResult moveResult = BrainCore.move(world, entity, targetDirection, sounds);
             //return moveResult.acted;
             return true;

@@ -28,7 +28,7 @@ class PlayerBrain implements Brain {
             Direction moveDirection = playerInputAdapter.getMovementDirection();
 
             if (moveDirection != Direction.NONE) {
-                Gdx.app.log(tag, "moveDirection=" + moveDirection);
+                //Gdx.app.log(tag, "moveDirection=" + moveDirection);
 
                 BrainCore.MoveResult moveResult = BrainCore.move(world, player, moveDirection, sounds);
                 acted = moveResult.acted;

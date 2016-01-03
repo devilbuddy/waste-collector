@@ -7,7 +7,7 @@ public enum MonsterType {
     Player(Actor.Speed.MEDIUM, 3),
     Snake(Actor.Speed.SLOW, 2),
     Rat(Actor.Speed.FAST, 1),
-    Egg(Actor.Speed.MEDIUM, 3),
+    Egg(Actor.Speed.SLOW, 3),
     ;
 
     public static MonsterType[] ENEMIES = {

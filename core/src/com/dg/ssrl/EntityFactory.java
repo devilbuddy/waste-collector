@@ -68,7 +68,7 @@ public class EntityFactory {
     }
 
     public Entity makeMonster(int x, int y, MonsterType monsterType) {
-        Position position = new Position(x, y);
+         Position position = new Position(x, y);
 
         final MoveAnimation moveAnimation = new MoveAnimation(50f);
         moveAnimation.setPosition(x * Assets.TILE_SIZE, y * Assets.TILE_SIZE).setDirection(Direction.EAST);
@@ -158,7 +158,7 @@ public class EntityFactory {
         entity.addComponent(new Trigger(new TriggerAction() {
             @Override
             public void run(final World world, Entity triggeredBy) {
-                if (world.getPlayer().id == triggeredBy.id) {
+                if (world.getPlayer() != null && world.getPlayer().id == triggeredBy.id) {
                     world.setCompleted();
                     assets.sounds.play(Assets.Sounds.SoundId.EXIT);
                 }
