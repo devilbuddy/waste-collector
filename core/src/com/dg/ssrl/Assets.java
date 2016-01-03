@@ -17,7 +17,8 @@ public class Assets {
 
         public enum SoundId {
             LASER,
-            HIT
+            HIT,
+            PICKUP
         }
         private Map<SoundId, Sound> sounds = new HashMap<SoundId, Sound>();
 
@@ -29,6 +30,7 @@ public class Assets {
         public void create() {
             sounds.put(SoundId.LASER, Gdx.audio.newSound(Gdx.files.internal("laser-shoot.wav")));
             sounds.put(SoundId.HIT, Gdx.audio.newSound(Gdx.files.internal("hit-hurt.wav")));
+            sounds.put(SoundId.PICKUP, Gdx.audio.newSound(Gdx.files.internal("pickup-coin.wav")));
         }
 
         public void play(SoundId soundId) {

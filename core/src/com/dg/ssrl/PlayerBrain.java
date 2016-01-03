@@ -30,7 +30,7 @@ class PlayerBrain implements Brain {
             if (moveDirection != Direction.NONE) {
                 Gdx.app.log(tag, "moveDirection=" + moveDirection);
 
-                BrainCore.MoveResult moveResult = BrainCore.move(world, player, moveDirection);
+                BrainCore.MoveResult moveResult = BrainCore.move(world, player, moveDirection, sounds);
                 acted = moveResult.acted;
                 if (moveResult.moved) {
                     world.updateDijkstraMap(moveResult.endPosition.x, moveResult.endPosition.y);
@@ -55,7 +55,7 @@ class PlayerBrain implements Brain {
             if (action == PlayerInputAdapter.Action.FIRE) {
                 Gdx.app.log(tag, "FIRE");
 
-                BrainCore.fire(world, player, moveAnimation.direction, scheduler, sounds);
+                BrainCore.fire(world, player, moveAnimation.direction, sounds);
 
                 acted = true;
 

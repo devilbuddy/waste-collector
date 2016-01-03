@@ -4,14 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.IntArray;
 
-import static com.dg.ssrl.Components.Position;
-import static com.dg.ssrl.Components.Update;
-import static com.dg.ssrl.Components.Actor;
-import static com.dg.ssrl.Components.Solid;
-import static com.dg.ssrl.Components.ItemContainer;
-import static com.dg.ssrl.Components.Trigger;
-
 import java.util.ArrayList;
+
+import static com.dg.ssrl.Components.Actor;
+import static com.dg.ssrl.Components.ItemContainer;
+import static com.dg.ssrl.Components.Position;
+import static com.dg.ssrl.Components.Solid;
+import static com.dg.ssrl.Components.Update;
 
 public class World {
     private static final String tag = "World";
@@ -94,6 +93,10 @@ public class World {
 
     public EntityFactory getEntityFactory() {
         return entityFactory;
+    }
+
+    public Scheduler getScheduler() {
+        return scheduler;
     }
 
     public void update(float delta, Scheduler scheduler) {
@@ -257,22 +260,11 @@ public class World {
         getCell(position.x, position.y).entityIds.removeValue(entity.id);
         position.set(toX, toY);
         getCell(position.x, position.y).entityIds.add(entity.id);
-
-        Cell cell = getCell(position);
-        for (int i = 0; i < cell.getEntityCount(); i++) {
-            int entityId = cell.getEntityId(i);
-            Trigger trigger = getEntity(entityId).getComponent(Trigger.class);
-            if (trigger != null) {
-                trigger.triggerAction.run(this, entity);
-            }
-        }
     }
 
     public boolean contains(int x, int y) {
         return x >= 0 && x <= width - 1 && y >= 0 && y <= height - 1;
     }
-
-
 
     public boolean isWalkable(Position position) {
         if (contains(position.x, position.y)) {
@@ -290,6 +282,18 @@ public class World {
                     }
                 }
                 return !containsSolidEntities;
+            }
+        }
+        return false;
+    }
+
+    public boolean containsEntityWithComponent(Position position, Class clazz) {
+        Cell cell = getCell(position.x, position.y);
+        for (int i = 0; i < cell.entityIds.size; i++) {
+            int entityId = cell.entityIds.get(i);
+            Entity entity = getEntity(entityId);
+            if (entity.getComponent(clazz) != null) {
+                return true;
             }
         }
         return false;

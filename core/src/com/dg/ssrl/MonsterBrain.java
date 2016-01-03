@@ -11,9 +11,11 @@ public class MonsterBrain implements Brain {
     private static final String tag = "MonsterBrain";
 
     private final int entityId;
+    private final Assets.Sounds sounds;
 
-    public MonsterBrain(int entityId) {
+    public MonsterBrain(int entityId, Assets.Sounds sounds) {
         this.entityId = entityId;
+        this.sounds = sounds;
     }
 
     @Override
@@ -38,7 +40,7 @@ public class MonsterBrain implements Brain {
             }
 
             Gdx.app.log(tag, "targetDirection:" + targetDirection);
-            BrainCore.MoveResult moveResult = BrainCore.move(world, entity, targetDirection);
+            BrainCore.MoveResult moveResult = BrainCore.move(world, entity, targetDirection, sounds);
             //return moveResult.acted;
             return true;
         } else {

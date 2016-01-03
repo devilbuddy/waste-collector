@@ -115,6 +115,7 @@ public class Game extends ApplicationAdapter {
     }
 
 	private void initWorld() {
+        playerInputAdapter.clear();
 		scheduler.clear();
 
 		int width = 10;

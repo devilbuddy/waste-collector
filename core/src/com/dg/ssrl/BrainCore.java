@@ -20,8 +20,9 @@ public class BrainCore {
 
     private static MoveResult moveResult = new MoveResult();
 
-    public static MoveResult move(final World world, final Entity entity, final Direction moveDirection) {
-        EntityFactory entityFactory = world.getEntityFactory();
+    public static MoveResult move(final World world, final Entity entity, final Direction moveDirection, final Assets.Sounds sounds) {
+        final EntityFactory entityFactory = world.getEntityFactory();
+        final Scheduler scheduler = world.getScheduler();
         final MoveAnimation moveAnimation = entity.getComponent(MoveAnimation.class);
         final Position currentPosition = entity.getComponent(Position.class);
 
@@ -37,10 +38,30 @@ public class BrainCore {
             Gdx.app.log(tag, "targetPosition:" + targetPosition);
 
             if (world.isWalkable(targetPosition)) {
+
+                final boolean targetContainsTrigger = world.containsEntityWithComponent(targetPosition, Trigger.class);
+
+                if (targetContainsTrigger) {
+                    scheduler.lock();
+                }
+
                 moveAnimation.startMove(currentPosition, Assets.TILE_SIZE, moveDirection, new Runnable() {
                     @Override
                     public void run() {
                         moveAnimation.setPosition(targetPosition.x * Assets.TILE_SIZE, targetPosition.y * Assets.TILE_SIZE);
+
+                        // triggers
+                        World.Cell cell = world.getCell(targetPosition);
+                        for (int i = 0; i < cell.getEntityCount(); i++) {
+                            int entityId = cell.getEntityId(i);
+                            Trigger trigger = world.getEntity(entityId).getComponent(Trigger.class);
+                            if (trigger != null) {
+                                trigger.triggerAction.run(world, entity);
+                            }
+                        }
+                        if (targetContainsTrigger) {
+                            scheduler.unlock();
+                        }
                     }
                 });
 
@@ -54,6 +75,7 @@ public class BrainCore {
                         if (pickupItem != null) {
                             pickupItem.emptyInto(itemContainer);
                             Gdx.app.log(tag, itemContainer.toString());
+                            sounds.play(Assets.Sounds.SoundId.PICKUP);
                         }
                     }
                 }
@@ -93,8 +115,10 @@ public class BrainCore {
         return moveResult;
     }
 
-    public static void fire(final World world, final Entity entity, final Direction direction, final Scheduler scheduler, final Assets.Sounds sounds) {
+    public static void fire(final World world, final Entity entity, final Direction direction, final Assets.Sounds sounds) {
         final EntityFactory entityFactory = world.getEntityFactory();
+        final Scheduler scheduler = world.getScheduler();
+
         Position bulletStart = entity.getComponent(Position.class).clone().translate(direction);
 
         final Position bulletEnd = bulletStart.clone();

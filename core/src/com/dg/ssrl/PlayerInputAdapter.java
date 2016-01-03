@@ -52,6 +52,10 @@ public class PlayerInputAdapter extends InputAdapter implements GestureDetector.
         return null;
     }
 
+    public void clear() {
+        actionQueue.clear();
+    }
+
     @Override
     public boolean keyDown (int keycode) {
 
