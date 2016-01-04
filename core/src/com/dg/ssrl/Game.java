@@ -83,13 +83,18 @@ public class Game extends ApplicationAdapter {
 	private World world;
 
     private enum State {
+		MENU,
         PLAY,
         GAME_OVER,
         FADE_OUT_LEVEL,
         FADE_IN_LEVEL
     }
 
-    private State state = State.PLAY;
+    private State state = State.MENU;
+
+	private static class GameData {
+
+	}
 
 	public Game(Position[] debugScreenSizes) {
 		DebugInputSwitcher debugInputSwitcher = new DebugInputSwitcher(debugScreenSizes);
@@ -180,33 +185,35 @@ public class Game extends ApplicationAdapter {
 		spriteBatch.begin();
         spriteBatch.setProjectionMatrix(mapCamera.combined);
 
-		mapRenderer.render(world, spriteBatch);
+		if (state != State.MENU) {
+			mapRenderer.render(world, spriteBatch);
 
-		spriteBatch.setColor(Color.BLACK);
-		spriteBatch.draw(assets.whitePixel, 0, 0, width, mapRenderer.bounds.y);
+			spriteBatch.setColor(Color.BLACK);
+			spriteBatch.draw(assets.whitePixel, 0, 0, width, mapRenderer.bounds.y);
 
-		float mapTopY = mapRenderer.bounds.y + mapRenderer.bounds.height;
-		spriteBatch.draw(assets.whitePixel, 0, mapTopY, width, height - mapTopY);
+			float mapTopY = mapRenderer.bounds.y + mapRenderer.bounds.height;
+			spriteBatch.draw(assets.whitePixel, 0, mapTopY, width, height - mapTopY);
 
-        if (state == State.FADE_OUT_LEVEL) {
-            spriteBatch.setColor(Color.BLACK);
-            float percentage = stateTime / SWITCH_LEVEL_ANIMATION_TIME;
-            float hiddenHeight = percentage * mapRenderer.bounds.height;
-            float hiddenY = mapRenderer.bounds.y + mapRenderer.bounds.height - hiddenHeight;
-            spriteBatch.draw(assets.whitePixel, mapRenderer.bounds.x, hiddenY, mapRenderer.bounds.width, hiddenHeight);
-        } else if (state == State.FADE_IN_LEVEL) {
-            spriteBatch.setColor(Color.BLACK);
-            float percentage = 1f - stateTime / SWITCH_LEVEL_ANIMATION_TIME;
-            float hiddenHeight = percentage * mapRenderer.bounds.height;
-            float hiddenY = mapRenderer.bounds.y + mapRenderer.bounds.height - hiddenHeight;
-            spriteBatch.draw(assets.whitePixel, mapRenderer.bounds.x, hiddenY, mapRenderer.bounds.width, hiddenHeight);
-        } else if (state == State.GAME_OVER) {
-            String gameOver = "Game Over";
-            GlyphLayout glyphLayout = new GlyphLayout(assets.font, gameOver);
-            float x = mapRenderer.bounds.x + mapRenderer.bounds.width/2 - glyphLayout.width/2;
-            float y = mapRenderer.bounds.y + mapRenderer.bounds.height/2 + glyphLayout.height;
-            assets.font.draw(spriteBatch, gameOver, x, y);
-        }
+			if (state == State.FADE_OUT_LEVEL) {
+				spriteBatch.setColor(Color.BLACK);
+				float percentage = stateTime / SWITCH_LEVEL_ANIMATION_TIME;
+				float hiddenHeight = percentage * mapRenderer.bounds.height;
+				float hiddenY = mapRenderer.bounds.y + mapRenderer.bounds.height - hiddenHeight;
+				spriteBatch.draw(assets.whitePixel, mapRenderer.bounds.x, hiddenY, mapRenderer.bounds.width, hiddenHeight);
+			} else if (state == State.FADE_IN_LEVEL) {
+				spriteBatch.setColor(Color.BLACK);
+				float percentage = 1f - stateTime / SWITCH_LEVEL_ANIMATION_TIME;
+				float hiddenHeight = percentage * mapRenderer.bounds.height;
+				float hiddenY = mapRenderer.bounds.y + mapRenderer.bounds.height - hiddenHeight;
+				spriteBatch.draw(assets.whitePixel, mapRenderer.bounds.x, hiddenY, mapRenderer.bounds.width, hiddenHeight);
+			} else if (state == State.GAME_OVER) {
+				String gameOver = "Game Over";
+				GlyphLayout glyphLayout = new GlyphLayout(assets.font, gameOver);
+				float x = mapRenderer.bounds.x + mapRenderer.bounds.width / 2 - glyphLayout.width / 2;
+				float y = mapRenderer.bounds.y + mapRenderer.bounds.height / 2 + glyphLayout.height;
+				assets.font.draw(spriteBatch, gameOver, x, y);
+			}
+		}
 
 		renderHud();
 
@@ -214,21 +221,39 @@ public class Game extends ApplicationAdapter {
 	}
 
 	private void renderHud() {
-        Entity player = world.getPlayer();
-        if (player != null) {
-            spriteBatch.setProjectionMatrix(hudCamera.combined);
-            spriteBatch.setColor(Color.WHITE);
+		if (state == State.MENU) {
+			spriteBatch.setProjectionMatrix(hudCamera.combined);
+			spriteBatch.setColor(Color.WHITE);
 
-            Stats stats = player.getComponent(Stats.class);
-            assets.font.draw(spriteBatch, stats.healthString, 4, hudHeight);
+			float logoW = assets.logo.getRegionWidth() * 2;
+			float logoH = assets.logo.getRegionHeight() * 2;
+			float logoX = hudWidth/2 - logoW /2;
+			float logoY = (hudHeight/3 * 2) - logoH / 2;
+			spriteBatch.draw(assets.logo, logoX, logoY, logoW, logoH);
 
-			ItemContainer itemContainer = player.getComponent(ItemContainer.class);
-			assets.font.draw(spriteBatch, itemContainer.getAmountString(ItemType.Ammo), hudWidth/2, hudHeight);
+			String gameOver = "TAP TO START";
+			GlyphLayout glyphLayout = new GlyphLayout(assets.font, gameOver);
+			float x = hudWidth / 2 - glyphLayout.width / 2;
+			float y = hudHeight / 2 + glyphLayout.height;
+			assets.font.setColor(Color.ORANGE);
+			assets.font.draw(spriteBatch, gameOver, x, y);
 
-			String depthString = "SECTOR " + world.getDepth();
-			assets.font.draw(spriteBatch, depthString, hudWidth/2, hudHeight - assets.font.getCapHeight());
-        }
+		} else {
+			Entity player = world.getPlayer();
+			if (player != null) {
+				spriteBatch.setProjectionMatrix(hudCamera.combined);
+				
+				assets.font.setColor(Color.ORANGE);
+				Stats stats = player.getComponent(Stats.class);
+				assets.font.draw(spriteBatch, stats.healthString, 4, hudHeight);
 
+				ItemContainer itemContainer = player.getComponent(ItemContainer.class);
+				assets.font.draw(spriteBatch, itemContainer.getAmountString(ItemType.Ammo), hudWidth/2, hudHeight);
+
+				String depthString = "SECTOR " + world.getDepth();
+				assets.font.draw(spriteBatch, depthString, hudWidth/2, hudHeight - assets.font.getCapHeight());
+			}
+		}
 	}
 
     private static final float SWITCH_LEVEL_ANIMATION_TIME = 0.75f;
@@ -244,6 +269,13 @@ public class Game extends ApplicationAdapter {
         stateTime += delta;
 
         switch (state) {
+			case MENU: {
+				if (playerInputAdapter.popAction() == PlayerInputAdapter.Action.FIRE) {
+					initWorld(true);
+					setState(State.PLAY);
+				}
+				break;
+			}
             case PLAY: {
                 if (world.isCompleted()) {
                     setState(State.FADE_OUT_LEVEL);

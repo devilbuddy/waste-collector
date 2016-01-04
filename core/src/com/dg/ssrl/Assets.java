@@ -59,6 +59,8 @@ public class Assets {
 
     public TextureRegion[] exitFrames;
 
+    public TextureRegion logo;
+
     private Map<MonsterType, TextureRegion> monsterSprites = new HashMap<MonsterType, TextureRegion>();
     private Map<ItemType, TextureRegion> itemSprites = new HashMap<ItemType, TextureRegion>();
 
@@ -85,6 +87,8 @@ public class Assets {
         itemSprites.put(ItemType.Ammo, tiles[10][2]);
 
         exitFrames = new TextureRegion[] {tiles[12][2], tiles[12][1], tiles[12][0]};
+
+        logo = new TextureRegion(tilesTexture, 80, 112, 48, 16);
 
         sounds.create();
     }
