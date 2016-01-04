@@ -59,6 +59,7 @@ public class World {
     public ArrayList<Entity> entities = new ArrayList<Entity>();
     public Rectangle bounds = new Rectangle();
     public int playerEntityId;
+    public int exitEntityId;
 
     public int[][] dijkstraMap;
 
@@ -239,6 +240,11 @@ public class World {
         updateDijkstraMap(position.x, position.y);
     }
 
+    public void addExit(Entity exit) {
+        exitEntityId = exit.id;
+        addEntity(exit);
+    }
+
     public void addEntity(Entity entity) {
         entities.add(entity);
 
@@ -253,6 +259,10 @@ public class World {
 
     public Entity getPlayer() {
         return getEntity(playerEntityId);
+    }
+
+    public Entity getExit() {
+        return getEntity(exitEntityId);
     }
 
     public Entity getEntity(int id) {

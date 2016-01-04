@@ -141,7 +141,7 @@ public class Game extends ApplicationAdapter {
             oldPlayer.getComponent(MoveAnimation.class).reset().setPosition(levelData.start.x * Assets.TILE_SIZE, levelData.start.y * Assets.TILE_SIZE);
             world.addPlayer(oldPlayer);
         }
-		world.addEntity(entityFactory.makeExit(levelData.exit.x, levelData.exit.y));
+		world.addExit(entityFactory.makeExit(levelData.exit.x, levelData.exit.y));
 
 		for (int i = 0; i < levelData.entities.size(); i++) {
 			Entity entity = levelData.entities.get(i);
@@ -239,6 +239,11 @@ public class Game extends ApplicationAdapter {
                 } else if(world.isGameOver()) {
                     setState(State.GAME_OVER);
                 } else {
+
+					ItemContainer itemContainer = world.getPlayer().getComponent(ItemContainer.class);
+					boolean hasKey = itemContainer.getAmount(ItemType.Key) > 0;
+					world.getExit().getComponent(Sprite.class).enableAnimation(hasKey);
+					
                     world.update(delta);
                 }
                 break;

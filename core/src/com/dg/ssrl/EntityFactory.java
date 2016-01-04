@@ -158,9 +158,18 @@ public class EntityFactory {
         entity.addComponent(new Trigger(new TriggerAction() {
             @Override
             public void run(final World world, Entity triggeredBy) {
-                if (world.getPlayer() != null && world.getPlayer().id == triggeredBy.id) {
-                    world.setCompleted();
-                    assets.sounds.play(Assets.Sounds.SoundId.EXIT);
+                Entity player = world.getPlayer();
+                if (player != null) {
+                    if (player.id == triggeredBy.id) {
+
+                        ItemContainer itemContainer = player.getComponent(ItemContainer.class);
+                        int keyCount = itemContainer.getAmount(ItemType.Key);
+                        if (keyCount > 0) {
+                            itemContainer.remove(ItemType.Key, 1);
+                            world.setCompleted();
+                            assets.sounds.play(Assets.Sounds.SoundId.EXIT);
+                        }
+                    }
                 }
             }
         }));

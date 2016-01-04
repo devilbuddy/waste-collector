@@ -49,6 +49,21 @@ public class Components {
             content.put(itemType, newAmount);
         }
 
+        public int getAmount(ItemType itemType) {
+            if (content.containsKey(itemType)) {
+                return content.get(itemType);
+            }
+            return 0;
+        }
+
+        public void remove(ItemType itemType, int amount) {
+            if (content.containsKey(itemType)) {
+                int current = content.get(itemType);
+                current -= amount;
+                content.put(itemType, current);
+            }
+        }
+
         public void clear() {
             content.clear();
         }
@@ -187,6 +202,7 @@ public class Components {
         private final float frameDuration;
 
         private float stateTime;
+        private boolean animationEnabled = true;
 
         public Sprite(TextureRegion textureRegion) {
             this(new TextureRegion[]{ textureRegion}, 1);
@@ -197,8 +213,17 @@ public class Components {
             this.frameDuration = frameDuration;
         }
 
+        public void enableAnimation(boolean animationEnabled) {
+            this.animationEnabled = animationEnabled;
+            if (!animationEnabled) {
+                stateTime = 0;
+            }
+        }
+
         public void update(float delta) {
-            stateTime += delta;
+            if (animationEnabled) {
+                stateTime += delta;
+            }
         }
 
         public TextureRegion getTextureRegion() {
