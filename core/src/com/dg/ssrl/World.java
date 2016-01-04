@@ -60,16 +60,18 @@ public class World {
     public Rectangle bounds = new Rectangle();
     public int playerEntityId;
     public int exitEntityId;
+    public int depth;
 
     public int[][] dijkstraMap;
 
     private boolean completed;
 
-    public World(int width, int height, EntityFactory entityFactory, Scheduler scheduler) {
+    public World(int width, int height, EntityFactory entityFactory, Scheduler scheduler, int depth) {
         this.width = width;
         this.height = height;
         this.entityFactory = entityFactory;
         this.scheduler = scheduler;
+        this.depth = depth;
 
         cells = new Cell[height][width];
         dijkstraMap = new int[height][width];
@@ -82,6 +84,10 @@ public class World {
 
         bounds.set(0, 0, width * Assets.TILE_SIZE, height * Assets.TILE_SIZE);
         Gdx.app.log(tag, "bounds: " + bounds);
+    }
+
+    public int getDepth() {
+        return depth;
     }
 
     public void setCompleted() {

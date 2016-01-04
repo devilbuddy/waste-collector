@@ -56,6 +56,10 @@ public class Components {
             return 0;
         }
 
+        public String getAmountString(ItemType itemType) {
+            return itemType.name + " " + getAmount(itemType);
+        }
+
         public void remove(ItemType itemType, int amount) {
             if (content.containsKey(itemType)) {
                 int current = content.get(itemType);

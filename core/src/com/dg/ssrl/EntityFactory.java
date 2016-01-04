@@ -91,7 +91,9 @@ public class EntityFactory {
                 entity.getComponent(Actor.class).alive = false;
             }
         }));
-        entity.addComponent(new ItemContainer());
+        if (monsterType.canCarryItems) {
+            entity.addComponent(new ItemContainer());
+        }
         entity.addComponent(new Update(new Updater() {
             @Override
             public void update(float delta, World world) {

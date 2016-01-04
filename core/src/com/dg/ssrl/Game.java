@@ -122,12 +122,16 @@ public class Game extends ApplicationAdapter {
 		int height = 10;
 		Generator.LevelData levelData = Generator.generate(System.currentTimeMillis(), width, height, entityFactory);
 
+		int depth = 0;
+
         Entity oldPlayer = null;
         if (world != null) {
             oldPlayer = world.getPlayer();
-        }
+        	depth = world.getDepth();
+		}
+		depth += 1;
 
-		world = new World(width, height, entityFactory, scheduler);
+		world = new World(width, height, entityFactory, scheduler, depth);
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				world.getCell(x, y).type = levelData.tiles[y][x];
@@ -214,8 +218,15 @@ public class Game extends ApplicationAdapter {
         if (player != null) {
             spriteBatch.setProjectionMatrix(hudCamera.combined);
             spriteBatch.setColor(Color.WHITE);
-            Stats stats = world.getPlayer().getComponent(Stats.class);
+
+            Stats stats = player.getComponent(Stats.class);
             assets.font.draw(spriteBatch, stats.healthString, 4, hudHeight);
+
+			ItemContainer itemContainer = player.getComponent(ItemContainer.class);
+			assets.font.draw(spriteBatch, itemContainer.getAmountString(ItemType.Ammo), hudWidth/2, hudHeight);
+
+			String depthString = "SECTOR " + world.getDepth();
+			assets.font.draw(spriteBatch, depthString, hudWidth/2, hudHeight - assets.font.getCapHeight());
         }
 
 	}
@@ -243,7 +254,7 @@ public class Game extends ApplicationAdapter {
 					ItemContainer itemContainer = world.getPlayer().getComponent(ItemContainer.class);
 					boolean hasKey = itemContainer.getAmount(ItemType.Key) > 0;
 					world.getExit().getComponent(Sprite.class).enableAnimation(hasKey);
-					
+
                     world.update(delta);
                 }
                 break;
