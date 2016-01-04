@@ -56,10 +56,11 @@ public class Assets {
 
     public TextureRegion whitePixel;
 
-    public TextureRegion key;
+
     public TextureRegion[] exitFrames;
 
     private Map<MonsterType, TextureRegion> monsterSprites = new HashMap<MonsterType, TextureRegion>();
+    private Map<ItemType, TextureRegion> itemSprites = new HashMap<ItemType, TextureRegion>();
 
     public Sounds sounds = new Sounds();
 
@@ -80,7 +81,9 @@ public class Assets {
         monsterSprites.put(MonsterType.Rat, tiles[7][1]);
         monsterSprites.put(MonsterType.Egg, tiles[11][0]);
 
-        key = tiles[9][0];
+        itemSprites.put(ItemType.Key, tiles[9][0]);
+        itemSprites.put(ItemType.Ammo, tiles[10][2]);
+
         exitFrames = new TextureRegion[] {tiles[12][2], tiles[12][1], tiles[12][0]};
 
         sounds.create();
@@ -88,6 +91,10 @@ public class Assets {
 
     public TextureRegion getMonsterTextureRegion(MonsterType monsterType) {
         return monsterSprites.get(monsterType);
+    }
+
+    public TextureRegion getItemTextureRegion(ItemType itemType) {
+        return itemSprites.get(itemType);
     }
 
 }

@@ -125,7 +125,7 @@ public class EntityFactory {
     public Entity makeItem(int x, int y, ItemType itemType) {
         final Entity entity = createEntity();
         entity.addComponent(new Position(x, y));
-        entity.addComponent(new Sprite(assets.key));
+        entity.addComponent(new Sprite(assets.getItemTextureRegion(itemType)));
 
         final MoveAnimation moveAnimation = new MoveAnimation(50f);
         moveAnimation.setPosition(x * Assets.TILE_SIZE, y * Assets.TILE_SIZE).setDirection(Direction.EAST);

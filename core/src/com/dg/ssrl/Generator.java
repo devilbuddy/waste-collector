@@ -134,6 +134,9 @@ public class Generator {
         levelData.start = floors.remove(0);
         levelData.exit = floors.remove(0);
 
+        Position keyPosition = floors.remove(0);
+        levelData.entities.add(entityFactory.makeItem(keyPosition.x, keyPosition.y, ItemType.Key));
+
         // monsters
         for (int i = 0; i < 4; i++) {
             Position monsterPosition = floors.remove(0);
@@ -145,7 +148,7 @@ public class Generator {
         // items
         for (int i = 0; i < 4; i++) {
             Position itemPosition = floors.remove(0);
-            Entity item = entityFactory.makeItem(itemPosition.x, itemPosition.y, ItemType.Key);
+            Entity item = entityFactory.makeItem(itemPosition.x, itemPosition.y, ItemType.Ammo);
             levelData.entities.add(item);
         }
 
