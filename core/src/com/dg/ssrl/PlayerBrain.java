@@ -55,10 +55,13 @@ class PlayerBrain implements Brain {
             if (action == PlayerInputAdapter.Action.FIRE) {
                 Gdx.app.log(tag, "FIRE");
 
-                BrainCore.fire(world, player, moveAnimation.direction, sounds);
-
-                acted = true;
-
+                ItemContainer itemContainer = player.getComponent(ItemContainer.class);
+                int ammoCount = itemContainer.getAmount(ItemType.Ammo);
+                if (ammoCount > 0) {
+                    itemContainer.remove(ItemType.Ammo, 1);
+                    BrainCore.fire(world, player, moveAnimation.direction, sounds);
+                    acted = true;
+                }
             } else if (action == PlayerInputAdapter.Action.BOMB) {
                 Gdx.app.log(tag, "BOMB");
             }

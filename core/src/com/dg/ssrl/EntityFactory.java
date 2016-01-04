@@ -34,7 +34,9 @@ public class EntityFactory {
                 actor.alive = false;
             }
         }));
-        entity.addComponent(new ItemContainer());
+        ItemContainer itemContainer = new ItemContainer();
+        itemContainer.add(ItemType.Ammo, 10);
+        entity.addComponent(itemContainer);
 
 
         final MoveAnimation moveAnimation = new MoveAnimation(50f).setPosition(x * Assets.TILE_SIZE, y * Assets.TILE_SIZE).setDirection(Direction.EAST);
