@@ -138,7 +138,7 @@ public class Game extends ApplicationAdapter {
             world.addPlayer(entityFactory.makePlayer(levelData.start.x, levelData.start.y, playerInputAdapter, scheduler));
         } else {
             oldPlayer.getComponent(Position.class).set(levelData.start);
-            oldPlayer.getComponent(MoveAnimation.class).setPosition(levelData.start.x * Assets.TILE_SIZE, levelData.start.y * Assets.TILE_SIZE);
+            oldPlayer.getComponent(MoveAnimation.class).reset().setPosition(levelData.start.x * Assets.TILE_SIZE, levelData.start.y * Assets.TILE_SIZE);
             world.addPlayer(oldPlayer);
         }
 		world.addEntity(entityFactory.makeExit(levelData.exit.x, levelData.exit.y));

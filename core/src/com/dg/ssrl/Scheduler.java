@@ -54,7 +54,11 @@ public class Scheduler {
             } else {
                 queue.add(actor);
             }
-            iterations++;
+            if (lockCount.get() > 0) {
+                iterations = 5;
+            } else {
+                iterations++;
+            }
         }
     }
 

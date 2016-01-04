@@ -239,6 +239,12 @@ public class Components {
             return this;
         }
 
+        public MoveAnimation reset() {
+            state = State.DONE;
+            callback = null;
+            return this;
+        }
+
         public void startMove(Position start, float distance, Direction direction, Runnable callback) {
             bounds.x = start.x * Assets.TILE_SIZE;
             bounds.y = start.y * Assets.TILE_SIZE;
