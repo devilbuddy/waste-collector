@@ -27,7 +27,7 @@ public class EntityFactory {
         final Actor actor = new Actor(new PlayerBrain(playerInputAdapter, scheduler, assets.sounds), MonsterType.Player.speed);
         entity.addComponent(actor);
 
-        entity.addComponent(new Stats(MonsterType.Player.hitPoints, new OnDied() {
+        entity.addComponent(new Stats(MonsterType.Player, new OnDied() {
             @Override
             public void onDied() {
                 entity.alive = false;
@@ -84,7 +84,7 @@ public class EntityFactory {
         } else {
             entity.addComponent(new Actor(new MonsterBrain(entity.id, assets.sounds), monsterType.speed));
         }
-        entity.addComponent(new Stats(monsterType.hitPoints, new OnDied() {
+        entity.addComponent(new Stats(monsterType, new OnDied() {
             @Override
             public void onDied() {
                 entity.alive = false;

@@ -1,8 +1,11 @@
 package com.dg.ssrl;
 
+import java.util.Random;
+
 import static com.dg.ssrl.Components.Brain;
 import static com.dg.ssrl.Components.MoveAnimation;
 import static com.dg.ssrl.Components.Position;
+import static com.dg.ssrl.Components.Stats;
 
 public class MonsterBrain implements Brain {
 
@@ -10,6 +13,7 @@ public class MonsterBrain implements Brain {
 
     private final int entityId;
     private final Assets.Sounds sounds;
+    private final Random random = new Random(System.currentTimeMillis());
 
     public MonsterBrain(int entityId, Assets.Sounds sounds) {
         this.entityId = entityId;
@@ -28,21 +32,43 @@ public class MonsterBrain implements Brain {
             final Position current = entity.getComponent(Position.class);
 
             Direction targetDirection = Direction.NONE;
+            Position targetPosition = current.copy();
+
             int lowestValue = world.dijkstraMap[current.y][current.x];
             for (Direction direction : Direction.CARDINAL_DIRECTIONS) {
-                Position p = current.copy();
-                p = world.translateWraparound(p, direction);
+                targetPosition.set(current);
+                targetPosition = world.translateWraparound(targetPosition, direction);
 
-                int value = world.dijkstraMap[p.y][p.x];
+                int value = world.dijkstraMap[targetPosition.y][targetPosition.x];
                 if (value < lowestValue) {
                     lowestValue = value;
                     targetDirection = direction;
                 }
             }
 
-            //Gdx.app.log(tag, "targetDirection:" + targetDirection);
-            BrainCore.MoveResult moveResult = BrainCore.move(world, entity, targetDirection, sounds);
-            //return moveResult.acted;
+            boolean doMove = true;
+            if (targetDirection == moveAnimation.direction) {
+
+                Position target = current.copy();
+                world.translateWraparound(target, targetDirection);
+
+                World.Cell targetCell = world.getCell(target);
+                for (int i = 0; i < targetCell.getEntityCount(); i++) {
+                    Entity targetEntity = world.getEntity(targetCell.getEntityId(i));
+                    Stats targetStats = targetEntity.getComponent(Stats.class);
+                    if (targetStats != null && targetStats.monsterType != MonsterType.Player) {
+                        //targetDirection = Direction.CARDINAL_DIRECTIONS[random.nextInt(Direction.CARDINAL_DIRECTIONS.length)];
+                        doMove = false;
+                        //break;
+                    }
+                }
+            }
+
+            if (doMove) {
+                //Gdx.app.log(tag, "targetDirection:" + targetDirection);
+                BrainCore.MoveResult moveResult = BrainCore.move(world, entity, targetDirection, sounds);
+                //return moveResult.acted;
+            }
             return true;
         } else {
             return false;

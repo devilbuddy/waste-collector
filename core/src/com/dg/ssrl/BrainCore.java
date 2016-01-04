@@ -97,10 +97,10 @@ public class BrainCore {
                         targetStats.damage(1);
                         targetEntity.alive = targetStats.isAlive();
 
-                        moveResult.acted = true;
-                        moveResult.moved = false;
                     }
                 }
+                moveResult.acted = true;
+                moveResult.moved = false;
             }
 
         } else {

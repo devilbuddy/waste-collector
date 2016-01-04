@@ -101,15 +101,18 @@ public class Components {
     }
 
     public static class Stats implements Component {
+        public final MonsterType monsterType;
         private int maxHealth;
         private final OnDied onDied;
         private int health;
         public String healthString;
 
-        public Stats(int maxHealth, OnDied onDied) {
-            this.maxHealth = maxHealth;
-            this.health = maxHealth;
+        public Stats(MonsterType monsterType, OnDied onDied) {
+            this.monsterType = monsterType;
             this.onDied = onDied;
+
+            maxHealth = monsterType.hitPoints;
+            health = maxHealth;
             updateHealthString();
         }
         private void updateHealthString() {
