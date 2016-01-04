@@ -164,7 +164,7 @@ public class Components {
             return this;
         }
 
-        public Position clone() {
+        public Position copy() {
             Position p = new Position();
             p.set(x, y);
             return p;

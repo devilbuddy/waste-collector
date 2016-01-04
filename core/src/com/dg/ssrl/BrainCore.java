@@ -30,17 +30,16 @@ public class BrainCore {
         moveResult.moved = false;
         moveResult.endPosition.set(currentPosition);
 
+        final Position targetPosition = currentPosition.copy();
+        world.translateWraparound(targetPosition, moveDirection);
+
+        final World.Cell targetCell = world.getCell(targetPosition);
+
         if (moveAnimation.direction == moveDirection) {
-
-            final Position targetPosition = currentPosition.clone();
-            world.translateWraparound(targetPosition, moveDirection);
-
-           // Gdx.app.log(tag, "targetPosition:" + targetPosition);
-
+            // Gdx.app.log(tag, "targetPosition:" + targetPosition);
             if (world.isWalkable(targetPosition)) {
 
                 final boolean targetContainsTrigger = world.containsEntityWithComponent(targetPosition, Trigger.class);
-
                 if (targetContainsTrigger) {
                     scheduler.lock();
                 }
@@ -51,9 +50,8 @@ public class BrainCore {
                         moveAnimation.setPosition(targetPosition.x * Assets.TILE_SIZE, targetPosition.y * Assets.TILE_SIZE);
 
                         // triggers
-                        World.Cell cell = world.getCell(targetPosition);
-                        for (int i = 0; i < cell.getEntityCount(); i++) {
-                            int entityId = cell.getEntityId(i);
+                        for (int i = 0; i < targetCell.getEntityCount(); i++) {
+                            int entityId = targetCell.getEntityId(i);
                             Trigger trigger = world.getEntity(entityId).getComponent(Trigger.class);
                             if (trigger != null) {
                                 trigger.triggerAction.run(world, entity);
@@ -67,9 +65,8 @@ public class BrainCore {
 
                 ItemContainer itemContainer = entity.getComponent(ItemContainer.class);
                 if (itemContainer != null) {
-                    World.Cell cell = world.getCell(targetPosition);
-                    for (int i = 0; i < cell.getEntityCount(); i++) {
-                        int entityId = cell.getEntityId(i);
+                    for (int i = 0; i < targetCell.getEntityCount(); i++) {
+                        int entityId = targetCell.getEntityId(i);
                         Entity e = world.getEntity(entityId);
                         ItemContainer pickupItem = e.getComponent(ItemContainer.class);
                         if (pickupItem != null) {
@@ -87,9 +84,8 @@ public class BrainCore {
                 moveResult.endPosition.set(targetPosition);
             } else {
                 // bump
-                World.Cell cell = world.getCell(targetPosition);
-                for (int i = 0; i < cell.getEntityCount(); i++) {
-                    int entityId = cell.getEntityId(i);
+                for (int i = 0; i < targetCell.getEntityCount(); i++) {
+                    int entityId = targetCell.getEntityId(i);
                     Entity targetEntity = world.getEntity(entityId);
                     Stats targetStats = targetEntity.getComponent(Stats.class);
                     if (targetStats != null) {
@@ -125,9 +121,9 @@ public class BrainCore {
         final EntityFactory entityFactory = world.getEntityFactory();
         final Scheduler scheduler = world.getScheduler();
 
-        Position bulletStart = entity.getComponent(Position.class).clone().translate(direction);
+        Position bulletStart = entity.getComponent(Position.class).copy().translate(direction);
 
-        final Position bulletEnd = bulletStart.clone();
+        final Position bulletEnd = bulletStart.copy();
         boolean hitSomething = false;
         int distanceTiles = 0;
         while (!hitSomething) {

@@ -1,7 +1,5 @@
 package com.dg.ssrl;
 
-import com.badlogic.gdx.Gdx;
-
 import static com.dg.ssrl.Components.Brain;
 import static com.dg.ssrl.Components.MoveAnimation;
 import static com.dg.ssrl.Components.Position;
@@ -32,7 +30,7 @@ public class MonsterBrain implements Brain {
             Direction targetDirection = Direction.NONE;
             int lowestValue = world.dijkstraMap[current.y][current.x];
             for (Direction direction : Direction.CARDINAL_DIRECTIONS) {
-                Position p = current.clone();
+                Position p = current.copy();
                 p = world.translateWraparound(p, direction);
 
                 int value = world.dijkstraMap[p.y][p.x];
@@ -65,7 +63,7 @@ public class MonsterBrain implements Brain {
             Entity entity = world.getEntity(entityId);
 
             ticksToActivate--;
-            Position position = entity.getComponent(Position.class).clone();
+            Position position = entity.getComponent(Position.class).copy();
 
             Entity explosion = entityFactory.makeExplosion(position.x * Assets.TILE_SIZE + Assets.TILE_SIZE/2, position.y * Assets.TILE_SIZE + Assets.TILE_SIZE/2);
             world.addEntity(explosion);
