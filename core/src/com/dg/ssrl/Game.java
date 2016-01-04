@@ -111,30 +111,29 @@ public class Game extends ApplicationAdapter {
 	@Override
 	public void create () {
 		Gdx.input.setInputProcessor(inputMultiplexer);
-
 		spriteBatch = new SpriteBatch();
         assets.create();
 		entityFactory = new EntityFactory(assets);
-
-		initWorld(true);
     }
 
-	private void initWorld(boolean resetPlayer) {
+	private void initWorld(boolean reset) {
         playerInputAdapter.clear();
 		scheduler.clear();
+
+		int depth = 0;
+
+		Entity oldPlayer = null;
+		if (world != null) {
+			oldPlayer = world.getPlayer();
+			if (!reset) {
+				depth = world.getDepth();
+			}
+		}
+		depth += 1;
 
 		int width = 10;
 		int height = 10;
 		Generator.LevelData levelData = Generator.generate(System.currentTimeMillis(), width, height, entityFactory);
-
-		int depth = 0;
-
-        Entity oldPlayer = null;
-        if (world != null) {
-            oldPlayer = world.getPlayer();
-        	depth = world.getDepth();
-		}
-		depth += 1;
 
 		world = new World(width, height, entityFactory, scheduler, depth);
 		for (int y = 0; y < height; y++) {
@@ -143,7 +142,7 @@ public class Game extends ApplicationAdapter {
 			}
 		}
 
-        if (resetPlayer) {
+        if (reset) {
             world.addPlayer(entityFactory.makePlayer(levelData.start.x, levelData.start.y, playerInputAdapter, scheduler));
         } else {
             oldPlayer.getComponent(Position.class).set(levelData.start);
@@ -242,7 +241,7 @@ public class Game extends ApplicationAdapter {
 			Entity player = world.getPlayer();
 			if (player != null) {
 				spriteBatch.setProjectionMatrix(hudCamera.combined);
-				
+
 				assets.font.setColor(Color.ORANGE);
 				Stats stats = player.getComponent(Stats.class);
 				assets.font.draw(spriteBatch, stats.healthString, 4, hudHeight);
