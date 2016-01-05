@@ -141,7 +141,12 @@ public class EntityFactory {
                 entity.alive = false;
             }
         });
-        itemContainer.add(itemType, 1);
+
+        if (itemType == ItemType.AmmoCrate) {
+            itemContainer.add(ItemType.Ammo, 5);
+        } else {
+            itemContainer.add(itemType, 1);
+        }
         entity.addComponent(itemContainer);
 
         return entity;

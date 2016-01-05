@@ -85,6 +85,8 @@ public class Assets {
 
         itemSprites.put(ItemType.Key, tiles[9][0]);
         itemSprites.put(ItemType.Ammo, tiles[10][2]);
+        itemSprites.put(ItemType.AmmoCrate, tiles[10][3]);
+        itemSprites.put(ItemType.Waste, tiles[8][3]);
 
         exitFrames = new TextureRegion[] {tiles[12][2], tiles[12][1], tiles[12][0]};
 

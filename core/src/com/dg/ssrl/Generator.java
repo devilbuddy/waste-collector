@@ -148,7 +148,8 @@ public class Generator {
         // items
         for (int i = 0; i < 4; i++) {
             Position itemPosition = floors.remove(0);
-            Entity item = entityFactory.makeItem(itemPosition.x, itemPosition.y, ItemType.Ammo);
+            ItemType itemType = ItemType.PICK_UPS[random.nextInt(ItemType.PICK_UPS.length)];
+            Entity item = entityFactory.makeItem(itemPosition.x, itemPosition.y, itemType);
             levelData.entities.add(item);
         }
 

@@ -135,7 +135,7 @@ public class Components {
             updateHealthString();
         }
         private void updateHealthString() {
-            this.healthString = "" + health + "/" + maxHealth;
+            healthString = "HEALTH " + health;
         }
 
         public void damage(int amount) {

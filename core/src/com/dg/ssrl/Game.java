@@ -210,6 +210,7 @@ public class Game extends ApplicationAdapter {
 				GlyphLayout glyphLayout = new GlyphLayout(assets.font, gameOver);
 				float x = mapRenderer.bounds.x + mapRenderer.bounds.width / 2 - glyphLayout.width / 2;
 				float y = mapRenderer.bounds.y + mapRenderer.bounds.height / 2 + glyphLayout.height;
+				assets.font.setColor(Color.ORANGE);
 				assets.font.draw(spriteBatch, gameOver, x, y);
 			}
 		}
@@ -242,15 +243,23 @@ public class Game extends ApplicationAdapter {
 			if (player != null) {
 				spriteBatch.setProjectionMatrix(hudCamera.combined);
 
-				assets.font.setColor(Color.ORANGE);
+				float firstColumnX = 4;
+				float firstRowY = hudHeight;
+				float secondColumnX = hudWidth/2;
+				float secondRowY = hudHeight - assets.font.getCapHeight();
+
 				Stats stats = player.getComponent(Stats.class);
-				assets.font.draw(spriteBatch, stats.healthString, 4, hudHeight);
-
 				ItemContainer itemContainer = player.getComponent(ItemContainer.class);
-				assets.font.draw(spriteBatch, itemContainer.getAmountString(ItemType.Ammo), hudWidth/2, hudHeight);
+				String sectorString = "SECTOR " + world.getDepth();
 
-				String depthString = "SECTOR " + world.getDepth();
-				assets.font.draw(spriteBatch, depthString, hudWidth/2, hudHeight - assets.font.getCapHeight());
+				assets.font.setColor(Color.ORANGE);
+				assets.font.draw(spriteBatch, stats.healthString, firstColumnX, firstRowY);
+				assets.font.draw(spriteBatch, itemContainer.getAmountString(ItemType.Ammo), firstColumnX, secondRowY);
+
+				assets.font.setColor(Color.CORAL);
+				assets.font.draw(spriteBatch, sectorString, secondColumnX, firstRowY);
+				assets.font.draw(spriteBatch, itemContainer.getAmountString(ItemType.Waste), secondColumnX, secondRowY);
+
 			}
 		}
 	}
