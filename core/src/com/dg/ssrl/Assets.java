@@ -66,6 +66,8 @@ public class Assets {
 
     public Sounds sounds = new Sounds();
 
+    public TextureRegion[] autoTileSet;
+
     public void create() {
         tilesTexture = new Texture(Gdx.files.internal("tiles.png"));
 
@@ -93,6 +95,26 @@ public class Assets {
         logo = new TextureRegion(tilesTexture, 80, 112, 48, 16);
 
         sounds.create();
+
+        autoTileSet = new TextureRegion[] {
+                tiles[0][16],
+                tiles[1][17],
+                tiles[0][18],
+                tiles[1][19],
+                tiles[0][20],
+                tiles[1][21],
+                tiles[0][22],
+                tiles[1][23],
+                tiles[0][24],
+                tiles[1][25],
+                tiles[0][26],
+                tiles[1][27],
+                tiles[0][28],
+                tiles[1][29],
+                tiles[0][30],
+                tiles[1][31],
+        };
+
     }
 
     public TextureRegion getMonsterTextureRegion(MonsterType monsterType) {

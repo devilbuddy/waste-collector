@@ -27,7 +27,58 @@ public class MapRenderer {
         this.virtualHeight = virtualHeight;
     }
 
+    private int currentAutoTileWorldSequenceId = -1;
+    private TextureRegion[][] mapTiles;
+
+    private void autoTile(World world) {
+        if (currentAutoTileWorldSequenceId == world.sequenceId) {
+            return;
+        }
+        currentAutoTileWorldSequenceId = world.sequenceId;
+        int width = world.getWidth();
+        int height = world.getHeight();
+
+        mapTiles = new TextureRegion[height][width];
+
+        World.Cell[][] cells = world.getCells();
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                World.Cell cell = cells[y][x];
+                if (cell.type == World.Cell.Type.Floor) {
+                    mapTiles[y][x] = assets.floor;
+                } else {
+                    int indexValue = 0;
+                    Position p = new Position(x,y);
+                    p.translate(Direction.NORTH);
+                    if (world.contains(p) && world.getCell(p).type == World.Cell.Type.Wall) {
+                        indexValue += 1;
+                    }
+                    p.set(x, y);
+                    p.translate(Direction.EAST);
+                    if (world.contains(p) && world.getCell(p).type == World.Cell.Type.Wall) {
+                        indexValue += 2;
+                    }
+                    p.set(x, y);
+                    p.translate(Direction.SOUTH);
+                    if (world.contains(p) && world.getCell(p).type == World.Cell.Type.Wall) {
+                        indexValue += 4;
+                    }
+                    p.set(x, y);
+                    p.translate(Direction.WEST);
+                    if (world.contains(p) && world.getCell(p).type == World.Cell.Type.Wall) {
+                        indexValue += 8;
+                    }
+                    mapTiles[y][x] = assets.autoTileSet[indexValue];
+                }
+            }
+        }
+
+    }
+
     public void render(World world, SpriteBatch spriteBatch) {
+
+        autoTile(world);
 
         int width = world.getWidth();
         int height = world.getHeight();
@@ -49,6 +100,7 @@ public class MapRenderer {
         for (int y = 0; y < height; y++) {
             float xx = bounds.x;
             for (int x = 0; x < width; x++) {
+                /*
                 World.Cell cell = cells[y][x];
                 TextureRegion region = null;
                 switch (cell.type) {
@@ -64,6 +116,8 @@ public class MapRenderer {
                         }
                         break;
                 }
+                */
+                TextureRegion region = mapTiles[y][x];
                 spriteBatch.draw(region, xx, yy);
 
                 /*

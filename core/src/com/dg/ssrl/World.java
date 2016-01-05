@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.IntArray;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.dg.ssrl.Components.Actor;
 import static com.dg.ssrl.Components.ItemContainer;
@@ -50,6 +51,8 @@ public class World {
         }
     }
 
+    private static final AtomicInteger ID_GENERATOR = new AtomicInteger();
+
     private final int width;
     private final int height;
     private final EntityFactory entityFactory;
@@ -61,6 +64,7 @@ public class World {
     public int playerEntityId;
     public int exitEntityId;
     public int depth;
+    public int sequenceId;
 
     public int[][] dijkstraMap;
 
@@ -72,6 +76,7 @@ public class World {
         this.entityFactory = entityFactory;
         this.scheduler = scheduler;
         this.depth = depth;
+        this.sequenceId = ID_GENERATOR.incrementAndGet();
 
         cells = new Cell[height][width];
         dijkstraMap = new int[height][width];
@@ -289,6 +294,10 @@ public class World {
 
     public boolean contains(int x, int y) {
         return x >= 0 && x <= width - 1 && y >= 0 && y <= height - 1;
+    }
+
+    public boolean contains(Position p) {
+        return contains(p.x, p.y);
     }
 
     public boolean isWalkable(Position position) {
