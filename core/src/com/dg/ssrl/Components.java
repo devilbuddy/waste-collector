@@ -2,6 +2,7 @@ package com.dg.ssrl;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
@@ -241,6 +242,7 @@ public class Components {
         private enum State {
             MOVE,
             TURN,
+            BUMP,
             DONE
         }
 
@@ -253,6 +255,10 @@ public class Components {
         private float distance;
         private State state = State.DONE;
         private float stateTime = 0;
+
+        Vector2 start = new Vector2();
+        Vector2 tmp = new Vector2();
+        Vector2 target = new Vector2();
 
         public MoveAnimation(float speed) {
             this.speed = speed;
@@ -296,6 +302,21 @@ public class Components {
             this.stateTime = 0;
         }
 
+        public void startBump(Position start, Direction direction, Runnable callback) {
+            bounds.x = start.x * Assets.TILE_SIZE;
+            bounds.y = start.y * Assets.TILE_SIZE;
+            this.direction = direction;
+            this.state = State.BUMP;
+            this.callback = callback;
+            this.stateTime = 0;
+
+            bounds.getPosition(this.start);
+            tmp.set(this.start);
+            bounds.getPosition(target);
+            target.add(direction.dx * Assets.TILE_SIZE/2, direction.dy * Assets.TILE_SIZE/2);
+
+        }
+
         public void update(float delta, World world) {
             Rectangle worldBounds = world.bounds;
 
@@ -320,6 +341,18 @@ public class Components {
             } else if (state == State.TURN){
                 stateTime += delta;
                 if(stateTime > 0.4f) {
+                    onDone();
+                }
+            } else if (state == State.BUMP) {
+
+                stateTime += delta;
+                float alpha = stateTime / 0.3f;
+
+                tmp.interpolate(target, alpha, Interpolation.bounceIn);
+                bounds.setPosition(tmp);
+
+                if (alpha > 1f) {
+                    bounds.setPosition(start);
                     onDone();
                 }
             }

@@ -86,21 +86,28 @@ public class BrainCore {
                 // bump
                 for (int i = 0; i < targetCell.getEntityCount(); i++) {
                     int entityId = targetCell.getEntityId(i);
-                    Entity targetEntity = world.getEntity(entityId);
-                    Stats targetStats = targetEntity.getComponent(Stats.class);
+                    final Entity targetEntity = world.getEntity(entityId);
+                    final Stats targetStats = targetEntity.getComponent(Stats.class);
                     if (targetStats != null) {
-                        Entity explosion = entityFactory.makeExplosion(targetPosition.x * Assets.TILE_SIZE + Assets.TILE_SIZE/2, targetPosition.y * Assets.TILE_SIZE + Assets.TILE_SIZE/2);
-                        world.addEntity(explosion);
+                        scheduler.lock();
+                        moveAnimation.startBump(currentPosition, moveDirection, new Runnable() {
+                            @Override
+                            public void run() {
+                                Entity explosion = entityFactory.makeExplosion(targetPosition.x * Assets.TILE_SIZE + Assets.TILE_SIZE/2, targetPosition.y * Assets.TILE_SIZE + Assets.TILE_SIZE/2);
+                                world.addEntity(explosion);
 
-                        sounds.play(Assets.Sounds.SoundId.HIT);
+                                sounds.play(Assets.Sounds.SoundId.HIT);
 
-                        targetStats.damage(1);
-                        targetEntity.alive = targetStats.isAlive();
+                                targetStats.damage(1);
+                                targetEntity.alive = targetStats.isAlive();
+                                scheduler.unlock();
+                            }
+                        });
 
+                        moveResult.acted = true;
+                        moveResult.moved = false;
                     }
                 }
-                moveResult.acted = true;
-                moveResult.moved = false;
             }
 
         } else {
