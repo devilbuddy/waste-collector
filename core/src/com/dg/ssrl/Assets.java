@@ -21,7 +21,8 @@ public class Assets {
             LASER,
             HIT,
             PICKUP,
-            EXIT
+            EXIT,
+            ROCKET
         }
         private Map<SoundId, Sound> sounds = new HashMap<SoundId, Sound>();
 
@@ -35,6 +36,8 @@ public class Assets {
             sounds.put(SoundId.HIT, Gdx.audio.newSound(Gdx.files.internal("hit-hurt.wav")));
             sounds.put(SoundId.PICKUP, Gdx.audio.newSound(Gdx.files.internal("pickup-coin.wav")));
             sounds.put(SoundId.EXIT, Gdx.audio.newSound(Gdx.files.internal("powerup.wav")));
+            sounds.put(SoundId.ROCKET, Gdx.audio.newSound(Gdx.files.internal("rocket.wav")));
+
         }
 
         public void play(SoundId soundId) {

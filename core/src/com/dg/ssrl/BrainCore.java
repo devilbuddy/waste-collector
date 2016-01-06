@@ -123,7 +123,7 @@ public class BrainCore {
         return moveResult;
     }
 
-    public static void fire(final World world, final Entity entity, final Direction direction, final int damage, final Assets.Sounds sounds) {
+    public static void fire(final World world, final Entity entity, final Direction direction, final int damage, final Assets.Sounds.SoundId soundId, final Assets.Sounds sounds) {
         Gdx.app.log(tag, "fire " + entity + " " + direction);
         final EntityFactory entityFactory = world.getEntityFactory();
         final Scheduler scheduler = world.getScheduler();
@@ -144,7 +144,7 @@ public class BrainCore {
             }
         }
 
-        sounds.play(Assets.Sounds.SoundId.LASER);
+        sounds.play(soundId);
         final Entity bullet = entityFactory.makeBullet();
         final boolean hit = hitSomething;
         scheduler.lock();
