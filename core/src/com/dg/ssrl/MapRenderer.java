@@ -19,6 +19,11 @@ public class MapRenderer {
 
     public Rectangle bounds = new Rectangle();
 
+    // Autotiling
+    private int currentAutoTileWorldSequenceId = -1;
+    private TextureRegion[][] mapTiles;
+    private boolean[][] floors;
+
     public MapRenderer(Assets assets) {
         this.assets = assets;
     }
@@ -27,10 +32,6 @@ public class MapRenderer {
         this.virtualWidth = virtualWidth;
         this.virtualHeight = virtualHeight;
     }
-
-    private int currentAutoTileWorldSequenceId = -1;
-    private TextureRegion[][] mapTiles;
-    private boolean[][] floors;
 
     private void autoTile(World world) {
         if (currentAutoTileWorldSequenceId == world.sequenceId) {
@@ -117,7 +118,7 @@ public class MapRenderer {
                 }
                 assets.font.setColor(Color.WHITE);
                 */
-                
+
                 xx += Assets.TILE_SIZE;
             }
             yy += Assets.TILE_SIZE;

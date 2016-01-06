@@ -69,6 +69,7 @@ public class World {
     public int[][] dijkstraMap;
 
     private boolean completed;
+    private ScoreData scoreData;
 
     public World(int width, int height, EntityFactory entityFactory, Scheduler scheduler, int depth) {
         this.width = width;
@@ -142,6 +143,7 @@ public class World {
                 }
 
                 if (entity.id == playerEntityId) {
+                    generateStats();
                     playerEntityId = -1;
                 }
 
@@ -151,6 +153,16 @@ public class World {
         }
 
         scheduler.update(this);
+    }
+
+    private void generateStats() {
+        ItemContainer itemContainer = getPlayer().getComponent(ItemContainer.class);
+        int wasteCount = itemContainer.getAmount(ItemType.Waste);
+        scoreData = new ScoreData(depth, wasteCount);
+    }
+
+    public ScoreData getScoreData() {
+        return scoreData;
     }
 
     public Position translateWraparound(Position p, Direction direction) {

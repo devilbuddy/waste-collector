@@ -81,6 +81,8 @@ public class Assets {
     public TextureRegion[] autoTileSet;
 
     public GlyphLayoutCacheItem gameOverText;
+    public GlyphLayoutCacheItem wasteCollectedText;
+    public GlyphLayoutCacheItem sectorText;
 
     public Color floorColor = new Color(0x1f1f1fff);
 
@@ -134,7 +136,8 @@ public class Assets {
 
 
         gameOverText = new GlyphLayoutCacheItem("GAME OVER", font);
-
+        wasteCollectedText = new GlyphLayoutCacheItem("WASTE COLLECTED", font);
+        sectorText = new GlyphLayoutCacheItem("SECTOR", font);
     }
 
     public TextureRegion getMonsterTextureRegion(MonsterType monsterType) {

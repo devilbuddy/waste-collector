@@ -92,10 +92,6 @@ public class Game extends ApplicationAdapter {
 
     private State state = State.MENU;
 
-	private static class GameData {
-
-	}
-
 	public Game(Position[] debugScreenSizes) {
 		DebugInputSwitcher debugInputSwitcher = new DebugInputSwitcher(debugScreenSizes);
 		playerInputAdapter = new PlayerInputAdapter();
@@ -211,6 +207,7 @@ public class Game extends ApplicationAdapter {
 				float y = mapRenderer.bounds.y + mapRenderer.bounds.height / 2 + gameOver.glyphLayout.height;
 				assets.font.setColor(Color.ORANGE);
 				assets.font.draw(spriteBatch, gameOver.text, x, y);
+
 			}
 		}
 
@@ -220,8 +217,9 @@ public class Game extends ApplicationAdapter {
 	}
 
 	private void renderHud() {
+		spriteBatch.setProjectionMatrix(hudCamera.combined);
+
 		if (state == State.MENU) {
-			spriteBatch.setProjectionMatrix(hudCamera.combined);
 			spriteBatch.setColor(Color.WHITE);
 
 			float logoW = assets.logo.getRegionWidth() * 2;
@@ -240,7 +238,6 @@ public class Game extends ApplicationAdapter {
 		} else {
 			Entity player = world.getPlayer();
 			if (player != null) {
-				spriteBatch.setProjectionMatrix(hudCamera.combined);
 
 				float firstColumnX = 4;
 				float firstRowY = hudHeight;
@@ -259,6 +256,22 @@ public class Game extends ApplicationAdapter {
 				assets.font.draw(spriteBatch, sectorString, secondColumnX, firstRowY);
 				assets.font.draw(spriteBatch, itemContainer.getAmountString(ItemType.Waste), secondColumnX, secondRowY);
 
+			}
+			if (state == State.GAME_OVER) {
+				Assets.GlyphLayoutCacheItem wasteCollected = assets.wasteCollectedText;
+				Assets.GlyphLayoutCacheItem sector = assets.sectorText;
+				ScoreData scoreData = world.getScoreData();
+
+				assets.font.setColor(Color.YELLOW);
+
+				float y = hudHeight/2;
+				assets.font.draw(spriteBatch, wasteCollected.text, hudWidth/2 - wasteCollected.glyphLayout.width/2, y);
+				y -= assets.font.getLineHeight();
+				assets.font.draw(spriteBatch, "" + scoreData.getWasteCollectedString(), hudWidth/2, y);
+				y -= assets.font.getLineHeight();
+				assets.font.draw(spriteBatch, sector.text, hudWidth/2 - sector.glyphLayout.width/2, y);
+				y -= assets.font.getLineHeight();
+				assets.font.draw(spriteBatch, "" + scoreData.getSectorString(), hudWidth/2, y);
 			}
 		}
 	}
