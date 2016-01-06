@@ -33,6 +33,8 @@ public class PlayerInputAdapter extends InputAdapter implements GestureDetector.
     private boolean isWithinTapSquare;
     private int pointerId = -1;
 
+    public long downTimeStamp;
+    private boolean longPressFired;
 
     private boolean swiped;
 
@@ -104,9 +106,23 @@ public class PlayerInputAdapter extends InputAdapter implements GestureDetector.
             this.pointer.set(x, y);
             this.pointerDown.set(x,y);
             isWithinTapSquare = true;
+            longPressFired = false;
+            downTimeStamp = System.currentTimeMillis();
         }
 
         return super.touchDown(x,y,pointer,button);
+    }
+
+    public float getLongPressPercentage() {
+        if (pointerId != -1 && !longPressFired) {
+            long now = System.currentTimeMillis();
+            long elapsedMillis = now - downTimeStamp;
+            float elapsedSeconds = elapsedMillis / 1000f;
+            return elapsedSeconds / Game.LONG_PRESS_DURATION;
+
+        } else {
+            return 0;
+        }
     }
 
     private boolean isWithinTapSquare(int x, int y) {
@@ -194,6 +210,7 @@ public class PlayerInputAdapter extends InputAdapter implements GestureDetector.
 
     @Override
     public boolean longPress(float x, float y) {
+        longPressFired = true;
         actionQueue.add(Action.BOMB);
         return true;
     }

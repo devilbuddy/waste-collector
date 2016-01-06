@@ -92,13 +92,15 @@ public class Game extends ApplicationAdapter {
 
     private State state = State.MENU;
 
+	public static final float LONG_PRESS_DURATION = 1.1f;
+
 	public Game(Position[] debugScreenSizes) {
 		DebugInputSwitcher debugInputSwitcher = new DebugInputSwitcher(debugScreenSizes);
 		playerInputAdapter = new PlayerInputAdapter();
 
         inputMultiplexer.addProcessor(debugInputSwitcher);
 		inputMultiplexer.addProcessor(playerInputAdapter);
-        inputMultiplexer.addProcessor(new GestureDetector(20, 0.1f, 1.1f, 0.15f, playerInputAdapter));
+        inputMultiplexer.addProcessor(new GestureDetector(20, 0.1f, LONG_PRESS_DURATION, 0.15f, playerInputAdapter));
 		mapRenderer = new MapRenderer(assets);
 
 		scheduler = new Scheduler();
@@ -172,6 +174,7 @@ public class Game extends ApplicationAdapter {
 
 	@Override
 	public void render () {
+
 		timeStep.update();
 
 		Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -256,6 +259,11 @@ public class Game extends ApplicationAdapter {
 				assets.font.draw(spriteBatch, sectorString, secondColumnX, firstRowY);
 				assets.font.draw(spriteBatch, itemContainer.getAmountString(ItemType.Waste), secondColumnX, secondRowY);
 
+
+				float longPressBarWidth = hudWidth * playerInputAdapter.getLongPressPercentage();
+				float longPressBarY = (mapRenderer.bounds.y + mapRenderer.bounds.height) * 2 + 1;
+				spriteBatch.setColor(Color.RED);
+				spriteBatch.draw(assets.whitePixel, 0, longPressBarY, longPressBarWidth, 2);
 			}
 			if (state == State.GAME_OVER) {
 				Assets.GlyphLayoutCacheItem wasteCollected = assets.wasteCollectedText;

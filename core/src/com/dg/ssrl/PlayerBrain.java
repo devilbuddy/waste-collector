@@ -64,6 +64,9 @@ class PlayerBrain implements Brain {
                 }
             } else if (action == PlayerInputAdapter.Action.BOMB) {
                 Gdx.app.log(tag, "BOMB");
+                BrainCore.fire(world, player, moveAnimation.direction, sounds);
+                acted = true;
+
             }
         }
         return acted;

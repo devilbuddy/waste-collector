@@ -3,7 +3,7 @@ package com.dg.ssrl;
 public class ScoreData {
 	public final int sector;
 	public final int wasteCollected;
-	
+
 	private String wasteCollectedString;
 	private String sectorString;
 
