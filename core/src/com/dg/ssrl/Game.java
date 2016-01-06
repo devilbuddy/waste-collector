@@ -262,7 +262,7 @@ public class Game extends ApplicationAdapter {
 				assets.font.draw(spriteBatch, itemContainer.getAmountString(ItemType.Waste), secondColumnX, secondRowY);
 
 				float percentage = playerInputAdapter.getLongPressPercentage();
-				if (percentage > 0.1f) {
+				if (percentage > 0.1f && itemContainer.getAmount(ItemType.Rocket) > 0) {
 					float longPressBarWidth = hudWidth * playerInputAdapter.getLongPressPercentage();
 					float longPressBarY = (mapRenderer.bounds.y * 2) - 3;
 					spriteBatch.setColor(Color.RED);

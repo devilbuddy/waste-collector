@@ -343,7 +343,7 @@ public class Components {
                 }
             } else if (state == State.TURN){
                 stateTime += delta;
-                if(stateTime > 0.4f) {
+                if(stateTime > 0.3f) {
                     onDone();
                 }
             } else if (state == State.BUMP) {
