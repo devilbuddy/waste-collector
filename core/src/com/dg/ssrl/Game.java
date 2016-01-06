@@ -244,7 +244,7 @@ public class Game extends ApplicationAdapter {
 
 				float firstColumnX = 4;
 				float firstRowY = hudHeight;
-				float secondColumnX = hudWidth/2;
+				float secondColumnX = hudWidth / 2;
 				float secondRowY = hudHeight - assets.font.getCapHeight();
 
 				Stats stats = player.getComponent(Stats.class);
@@ -260,10 +260,13 @@ public class Game extends ApplicationAdapter {
 				assets.font.draw(spriteBatch, itemContainer.getAmountString(ItemType.Waste), secondColumnX, secondRowY);
 
 
-				float longPressBarWidth = hudWidth * playerInputAdapter.getLongPressPercentage();
-				float longPressBarY = (mapRenderer.bounds.y + mapRenderer.bounds.height) * 2 + 1;
-				spriteBatch.setColor(Color.RED);
-				spriteBatch.draw(assets.whitePixel, 0, longPressBarY, longPressBarWidth, 2);
+				float percentage = playerInputAdapter.getLongPressPercentage();
+				if (percentage > 0.1f) {
+					float longPressBarWidth = hudWidth * playerInputAdapter.getLongPressPercentage();
+					float longPressBarY = (mapRenderer.bounds.y + mapRenderer.bounds.height) * 2 + 1;
+					spriteBatch.setColor(Color.RED);
+					spriteBatch.draw(assets.whitePixel, 0, longPressBarY, longPressBarWidth, 2);
+				}
 			}
 			if (state == State.GAME_OVER) {
 				Assets.GlyphLayoutCacheItem wasteCollected = assets.wasteCollectedText;
