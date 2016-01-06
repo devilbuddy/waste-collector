@@ -86,6 +86,17 @@ public class Assets {
 
     public Color floorColor = new Color(0x1f1f1fff);
 
+    public Map<String, GlyphLayoutCacheItem> glyphLayoutCacheItemMap = new HashMap<String, GlyphLayoutCacheItem>();
+
+    public GlyphLayoutCacheItem getGlyphLayoutCacheItem(String text) {
+        GlyphLayoutCacheItem item = glyphLayoutCacheItemMap.get(text);
+        if (item == null) {
+            item = new GlyphLayoutCacheItem(text, font);
+            glyphLayoutCacheItemMap.put(text, item);
+        }
+        return item;
+    }
+
     public void create() {
         tilesTexture = new Texture(Gdx.files.internal("tiles.png"));
 
@@ -109,7 +120,7 @@ public class Assets {
         itemSprites.put(ItemType.AmmoCrate, tiles[10][3]);
         itemSprites.put(ItemType.Waste, tiles[8][3]);
 
-        exitFrames = new TextureRegion[] {tiles[12][2], tiles[12][1], tiles[12][0]};
+        exitFrames = new TextureRegion[] {tiles[12][0], tiles[12][1], tiles[12][2], tiles[12][3], tiles[12][2], tiles[12][1], tiles[12][0]};
 
         logo = new TextureRegion(tilesTexture, 80, 112, 48, 16);
 

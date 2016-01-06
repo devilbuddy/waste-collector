@@ -266,12 +266,17 @@ public class Game extends ApplicationAdapter {
 
 				float y = hudHeight/2;
 				assets.font.draw(spriteBatch, wasteCollected.text, hudWidth/2 - wasteCollected.glyphLayout.width/2, y);
+
 				y -= assets.font.getLineHeight();
-				assets.font.draw(spriteBatch, "" + scoreData.getWasteCollectedString(), hudWidth/2, y);
+				Assets.GlyphLayoutCacheItem amount = assets.getGlyphLayoutCacheItem(scoreData.getWasteCollectedString());
+				assets.font.draw(spriteBatch, amount.text, hudWidth/2 - amount.glyphLayout.width/2, y);
+
 				y -= assets.font.getLineHeight();
 				assets.font.draw(spriteBatch, sector.text, hudWidth/2 - sector.glyphLayout.width/2, y);
+
 				y -= assets.font.getLineHeight();
-				assets.font.draw(spriteBatch, "" + scoreData.getSectorString(), hudWidth/2, y);
+				Assets.GlyphLayoutCacheItem sectorNumber = assets.getGlyphLayoutCacheItem(scoreData.getSectorString());
+				assets.font.draw(spriteBatch, sectorNumber.text, hudWidth/2 - sectorNumber.glyphLayout.width/2, y);
 			}
 		}
 	}
