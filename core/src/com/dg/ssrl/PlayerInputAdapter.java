@@ -114,7 +114,7 @@ public class PlayerInputAdapter extends InputAdapter implements GestureDetector.
     }
 
     public float getLongPressPercentage() {
-        if (pointerId != -1 && isWithinTapSquare && !longPressFired) {
+        if (pointerId != -1 && !swiped && !longPressFired) {
             long now = System.currentTimeMillis();
             long elapsedMillis = now - downTimeStamp;
             float elapsedSeconds = elapsedMillis / 1000f;
