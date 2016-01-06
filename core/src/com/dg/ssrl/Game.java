@@ -246,6 +246,7 @@ public class Game extends ApplicationAdapter {
 				float firstRowY = hudHeight;
 				float secondColumnX = hudWidth / 2;
 				float secondRowY = hudHeight - assets.font.getCapHeight();
+				float thirdRowY = hudHeight - 2 * assets.font.getCapHeight();
 
 				Stats stats = player.getComponent(Stats.class);
 				ItemContainer itemContainer = player.getComponent(ItemContainer.class);
@@ -254,16 +255,16 @@ public class Game extends ApplicationAdapter {
 				assets.font.setColor(Color.ORANGE);
 				assets.font.draw(spriteBatch, stats.healthString, firstColumnX, firstRowY);
 				assets.font.draw(spriteBatch, itemContainer.getAmountString(ItemType.Ammo), firstColumnX, secondRowY);
+				assets.font.draw(spriteBatch, itemContainer.getAmountString(ItemType.Rocket), firstColumnX, thirdRowY);
 
 				assets.font.setColor(Color.CORAL);
 				assets.font.draw(spriteBatch, sectorString, secondColumnX, firstRowY);
 				assets.font.draw(spriteBatch, itemContainer.getAmountString(ItemType.Waste), secondColumnX, secondRowY);
 
-
 				float percentage = playerInputAdapter.getLongPressPercentage();
 				if (percentage > 0.1f) {
 					float longPressBarWidth = hudWidth * playerInputAdapter.getLongPressPercentage();
-					float longPressBarY = (mapRenderer.bounds.y + mapRenderer.bounds.height) * 2 + 1;
+					float longPressBarY = (mapRenderer.bounds.y * 2) - 3;
 					spriteBatch.setColor(Color.RED);
 					spriteBatch.draw(assets.whitePixel, 0, longPressBarY, longPressBarWidth, 2);
 				}

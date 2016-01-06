@@ -49,24 +49,26 @@ class PlayerBrain implements Brain {
 
         final Entity player = world.getEntity(world.playerEntityId);
         final MoveAnimation moveAnimation = player.getComponent(MoveAnimation.class);
+        ItemContainer itemContainer = player.getComponent(ItemContainer.class);
 
         PlayerInputAdapter.Action action;
         while ((action = playerInputAdapter.popAction()) != null) {
             if (action == PlayerInputAdapter.Action.FIRE) {
-                Gdx.app.log(tag, "FIRE");
-
-                ItemContainer itemContainer = player.getComponent(ItemContainer.class);
                 int ammoCount = itemContainer.getAmount(ItemType.Ammo);
                 if (ammoCount > 0) {
+                    Gdx.app.log(tag, "FIRE");
                     itemContainer.remove(ItemType.Ammo, 1);
-                    BrainCore.fire(world, player, moveAnimation.direction, sounds);
+                    BrainCore.fire(world, player, moveAnimation.direction, ItemType.Ammo.damage, sounds);
                     acted = true;
                 }
-            } else if (action == PlayerInputAdapter.Action.BOMB) {
-                Gdx.app.log(tag, "BOMB");
-                BrainCore.fire(world, player, moveAnimation.direction, sounds);
-                acted = true;
-
+            } else if (action == PlayerInputAdapter.Action.ROCKET) {
+                int rocketCount = itemContainer.getAmount(ItemType.Rocket);
+                if (rocketCount > 0) {
+                    Gdx.app.log(tag, "ROCKET");
+                    itemContainer.remove(ItemType.Rocket, 1);
+                    BrainCore.fire(world, player, moveAnimation.direction, ItemType.Rocket.damage, sounds);
+                    acted = true;
+                }
             }
         }
         return acted;

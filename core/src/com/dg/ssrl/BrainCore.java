@@ -123,7 +123,7 @@ public class BrainCore {
         return moveResult;
     }
 
-    public static void fire(final World world, final Entity entity, final Direction direction, final Assets.Sounds sounds) {
+    public static void fire(final World world, final Entity entity, final Direction direction, final int damage, final Assets.Sounds sounds) {
         Gdx.app.log(tag, "fire " + entity + " " + direction);
         final EntityFactory entityFactory = world.getEntityFactory();
         final Scheduler scheduler = world.getScheduler();
@@ -154,24 +154,26 @@ public class BrainCore {
                 bullet.alive = false;
                 scheduler.unlock();
 
-                float explosionX = bulletEnd.x * Assets.TILE_SIZE + Assets.TILE_SIZE/2;
-                float explosionY = bulletEnd.y * Assets.TILE_SIZE + Assets.TILE_SIZE/2;
+                float explosionX = bulletEnd.x * Assets.TILE_SIZE + Assets.TILE_SIZE / 2;
+                float explosionY = bulletEnd.y * Assets.TILE_SIZE + Assets.TILE_SIZE / 2;
                 switch (direction) {
                     case NORTH:
-                        explosionY -= Assets.TILE_SIZE/2;
+                        explosionY -= Assets.TILE_SIZE / 2;
                         break;
                     case SOUTH:
-                        explosionY += Assets.TILE_SIZE/2;
+                        explosionY += Assets.TILE_SIZE / 2;
                         break;
                     case EAST:
-                        explosionX -= Assets.TILE_SIZE/2;
+                        explosionX -= Assets.TILE_SIZE / 2;
                         break;
                     case WEST:
-                        explosionX += Assets.TILE_SIZE/2;
+                        explosionX += Assets.TILE_SIZE / 2;
                         break;
                 }
-                Entity explosion = entityFactory.makeExplosion(explosionX, explosionY);
-                world.addEntity(explosion);
+                for (int i = 0; i < damage; i++) {
+                    Entity explosion = entityFactory.makeExplosion(explosionX + i, explosionY + i);
+                    world.addEntity(explosion);
+                }
 
                 sounds.play(Assets.Sounds.SoundId.HIT);
                 if (hit) {
@@ -187,7 +189,7 @@ public class BrainCore {
                         Components.Stats hitEntityStats = hitEntity.getComponent(Components.Stats.class);
                         if (hitEntityStats != null) {
                             Gdx.app.log(tag, "hit stats " + hitEntityStats);
-                            hitEntityStats.damage(1);
+                            hitEntityStats.damage(damage);
 
                         }
                     }

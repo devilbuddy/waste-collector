@@ -89,7 +89,7 @@ public class World {
         }
 
         bounds.set(0, 0, width * Assets.TILE_SIZE, height * Assets.TILE_SIZE);
-        Gdx.app.log(tag, "bounds: " + bounds);
+        //Gdx.app.log(tag, "bounds: " + bounds);
     }
 
     public int getDepth() {
@@ -231,7 +231,7 @@ public class World {
             }
         }
 
-        Gdx.app.log(tag, "iterations:" + iterations);
+        //Gdx.app.log(tag, "iterations:" + iterations);
     }
 
     public int getWidth() {

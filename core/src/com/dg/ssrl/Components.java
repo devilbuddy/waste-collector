@@ -65,6 +65,9 @@ public class Components {
             if (content.containsKey(itemType)) {
                 int current = content.get(itemType);
                 current -= amount;
+                if (current < 0) {
+                    current = 0;
+                }
                 content.put(itemType, current);
             }
         }

@@ -36,6 +36,7 @@ public class EntityFactory {
         }));
         ItemContainer itemContainer = new ItemContainer();
         itemContainer.add(ItemType.Ammo, 10);
+        itemContainer.add(ItemType.Rocket, 1);
         entity.addComponent(itemContainer);
 
 

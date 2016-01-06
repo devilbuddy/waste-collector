@@ -12,7 +12,7 @@ public class PlayerInputAdapter extends InputAdapter implements GestureDetector.
 
     public enum Action {
         FIRE,
-        BOMB
+        ROCKET
     }
 
     private static final double ONE_PI_EIGHTS = (Math.PI) / 8;
@@ -211,7 +211,7 @@ public class PlayerInputAdapter extends InputAdapter implements GestureDetector.
     @Override
     public boolean longPress(float x, float y) {
         longPressFired = true;
-        actionQueue.add(Action.BOMB);
+        actionQueue.add(Action.ROCKET);
         return true;
     }
 
