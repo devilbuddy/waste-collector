@@ -117,6 +117,7 @@ public class MapRenderer {
                 }
                 assets.font.setColor(Color.WHITE);
                 */
+                
                 xx += Assets.TILE_SIZE;
             }
             yy += Assets.TILE_SIZE;

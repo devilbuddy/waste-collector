@@ -6,6 +6,7 @@ import static com.dg.ssrl.Components.Brain;
 import static com.dg.ssrl.Components.MoveAnimation;
 import static com.dg.ssrl.Components.Position;
 import static com.dg.ssrl.Components.Stats;
+import static com.dg.ssrl.Components.ItemContainer;
 
 public class MonsterBrain implements Brain {
 
@@ -20,6 +21,42 @@ public class MonsterBrain implements Brain {
         this.sounds = sounds;
     }
 
+    private Direction findAttackDirection(World world, final Position current) {
+        Direction targetDirection = Direction.NONE;
+        Position targetPosition = current.copy();
+
+        int lowestValue = world.dijkstraMap[current.y][current.x];
+        for (Direction direction : Direction.CARDINAL_DIRECTIONS) {
+            targetPosition.set(current);
+            targetPosition = world.translateWraparound(targetPosition, direction);
+
+            int value = world.dijkstraMap[targetPosition.y][targetPosition.x];
+            if (value < lowestValue) {
+                lowestValue = value;
+                targetDirection = direction;
+            }
+        }
+        return targetDirection;
+    }
+
+    private Direction findFleeDirection(World world, final Position current) {
+        Direction targetDirection = Direction.NONE;
+        Position targetPosition = current.copy();
+
+        int highestValue = 0;
+        for (Direction direction : Direction.CARDINAL_DIRECTIONS) {
+            targetPosition.set(current);
+            targetPosition = world.translateWraparound(targetPosition, direction);
+
+            int value = world.dijkstraMap[targetPosition.y][targetPosition.x];
+            if (value != Integer.MAX_VALUE && value > highestValue) {
+                highestValue = value;
+                targetDirection = direction;
+            }
+        }
+        return targetDirection;
+    }
+
     @Override
     public boolean act(final World world) {
         final Entity entity = world.getEntity(entityId);
@@ -32,18 +69,12 @@ public class MonsterBrain implements Brain {
             final Position current = entity.getComponent(Position.class);
 
             Direction targetDirection = Direction.NONE;
-            Position targetPosition = current.copy();
 
-            int lowestValue = world.dijkstraMap[current.y][current.x];
-            for (Direction direction : Direction.CARDINAL_DIRECTIONS) {
-                targetPosition.set(current);
-                targetPosition = world.translateWraparound(targetPosition, direction);
-
-                int value = world.dijkstraMap[targetPosition.y][targetPosition.x];
-                if (value < lowestValue) {
-                    lowestValue = value;
-                    targetDirection = direction;
-                }
+            ItemContainer itemContainer = entity.getComponent(ItemContainer.class);
+            if (itemContainer != null && itemContainer.getAmount(ItemType.Key) > 0) {
+                targetDirection = findFleeDirection(world, current);
+            } else {
+                targetDirection = findAttackDirection(world, current);
             }
 
             boolean doMove = true;
