@@ -206,12 +206,11 @@ public class Game extends ApplicationAdapter {
 				float hiddenY = mapRenderer.bounds.y + mapRenderer.bounds.height - hiddenHeight;
 				spriteBatch.draw(assets.whitePixel, mapRenderer.bounds.x, hiddenY, mapRenderer.bounds.width, hiddenHeight);
 			} else if (state == State.GAME_OVER) {
-				String gameOver = "Game Over";
-				GlyphLayout glyphLayout = new GlyphLayout(assets.font, gameOver);
-				float x = mapRenderer.bounds.x + mapRenderer.bounds.width / 2 - glyphLayout.width / 2;
-				float y = mapRenderer.bounds.y + mapRenderer.bounds.height / 2 + glyphLayout.height;
+				Assets.GlyphLayoutCacheItem gameOver = assets.gameOverText;
+				float x = mapRenderer.bounds.x + mapRenderer.bounds.width / 2 - gameOver.glyphLayout.width / 2;
+				float y = mapRenderer.bounds.y + mapRenderer.bounds.height / 2 + gameOver.glyphLayout.height;
 				assets.font.setColor(Color.ORANGE);
-				assets.font.draw(spriteBatch, gameOver, x, y);
+				assets.font.draw(spriteBatch, gameOver.text, x, y);
 			}
 		}
 

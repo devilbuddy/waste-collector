@@ -2,8 +2,10 @@ package com.dg.ssrl;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.HashMap;
@@ -43,6 +45,16 @@ public class Assets {
         }
     }
 
+    public static class GlyphLayoutCacheItem {
+        public final String text;
+        public final GlyphLayout glyphLayout;
+
+        public GlyphLayoutCacheItem(String text, BitmapFont font) {
+            this.text = text;
+            glyphLayout = new GlyphLayout(font, text);
+        }
+    }
+
     public static final int TILE_SIZE = 8;
 
     public Texture tilesTexture;
@@ -68,6 +80,10 @@ public class Assets {
 
     public TextureRegion[] autoTileSet;
 
+    public GlyphLayoutCacheItem gameOverText;
+
+    public Color floorColor = new Color(0x1f1f1fff);
+
     public void create() {
         tilesTexture = new Texture(Gdx.files.internal("tiles.png"));
 
@@ -75,7 +91,7 @@ public class Assets {
 
         wallSolid = tiles[2][0];
         wall = tiles[2][1];
-        floor = tiles[0][8];
+        floor = tiles[1][15];
 
         whitePixel = new TextureRegion(tilesTexture, 18,18,1,1);
 
@@ -115,6 +131,9 @@ public class Assets {
                 tiles[0][30],
                 tiles[1][31],
         };
+
+
+        gameOverText = new GlyphLayoutCacheItem("GAME OVER", font);
 
     }
 

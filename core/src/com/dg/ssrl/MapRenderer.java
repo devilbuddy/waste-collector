@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.NumberUtils;
 
 import static com.dg.ssrl.Components.*;
 
@@ -29,6 +30,7 @@ public class MapRenderer {
 
     private int currentAutoTileWorldSequenceId = -1;
     private TextureRegion[][] mapTiles;
+    private boolean[][] floors;
 
     private void autoTile(World world) {
         if (currentAutoTileWorldSequenceId == world.sequenceId) {
@@ -39,6 +41,7 @@ public class MapRenderer {
         int height = world.getHeight();
 
         mapTiles = new TextureRegion[height][width];
+        floors = new boolean[height][width];
 
         World.Cell[][] cells = world.getCells();
 
@@ -47,7 +50,9 @@ public class MapRenderer {
                 World.Cell cell = cells[y][x];
                 if (cell.type == World.Cell.Type.Floor) {
                     mapTiles[y][x] = assets.floor;
+                    floors[y][x] = true;
                 } else {
+                    floors[y][x] = false;
                     int indexValue = 0;
                     Position p = new Position(x,y);
                     p.translate(Direction.NORTH);
@@ -92,31 +97,16 @@ public class MapRenderer {
         bounds.x = virtualWidth/2 - bounds.width/2;
         bounds.y = virtualHeight - bounds.height - topGutterHeight;
 
-
-        World.Cell[][] cells = world.getCells();
-
-        spriteBatch.setColor(Color.WHITE);
         float yy = bounds.y;
         for (int y = 0; y < height; y++) {
             float xx = bounds.x;
             for (int x = 0; x < width; x++) {
-                /*
-                World.Cell cell = cells[y][x];
-                TextureRegion region = null;
-                switch (cell.type) {
-                    case Floor:
-                        region = assets.floor;
-                        break;
-                    case Wall:
-                        region = assets.wallSolid;
-                        if (world.contains(x, y - 1)) {
-                            if (world.getCell(x, y - 1).type == World.Cell.Type.Floor) {
-                                region = assets.wall;
-                            }
-                        }
-                        break;
+
+                if(floors[y][x]) {
+                    spriteBatch.setColor(assets.floorColor);
+                } else {
+                    spriteBatch.setColor(Color.PURPLE);
                 }
-                */
                 TextureRegion region = mapTiles[y][x];
                 spriteBatch.draw(region, xx, yy);
 
@@ -132,6 +122,7 @@ public class MapRenderer {
             yy += Assets.TILE_SIZE;
         }
 
+        spriteBatch.setColor(Color.WHITE);
 
         for (Entity entity : world.entities) {
             if (entity.alive) {

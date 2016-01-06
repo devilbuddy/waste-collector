@@ -376,6 +376,7 @@ public class Components {
     public static class Actor implements Component {
 
         public enum Speed {
+            EXTRA_SLOW(7),
             SLOW(4),
             MEDIUM(3),
             FAST(2);
