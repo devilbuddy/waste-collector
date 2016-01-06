@@ -22,7 +22,8 @@ public class Assets {
             HIT,
             PICKUP,
             EXIT,
-            ROCKET
+            ROCKET,
+            NONE
         }
         private Map<SoundId, Sound> sounds = new HashMap<SoundId, Sound>();
 
@@ -78,6 +79,7 @@ public class Assets {
 
     private Map<MonsterType, TextureRegion> monsterSprites = new HashMap<MonsterType, TextureRegion>();
     private Map<ItemType, TextureRegion> itemSprites = new HashMap<ItemType, TextureRegion>();
+    private Map<ItemType, TextureRegion> bulletSprites = new HashMap<ItemType, TextureRegion>();
 
     public Sounds sounds = new Sounds();
 
@@ -85,7 +87,7 @@ public class Assets {
 
     public GlyphLayoutCacheItem gameOverText;
     public GlyphLayoutCacheItem wasteCollectedText;
-    public GlyphLayoutCacheItem sectorText;
+    public GlyphLayoutCacheItem sectorReachedText;
 
     public Color floorColor = new Color(0x1f1f1fff);
 
@@ -124,6 +126,10 @@ public class Assets {
         itemSprites.put(ItemType.Waste, tiles[8][3]);
         itemSprites.put(ItemType.Rocket, tiles[9][3]);
 
+        bulletSprites.put(ItemType.Ammo, tiles[4][3]);
+        bulletSprites.put(ItemType.Rocket, tiles[4][4]);
+
+
         exitFrames = new TextureRegion[] {tiles[12][0], tiles[12][1], tiles[12][2], tiles[12][3], tiles[12][2], tiles[12][1], tiles[12][0]};
 
         logo = new TextureRegion(tilesTexture, 80, 112, 48, 16);
@@ -152,7 +158,7 @@ public class Assets {
 
         gameOverText = new GlyphLayoutCacheItem("GAME OVER", font);
         wasteCollectedText = new GlyphLayoutCacheItem("WASTE COLLECTED", font);
-        sectorText = new GlyphLayoutCacheItem("SECTOR", font);
+        sectorReachedText = new GlyphLayoutCacheItem("SECTOR REACHED", font);
     }
 
     public TextureRegion getMonsterTextureRegion(MonsterType monsterType) {
@@ -163,4 +169,7 @@ public class Assets {
         return itemSprites.get(itemType);
     }
 
+    public TextureRegion getBulletTextureRegion(ItemType itemType) {
+        return bulletSprites.get(itemType);
+    }
 }

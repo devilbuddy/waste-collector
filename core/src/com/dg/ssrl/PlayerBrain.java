@@ -58,7 +58,7 @@ class PlayerBrain implements Brain {
                 if (ammoCount > 0) {
                     Gdx.app.log(tag, "FIRE");
                     itemContainer.remove(ItemType.Ammo, 1);
-                    BrainCore.fire(world, player, moveAnimation.direction, ItemType.Ammo.damage, Assets.Sounds.SoundId.LASER, sounds);
+                    BrainCore.fire(world, player, moveAnimation.direction, ItemType.Ammo, sounds);
                     acted = true;
                 }
             } else if (action == PlayerInputAdapter.Action.ROCKET) {
@@ -66,7 +66,7 @@ class PlayerBrain implements Brain {
                 if (rocketCount > 0) {
                     Gdx.app.log(tag, "ROCKET");
                     itemContainer.remove(ItemType.Rocket, 1);
-                    BrainCore.fire(world, player, moveAnimation.direction, ItemType.Rocket.damage, Assets.Sounds.SoundId.ROCKET, sounds);
+                    BrainCore.fire(world, player, moveAnimation.direction, ItemType.Rocket, sounds);
                     acted = true;
                 }
             }

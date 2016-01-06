@@ -53,11 +53,11 @@ public class EntityFactory {
         return entity;
     }
 
-    public Entity makeBullet() {
+    public Entity makeBullet(ItemType itemType) {
         Entity entity = createEntity();
-        entity.addComponent(new Sprite(assets.tiles[4][3]));
+        entity.addComponent(new Sprite(assets.getBulletTextureRegion(itemType)));
 
-        final MoveAnimation moveAnimation = new MoveAnimation(150f);
+        final MoveAnimation moveAnimation = new MoveAnimation(itemType.speed);
         entity.addComponent(moveAnimation);
 
         entity.addComponent(new Update(new Updater() {

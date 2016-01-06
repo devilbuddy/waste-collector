@@ -207,10 +207,9 @@ public class Game extends ApplicationAdapter {
 			} else if (state == State.GAME_OVER) {
 				Assets.GlyphLayoutCacheItem gameOver = assets.gameOverText;
 				float x = mapRenderer.bounds.x + mapRenderer.bounds.width / 2 - gameOver.glyphLayout.width / 2;
-				float y = mapRenderer.bounds.y + mapRenderer.bounds.height / 2 + gameOver.glyphLayout.height;
+				float y = mapRenderer.bounds.y + (mapRenderer.bounds.height / 3)*2 + gameOver.glyphLayout.height;
 				assets.font.setColor(Color.ORANGE);
 				assets.font.draw(spriteBatch, gameOver.text, x, y);
-
 			}
 		}
 
@@ -257,7 +256,6 @@ public class Game extends ApplicationAdapter {
 				assets.font.draw(spriteBatch, itemContainer.getAmountString(ItemType.Ammo), firstColumnX, secondRowY);
 				assets.font.draw(spriteBatch, itemContainer.getAmountString(ItemType.Rocket), firstColumnX, thirdRowY);
 
-				assets.font.setColor(Color.CORAL);
 				assets.font.draw(spriteBatch, sectorString, secondColumnX, firstRowY);
 				assets.font.draw(spriteBatch, itemContainer.getAmountString(ItemType.Waste), secondColumnX, secondRowY);
 
@@ -271,24 +269,27 @@ public class Game extends ApplicationAdapter {
 			}
 			if (state == State.GAME_OVER) {
 				Assets.GlyphLayoutCacheItem wasteCollected = assets.wasteCollectedText;
-				Assets.GlyphLayoutCacheItem sector = assets.sectorText;
+				Assets.GlyphLayoutCacheItem sectorReached = assets.sectorReachedText;
 				ScoreData scoreData = world.getScoreData();
 
 				assets.font.setColor(Color.YELLOW);
 
-				float y = hudHeight/2;
+				float y = (mapRenderer.bounds.y + mapRenderer.bounds.height/2) * 2 + assets.font.getLineHeight();
+
+				assets.font.draw(spriteBatch, sectorReached.text, hudWidth/2 - sectorReached.glyphLayout.width/2, y);
+
+				y -= assets.font.getLineHeight();
+				Assets.GlyphLayoutCacheItem sectorNumber = assets.getGlyphLayoutCacheItem(scoreData.getSectorString());
+				assets.font.draw(spriteBatch, sectorNumber.text, hudWidth/2 - sectorNumber.glyphLayout.width/2, y);
+
+				y -= assets.font.getLineHeight();
 				assets.font.draw(spriteBatch, wasteCollected.text, hudWidth/2 - wasteCollected.glyphLayout.width/2, y);
 
 				y -= assets.font.getLineHeight();
 				Assets.GlyphLayoutCacheItem amount = assets.getGlyphLayoutCacheItem(scoreData.getWasteCollectedString());
 				assets.font.draw(spriteBatch, amount.text, hudWidth/2 - amount.glyphLayout.width/2, y);
 
-				y -= assets.font.getLineHeight();
-				assets.font.draw(spriteBatch, sector.text, hudWidth/2 - sector.glyphLayout.width/2, y);
 
-				y -= assets.font.getLineHeight();
-				Assets.GlyphLayoutCacheItem sectorNumber = assets.getGlyphLayoutCacheItem(scoreData.getSectorString());
-				assets.font.draw(spriteBatch, sectorNumber.text, hudWidth/2 - sectorNumber.glyphLayout.width/2, y);
 			}
 		}
 	}

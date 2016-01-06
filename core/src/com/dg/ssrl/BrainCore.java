@@ -123,7 +123,7 @@ public class BrainCore {
         return moveResult;
     }
 
-    public static void fire(final World world, final Entity entity, final Direction direction, final int damage, final Assets.Sounds.SoundId soundId, final Assets.Sounds sounds) {
+    public static void fire(final World world, final Entity entity, final Direction direction, final ItemType itemType, final Assets.Sounds sounds) {
         Gdx.app.log(tag, "fire " + entity + " " + direction);
         final EntityFactory entityFactory = world.getEntityFactory();
         final Scheduler scheduler = world.getScheduler();
@@ -144,8 +144,8 @@ public class BrainCore {
             }
         }
 
-        sounds.play(soundId);
-        final Entity bullet = entityFactory.makeBullet();
+        sounds.play(itemType.soundId);
+        final Entity bullet = entityFactory.makeBullet(itemType);
         final boolean hit = hitSomething;
         scheduler.lock();
         bullet.getComponent(MoveAnimation.class).startMove(bulletStart, distanceTiles * Assets.TILE_SIZE, direction, new Runnable() {
@@ -170,7 +170,7 @@ public class BrainCore {
                         explosionX += Assets.TILE_SIZE / 2;
                         break;
                 }
-                for (int i = 0; i < damage; i++) {
+                for (int i = 0; i < itemType.damage; i++) {
                     Entity explosion = entityFactory.makeExplosion(explosionX + i, explosionY + i);
                     world.addEntity(explosion);
                 }
@@ -189,7 +189,7 @@ public class BrainCore {
                         Components.Stats hitEntityStats = hitEntity.getComponent(Components.Stats.class);
                         if (hitEntityStats != null) {
                             Gdx.app.log(tag, "hit stats " + hitEntityStats);
-                            hitEntityStats.damage(damage);
+                            hitEntityStats.damage(itemType.damage);
 
                         }
                     }
