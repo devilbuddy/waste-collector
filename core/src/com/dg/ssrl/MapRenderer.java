@@ -82,7 +82,7 @@ public class MapRenderer {
 
     }
 
-    public void render(World world, SpriteBatch spriteBatch) {
+    public void render(World world, SpriteBatch spriteBatch, float topGutterHeight) {
 
         autoTile(world);
 
@@ -92,8 +92,8 @@ public class MapRenderer {
         bounds.width = width * Assets.TILE_SIZE;
         bounds.height = height * Assets.TILE_SIZE;
 
-        float verticalSpaceLeft = virtualHeight - bounds.height;
-        int topGutterHeight = (int) (verticalSpaceLeft/3);
+        //float verticalSpaceLeft = virtualHeight - bounds.height;
+        //int topGutterHeight = (int) (verticalSpaceLeft/3);
 
         bounds.x = virtualWidth/2 - bounds.width/2;
         bounds.y = virtualHeight - bounds.height - topGutterHeight;

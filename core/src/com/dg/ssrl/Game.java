@@ -183,8 +183,10 @@ public class Game extends ApplicationAdapter {
 		spriteBatch.begin();
         spriteBatch.setProjectionMatrix(mapCamera.combined);
 
+		float topGutterHeight = (4 * assets.font.getCapHeight()) / 2;
+
 		if (state != State.MENU) {
-			mapRenderer.render(world, spriteBatch);
+			mapRenderer.render(world, spriteBatch, topGutterHeight);
 
 			spriteBatch.setColor(Color.BLACK);
 			spriteBatch.draw(assets.whitePixel, 0, 0, width, mapRenderer.bounds.y);
@@ -246,6 +248,7 @@ public class Game extends ApplicationAdapter {
 				float secondColumnX = hudWidth / 2;
 				float secondRowY = hudHeight - assets.font.getCapHeight();
 				float thirdRowY = hudHeight - 2 * assets.font.getCapHeight();
+				float fourthRowY = hudHeight - 3 * assets.font.getCapHeight();
 
 				Stats stats = player.getComponent(Stats.class);
 				ItemContainer itemContainer = player.getComponent(ItemContainer.class);
@@ -262,7 +265,7 @@ public class Game extends ApplicationAdapter {
 				float percentage = playerInputAdapter.getLongPressPercentage();
 				if (percentage > 0.1f && itemContainer.getAmount(ItemType.Rocket) > 0) {
 					float longPressBarWidth = hudWidth * percentage;
-					float longPressBarY = (mapRenderer.bounds.y * 2) - 3;
+					float longPressBarY = fourthRowY - 5; //(mapRenderer.bounds.y * 2) - 3;
 					spriteBatch.setColor(Color.RED);
 					spriteBatch.draw(assets.whitePixel, 0, longPressBarY, longPressBarWidth, 2);
 				}

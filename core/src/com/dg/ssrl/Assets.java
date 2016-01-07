@@ -130,7 +130,7 @@ public class Assets {
         bulletSprites.put(ItemType.Rocket, tiles[4][4]);
 
 
-        exitFrames = new TextureRegion[] {tiles[12][0], tiles[12][1], tiles[12][2], tiles[12][3], tiles[12][2], tiles[12][1], tiles[12][0]};
+        exitFrames = new TextureRegion[] {tiles[12][1], tiles[12][2], tiles[12][3], tiles[12][2], tiles[12][1], tiles[12][0]};
 
         logo = new TextureRegion(tilesTexture, 80, 112, 48, 16);
 
