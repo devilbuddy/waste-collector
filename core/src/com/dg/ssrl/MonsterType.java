@@ -5,14 +5,14 @@ import static com.dg.ssrl.Components.Actor;
 public enum MonsterType {
 
     Player(Actor.Speed.MEDIUM, 3, true),
-    Snake(Actor.Speed.SLOW, 2, false),
-    Rat(Actor.Speed.FAST, 1, true),
-    Alien(Actor.Speed.MEDIUM, 3, false),
+    Crawler(Actor.Speed.SLOW, 2, false),
+    Stealer(Actor.Speed.FAST, 1, true),
+    Brute(Actor.Speed.MEDIUM, 3, false),
     Egg(Actor.Speed.EXTRA_SLOW, 1, true),
     ;
 
     public static MonsterType[] ENEMIES = {
-            Snake, Rat, Egg, Alien
+            Crawler, Stealer, Egg, Brute
     };
 
     public final Actor.Speed speed;

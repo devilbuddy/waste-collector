@@ -127,7 +127,7 @@ public class MonsterBrain implements Brain {
 
             if (ticksToActivate == 0) {
                 entity.alive = false;
-                Entity monster = entityFactory.makeMonster(position.x, position.y, MonsterType.Snake);
+                Entity monster = entityFactory.makeMonster(position.x, position.y, MonsterType.Crawler);
                 world.addEntity(monster);
             }
             return true;

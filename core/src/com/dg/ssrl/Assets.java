@@ -115,16 +115,16 @@ public class Assets {
 
         font = new BitmapFont(Gdx.files.internal("kongtext.fnt"));
 
-        monsterSprites.put(MonsterType.Snake, tiles[5][2]);
-        monsterSprites.put(MonsterType.Rat, tiles[5][4]);
-        monsterSprites.put(MonsterType.Alien, tiles[5][3]);
+        monsterSprites.put(MonsterType.Crawler, tiles[5][2]);
+        monsterSprites.put(MonsterType.Stealer, tiles[5][4]);
+        monsterSprites.put(MonsterType.Brute, tiles[5][3]);
         monsterSprites.put(MonsterType.Egg, tiles[11][0]);
 
         itemSprites.put(ItemType.Key, tiles[9][0]);
-        itemSprites.put(ItemType.Ammo, tiles[10][2]);
-        itemSprites.put(ItemType.AmmoCrate, tiles[10][3]);
+        itemSprites.put(ItemType.Ammo, tiles[10][0]);
+        itemSprites.put(ItemType.AmmoCrate, tiles[10][1]);
         itemSprites.put(ItemType.Waste, tiles[8][3]);
-        itemSprites.put(ItemType.Rocket, tiles[9][3]);
+        itemSprites.put(ItemType.Rocket, tiles[10][3]);
 
         bulletSprites.put(ItemType.Ammo, tiles[4][3]);
         bulletSprites.put(ItemType.Rocket, tiles[4][4]);

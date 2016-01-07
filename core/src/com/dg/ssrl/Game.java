@@ -131,7 +131,7 @@ public class Game extends ApplicationAdapter {
 
 		int width = 10;
 		int height = 10;
-		Generator.LevelData levelData = Generator.generate(System.currentTimeMillis(), width, height, entityFactory);
+		Generator.LevelData levelData = Generator.generate(System.currentTimeMillis(), width, height, depth, entityFactory);
 
 		world = new World(width, height, entityFactory, scheduler, depth);
 		for (int y = 0; y < height; y++) {

@@ -11,7 +11,6 @@ public enum ItemType {
     public static ItemType[] PICK_UPS = {
             Ammo,
             AmmoCrate,
-            Waste,
             Rocket
     };
 

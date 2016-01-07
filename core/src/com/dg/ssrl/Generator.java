@@ -82,7 +82,7 @@ public class Generator {
         })
     };
 
-    public static LevelData generate(long seed, int width, int height, EntityFactory entityFactory) {
+    public static LevelData generate(long seed, int width, int height, int depth, EntityFactory entityFactory) {
         Random random = new Random(seed);
 
         TemplateData templateData = templates[random.nextInt(templates.length)];
@@ -138,7 +138,8 @@ public class Generator {
         levelData.entities.add(entityFactory.makeItem(keyPosition.x, keyPosition.y, ItemType.Key));
 
         // monsters
-        for (int i = 0; i < 4; i++) {
+        int monsterCount = Math.min(2 + random.nextInt(depth), 6);
+        for (int i = 0; i < monsterCount; i++) {
             Position monsterPosition = floors.remove(0);
             MonsterType monsterType = MonsterType.ENEMIES[random.nextInt(MonsterType.ENEMIES.length)];
             Entity monster = entityFactory.makeMonster(monsterPosition.x, monsterPosition.y, monsterType);
@@ -146,7 +147,14 @@ public class Generator {
         }
 
         // items
-        for (int i = 0; i < 4; i++) {
+        int wasteCount = 2 + random.nextInt(2);
+        for (int i = 0; i < wasteCount; i++) {
+            Position itemPosition = floors.remove(0);
+            Entity item = entityFactory.makeItem(itemPosition.x, itemPosition.y, ItemType.Waste);
+            levelData.entities.add(item);
+        }
+        int goodItemCount = 2 + random.nextInt(2);
+        for (int i = 0; i < goodItemCount; i++) {
             Position itemPosition = floors.remove(0);
             ItemType itemType = ItemType.PICK_UPS[random.nextInt(ItemType.PICK_UPS.length)];
             Entity item = entityFactory.makeItem(itemPosition.x, itemPosition.y, itemType);
