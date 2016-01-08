@@ -2,6 +2,8 @@ package com.dg.ssrl;
 
 import java.util.Random;
 
+import javafx.geometry.Pos;
+
 import static com.dg.ssrl.Components.Brain;
 import static com.dg.ssrl.Components.MoveAnimation;
 import static com.dg.ssrl.Components.Position;
@@ -147,14 +149,39 @@ public class MonsterBrain implements Brain {
         public boolean act(World world) {
             Entity entity = world.getEntity(entityId);
             MoveAnimation moveAnimation = entity.getComponent(MoveAnimation.class);
-            if (rotate) {
-                Direction newDirection = moveAnimation.direction.turn();
-                BrainCore.move(world, entity, newDirection, sounds);
-                rotate = false;
-            } else {
-                BrainCore.fire(world, entity, moveAnimation.direction, ItemType.Rocket, sounds);
-                rotate = true;
+            rotate = true;
+            if (world.getPlayer() != null) {
+                Position position = entity.getComponent(Position.class);
+                final Position bulletEnd = position.copy().translate(moveAnimation.direction);
+                boolean hitSomething = false;
+                while (!hitSomething) {
+                    world.wraparound(bulletEnd);
+
+                    if (world.isWalkable(bulletEnd)) {
+                        bulletEnd.translate(moveAnimation.direction);
+                    } else {
+                        hitSomething = true;
+                    }
+                }
+
+                World.Cell cell = world.getCell(bulletEnd);
+                for (int i = 0; i < cell.getEntityCount(); i++) {
+                    int entityId = cell.getEntityId(i);
+                    if (world.getEntity(entityId).id == world.getPlayer().id) {
+                        rotate = false;
+                        break;
+                    }
+                }
+
+                if (rotate) {
+                    Direction newDirection = moveAnimation.direction.turn();
+                    BrainCore.move(world, entity, newDirection, sounds);
+                } else {
+                    BrainCore.fire(world, entity, moveAnimation.direction, ItemType.Ammo, sounds);
+
+                }
             }
+
             return true;
         }
     }
