@@ -119,6 +119,7 @@ public class Assets {
         monsterSprites.put(MonsterType.Stealer, tiles[5][4]);
         monsterSprites.put(MonsterType.Brute, tiles[5][3]);
         monsterSprites.put(MonsterType.Egg, tiles[11][0]);
+        monsterSprites.put(MonsterType.Cannon, tiles[5][5]);
 
         itemSprites.put(ItemType.Key, tiles[9][0]);
         itemSprites.put(ItemType.Ammo, tiles[10][0]);

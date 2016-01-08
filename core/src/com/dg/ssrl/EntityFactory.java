@@ -82,11 +82,19 @@ public class EntityFactory {
         entity.addComponent(new Solid(true));
         entity.addComponent(new Sprite(assets.getMonsterTextureRegion(monsterType)));
 
-        if (monsterType == MonsterType.Egg) {
-            entity.addComponent(new Actor(new MonsterBrain.EggBrain(entity.id), monsterType.speed));
-        } else {
-            entity.addComponent(new Actor(new MonsterBrain(entity.id, assets.sounds), monsterType.speed));
+        Brain brain = null;
+        switch (monsterType) {
+            case Egg:
+                brain = new MonsterBrain.EggBrain(entity.id);
+                break;
+            case Cannon:
+                brain = new MonsterBrain.CannonBrain(entity.id, assets.sounds);
+                break;
+            default:
+                brain = new MonsterBrain(entity.id, assets.sounds);
         }
+        entity.addComponent(new Actor(brain, monsterType.speed));
+
         entity.addComponent(new Stats(monsterType, new OnDied() {
             @Override
             public void onDied() {

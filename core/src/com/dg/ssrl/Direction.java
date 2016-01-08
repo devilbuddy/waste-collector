@@ -31,4 +31,17 @@ public enum Direction {
         }
         return NONE;
     }
+    Direction turn() {
+        switch (this) {
+            case NORTH:
+                return EAST;
+            case SOUTH:
+                return WEST;
+            case WEST:
+                return NORTH;
+            case EAST:
+                return SOUTH;
+        }
+        return NONE;
+    }
 }

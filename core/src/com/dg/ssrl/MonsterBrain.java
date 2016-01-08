@@ -133,4 +133,29 @@ public class MonsterBrain implements Brain {
             return true;
         }
     }
+
+    public static class CannonBrain implements Brain {
+        private final int entityId;
+        private final Assets.Sounds sounds;
+        boolean rotate = true;
+        public CannonBrain(int entityId, Assets.Sounds sounds) {
+            this.entityId = entityId;
+            this.sounds = sounds;
+        }
+
+        @Override
+        public boolean act(World world) {
+            Entity entity = world.getEntity(entityId);
+            MoveAnimation moveAnimation = entity.getComponent(MoveAnimation.class);
+            if (rotate) {
+                Direction newDirection = moveAnimation.direction.turn();
+                BrainCore.move(world, entity, newDirection, sounds);
+                rotate = false;
+            } else {
+                BrainCore.fire(world, entity, moveAnimation.direction, ItemType.Rocket, sounds);
+                rotate = true;
+            }
+            return true;
+        }
+    }
 }
