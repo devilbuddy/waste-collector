@@ -126,36 +126,46 @@ public class MapRenderer {
 
         spriteBatch.setColor(Color.WHITE);
 
-        for (Entity entity : world.entities) {
-            if (entity.alive) {
+        int renderPass = 0;
+        boolean needAnotherRenderPass = true;
+        while (needAnotherRenderPass) {
+            needAnotherRenderPass = false;
 
-                Sprite sprite = entity.getComponent(Sprite.class);
+            for (Entity entity : world.entities) {
+                if (entity.alive) {
 
-                if (sprite != null) {
-                    MoveAnimation moveAnimation = entity.getComponent(MoveAnimation.class);
+                    Sprite sprite = entity.getComponent(Sprite.class);
 
-                    if (moveAnimation != null) {
-                        Rectangle moveBounds = new Rectangle(moveAnimation.bounds);
-                        Vector2 position = new Vector2();
-                        moveBounds.getPosition(position);
-                        renderWithFacing(position, moveAnimation.direction, sprite, spriteBatch);
-                        if (!world.bounds.contains(moveBounds)) {
+                    if (sprite != null) {
+                        if (sprite.renderPass == renderPass) {
+                            MoveAnimation moveAnimation = entity.getComponent(MoveAnimation.class);
 
-                            float offsetX = moveAnimation.direction.dx * world.bounds.width;
-                            float offsetY = moveAnimation.direction.dy * world.bounds.height;
+                            if (moveAnimation != null) {
+                                Rectangle moveBounds = new Rectangle(moveAnimation.bounds);
+                                Vector2 position = new Vector2();
+                                moveBounds.getPosition(position);
+                                renderWithFacing(position, moveAnimation.direction, sprite, spriteBatch);
+                                if (!world.bounds.contains(moveBounds)) {
 
-                            position.set(moveBounds.x - offsetX, moveBounds.y - offsetY);
-                            renderWithFacing(position, moveAnimation.direction, sprite, spriteBatch);
+                                    float offsetX = moveAnimation.direction.dx * world.bounds.width;
+                                    float offsetY = moveAnimation.direction.dy * world.bounds.height;
+
+                                    position.set(moveBounds.x - offsetX, moveBounds.y - offsetY);
+                                    renderWithFacing(position, moveAnimation.direction, sprite, spriteBatch);
+                                }
+                            }
+                            Effect effect = entity.getComponent(Effect.class);
+                            if (effect != null) {
+                                renderEffect(effect, sprite, spriteBatch);
+                            }
+                        } else if (sprite.renderPass > renderPass) {
+                            needAnotherRenderPass = true;
                         }
-                    }
-                    Effect effect = entity.getComponent(Effect.class);
-                    if (effect != null) {
-                        renderEffect(effect, sprite, spriteBatch);
                     }
 
                 }
-
             }
+            renderPass++;
         }
     }
 

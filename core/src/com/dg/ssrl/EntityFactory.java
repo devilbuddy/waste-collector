@@ -22,7 +22,7 @@ public class EntityFactory {
         final Entity entity = createEntity();
         entity.addComponent(new Position(x, y));
         entity.addComponent(new Solid(true));
-        entity.addComponent(new Sprite(assets.tiles[4][2]));
+        entity.addComponent(new Sprite(assets.tiles[4][2], 1));
 
         final Actor actor = new Actor(new PlayerBrain(playerInputAdapter, scheduler, assets.sounds), MonsterType.Player.speed);
         entity.addComponent(actor);
@@ -55,7 +55,7 @@ public class EntityFactory {
 
     public Entity makeBullet(ItemType itemType) {
         Entity entity = createEntity();
-        entity.addComponent(new Sprite(assets.getBulletTextureRegion(itemType)));
+        entity.addComponent(new Sprite(assets.getBulletTextureRegion(itemType), 1));
 
         final MoveAnimation moveAnimation = new MoveAnimation(itemType.speed);
         entity.addComponent(moveAnimation);
@@ -80,7 +80,7 @@ public class EntityFactory {
         entity.addComponent(position);
         entity.addComponent(moveAnimation);
         entity.addComponent(new Solid(true));
-        entity.addComponent(new Sprite(assets.getMonsterTextureRegion(monsterType)));
+        entity.addComponent(new Sprite(assets.getMonsterTextureRegion(monsterType), 1));
 
         Brain brain;
         switch (monsterType) {
@@ -120,7 +120,7 @@ public class EntityFactory {
 
     public Entity makeExplosion(float x, float y) {
         final Entity entity = createEntity();
-        entity.addComponent(new Sprite(assets.whitePixel));
+        entity.addComponent(new Sprite(assets.whitePixel, 2));
         final Effect effect = new Effect(x, y, 10);
 
         entity.addComponent(effect);
@@ -141,7 +141,7 @@ public class EntityFactory {
     public Entity makeItem(int x, int y, ItemType itemType) {
         final Entity entity = createEntity();
         entity.addComponent(new Position(x, y));
-        entity.addComponent(new Sprite(assets.getItemTextureRegion(itemType)));
+        entity.addComponent(new Sprite(assets.getItemTextureRegion(itemType), 0));
 
         final MoveAnimation moveAnimation = new MoveAnimation(50f);
         moveAnimation.setPosition(x * Assets.TILE_SIZE, y * Assets.TILE_SIZE).setDirection(Direction.EAST);
@@ -184,7 +184,7 @@ public class EntityFactory {
         moveAnimation.setPosition(x * Assets.TILE_SIZE, y * Assets.TILE_SIZE).setDirection(Direction.EAST);
         entity.addComponent(moveAnimation);
 
-        final Sprite sprite = new Sprite(assets.exitFrames, 0.2f);
+        final Sprite sprite = new Sprite(assets.exitFrames, 0.2f, 0);
         entity.addComponent(sprite);
 
         entity.addComponent(new Trigger(new TriggerAction() {

@@ -221,17 +221,19 @@ public class Components {
     public static class Sprite implements Component {
         private final TextureRegion[] textureRegions;
         private final float frameDuration;
+        public final int renderPass;
 
         private float stateTime;
         private boolean animationEnabled = true;
 
-        public Sprite(TextureRegion textureRegion) {
-            this(new TextureRegion[]{ textureRegion}, 1);
+        public Sprite(TextureRegion textureRegion, int renderPass) {
+            this(new TextureRegion[]{ textureRegion}, 1, renderPass);
         }
 
-        public Sprite(TextureRegion[] textureRegions, float frameDuration) {
+        public Sprite(TextureRegion[] textureRegions, float frameDuration, int renderPass) {
             this.textureRegions = textureRegions;
             this.frameDuration = frameDuration;
+            this.renderPass = renderPass;
         }
 
         public void enableAnimation(boolean animationEnabled) {
