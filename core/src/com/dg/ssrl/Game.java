@@ -86,6 +86,8 @@ public class Game extends ApplicationAdapter {
 	private EntityFactory entityFactory;
 	private World world;
 
+	private ScoreData highScore;
+
     private enum State {
 		MENU,
         PLAY,
@@ -116,6 +118,8 @@ public class Game extends ApplicationAdapter {
 		spriteBatch = new SpriteBatch();
         assets.create();
 		entityFactory = new EntityFactory(assets);
+
+		highScore = loadScore();
     }
 
 	private void initWorld(boolean reset) {
@@ -241,6 +245,14 @@ public class Game extends ApplicationAdapter {
 			assets.font.setColor(Color.ORANGE);
 			assets.font.draw(spriteBatch, assets.tapToStartText.text, x, y);
 
+			if (highScore != null) {
+				y -= assets.font.getLineHeight() * 2;
+				assets.font.setColor(Color.YELLOW);
+				Assets.GlyphLayoutCacheItem score = assets.getGlyphLayoutCacheItem("HI-SCORE " + highScore.score);
+				assets.font.draw(spriteBatch, score.text, hudWidth/2 - score.glyphLayout.width/2, y);
+
+			}
+
 		} else {
 			Entity player = world.getPlayer();
 			if (player != null) {
@@ -275,6 +287,8 @@ public class Game extends ApplicationAdapter {
 			if (state == State.GAME_OVER) {
 				Assets.GlyphLayoutCacheItem wasteCollected = assets.wasteCollectedText;
 				Assets.GlyphLayoutCacheItem sectorReached = assets.sectorReachedText;
+				Assets.GlyphLayoutCacheItem scoreLabel = assets.scoreText;
+
 				ScoreData scoreData = world.getScoreData();
 
 				assets.font.setColor(Color.YELLOW);
@@ -294,6 +308,13 @@ public class Game extends ApplicationAdapter {
 				Assets.GlyphLayoutCacheItem amount = assets.getGlyphLayoutCacheItem(scoreData.getWasteCollectedString());
 				assets.font.draw(spriteBatch, amount.text, hudWidth/2 - amount.glyphLayout.width/2, y);
 
+
+				y -= assets.font.getLineHeight();
+				assets.font.draw(spriteBatch, scoreLabel.text, hudWidth/2 - scoreLabel.glyphLayout.width/2, y);
+
+				y -= assets.font.getLineHeight();
+				Assets.GlyphLayoutCacheItem score = assets.getGlyphLayoutCacheItem(scoreData.getScoreString());
+				assets.font.draw(spriteBatch, score.text, hudWidth/2 - score.glyphLayout.width/2, y);
 
 			}
 		}
@@ -325,6 +346,7 @@ public class Game extends ApplicationAdapter {
                 } else if(world.isGameOver()) {
                     setState(State.GAME_OVER);
 					saveScore(world.getScoreData());
+					highScore = loadScore();
                 } else {
 
 					ItemContainer itemContainer = world.getPlayer().getComponent(ItemContainer.class);
@@ -351,8 +373,9 @@ public class Game extends ApplicationAdapter {
             case GAME_OVER: {
                 world.update(delta);
                 if (playerInputAdapter.popAction() == PlayerInputAdapter.Action.FIRE) {
-                    initWorld(true);
-                    setState(State.PLAY);
+                    //initWorld(true);
+
+                    setState(State.MENU);
                 }
                 break;
             }
@@ -364,14 +387,35 @@ public class Game extends ApplicationAdapter {
 	private static final String SCORE_PREFERENCES = "highscore";
 	private static final String SCORE_VERSION_KEY = "version";
 
+	private static final String SCORE_SECTOR_KEY = "sector";
+	private static final String SCORE_WASTE_KEY = "waste";
+
 	private static final int SCORE_VERSION = 1;
 
 	private void saveScore(ScoreData scoreData) {
 		Preferences preferences = Gdx.app.getPreferences(SCORE_PREFERENCES);
 
+		boolean save = false;
+		ScoreData current = loadScore();
+		if (current == null || current.score < scoreData.score) {
+			save = true;
+		}
 
+		if (save) {
+			preferences.putInteger(SCORE_VERSION_KEY, SCORE_VERSION);
+			preferences.putInteger(SCORE_SECTOR_KEY, scoreData.sector);
+			preferences.putInteger(SCORE_WASTE_KEY, scoreData.wasteCollected);
+			preferences.flush();
+		}
 
+	}
 
+	private ScoreData loadScore() {
+		Preferences preferences = Gdx.app.getPreferences(SCORE_PREFERENCES);
+		if (preferences.contains(SCORE_SECTOR_KEY) && preferences.contains(SCORE_WASTE_KEY)) {
+			return new ScoreData(preferences.getInteger(SCORE_SECTOR_KEY), preferences.getInteger(SCORE_WASTE_KEY));
+		}
+		return null;
 	}
 
 }

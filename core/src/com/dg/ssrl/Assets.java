@@ -90,6 +90,7 @@ public class Assets {
     public GlyphLayoutCacheItem wasteCollectedText;
     public GlyphLayoutCacheItem sectorReachedText;
     public GlyphLayoutCacheItem tapToStartText;
+    public GlyphLayoutCacheItem scoreText;
 
     public Color floorColor = new Color(0x1f1f1fff);
 
@@ -165,6 +166,7 @@ public class Assets {
         wasteCollectedText = new GlyphLayoutCacheItem("WASTE COLLECTED", font);
         sectorReachedText = new GlyphLayoutCacheItem("SECTOR REACHED", font);
         tapToStartText = new GlyphLayoutCacheItem("TAP TO START", font);
+        scoreText = new GlyphLayoutCacheItem("SCORE", font);
 
     }
 

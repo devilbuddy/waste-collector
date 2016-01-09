@@ -2,13 +2,11 @@ package com.dg.ssrl;
 
 import java.util.Random;
 
-import javafx.geometry.Pos;
-
 import static com.dg.ssrl.Components.Brain;
+import static com.dg.ssrl.Components.ItemContainer;
 import static com.dg.ssrl.Components.MoveAnimation;
 import static com.dg.ssrl.Components.Position;
 import static com.dg.ssrl.Components.Stats;
-import static com.dg.ssrl.Components.ItemContainer;
 
 public class MonsterBrain implements Brain {
 
@@ -16,7 +14,6 @@ public class MonsterBrain implements Brain {
 
     private final int entityId;
     private final Assets.Sounds sounds;
-    private final Random random = new Random(System.currentTimeMillis());
 
     public MonsterBrain(int entityId, Assets.Sounds sounds) {
         this.entityId = entityId;
