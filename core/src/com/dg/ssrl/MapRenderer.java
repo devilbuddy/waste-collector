@@ -130,10 +130,9 @@ public class MapRenderer {
         boolean needAnotherRenderPass = true;
         while (needAnotherRenderPass) {
             needAnotherRenderPass = false;
-
-            for (Entity entity : world.entities) {
+            for (int i = 0 ; i < world.entities.size(); i++) {
+                Entity entity = world.entities.get(i);
                 if (entity.alive) {
-
                     Sprite sprite = entity.getComponent(Sprite.class);
 
                     if (sprite != null) {
