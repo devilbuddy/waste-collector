@@ -88,6 +88,7 @@ public class Assets {
     public GlyphLayoutCacheItem gameOverText;
     public GlyphLayoutCacheItem wasteCollectedText;
     public GlyphLayoutCacheItem sectorReachedText;
+    public GlyphLayoutCacheItem tapToStartText;
 
     public Color floorColor = new Color(0x1f1f1fff);
 
@@ -120,6 +121,7 @@ public class Assets {
         monsterSprites.put(MonsterType.Brute, tiles[5][3]);
         monsterSprites.put(MonsterType.Egg, tiles[11][0]);
         monsterSprites.put(MonsterType.Cannon, tiles[5][5]);
+        monsterSprites.put(MonsterType.Grower, tiles[5][6]);
 
         itemSprites.put(ItemType.Key, tiles[9][0]);
         itemSprites.put(ItemType.Ammo, tiles[10][0]);
@@ -161,6 +163,8 @@ public class Assets {
         gameOverText = new GlyphLayoutCacheItem("GAME OVER", font);
         wasteCollectedText = new GlyphLayoutCacheItem("WASTE COLLECTED", font);
         sectorReachedText = new GlyphLayoutCacheItem("SECTOR REACHED", font);
+        tapToStartText = new GlyphLayoutCacheItem("TAP TO START", font);
+
     }
 
     public TextureRegion getMonsterTextureRegion(MonsterType monsterType) {

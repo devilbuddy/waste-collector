@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -232,12 +233,10 @@ public class Game extends ApplicationAdapter {
 			float logoY = (hudHeight/3 * 2) - logoH / 2;
 			spriteBatch.draw(assets.logo, logoX, logoY, logoW, logoH);
 
-			String gameOver = "TAP TO START";
-			GlyphLayout glyphLayout = new GlyphLayout(assets.font, gameOver);
-			float x = hudWidth / 2 - glyphLayout.width / 2;
-			float y = hudHeight / 2 + glyphLayout.height;
+			float x = hudWidth / 2 - assets.tapToStartText.glyphLayout.width / 2;
+			float y = hudHeight / 2 + assets.tapToStartText.glyphLayout.height;
 			assets.font.setColor(Color.ORANGE);
-			assets.font.draw(spriteBatch, gameOver, x, y);
+			assets.font.draw(spriteBatch, assets.tapToStartText.text, x, y);
 
 		} else {
 			Entity player = world.getPlayer();
@@ -322,6 +321,7 @@ public class Game extends ApplicationAdapter {
                     setState(State.FADE_OUT_LEVEL);
                 } else if(world.isGameOver()) {
                     setState(State.GAME_OVER);
+					saveScore(world.getScoreData());
                 } else {
 
 					ItemContainer itemContainer = world.getPlayer().getComponent(ItemContainer.class);
@@ -354,6 +354,19 @@ public class Game extends ApplicationAdapter {
                 break;
             }
         }
+
+
+	}
+
+	private static final String SCORE_PREFERENCES = "highscore";
+	private static final String SCORE_VERSION_KEY = "version";
+
+	private static final int SCORE_VERSION = 1;
+
+	private void saveScore(ScoreData scoreData) {
+		Preferences preferences = Gdx.app.getPreferences(SCORE_PREFERENCES);
+
+
 
 
 	}

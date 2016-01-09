@@ -135,6 +135,38 @@ public class MonsterBrain implements Brain {
         }
     }
 
+    public static class GrowerBrain implements Brain {
+        private final int entityId;
+        private final Assets.Sounds sounds;
+
+        private Random random = new Random(System.currentTimeMillis());
+
+        private boolean tryGrow = true;
+
+        public GrowerBrain(int entityId, Assets.Sounds sounds) {
+            this.entityId = entityId;
+            this.sounds = sounds;
+        }
+
+        @Override
+        public boolean act(World world) {
+            if (tryGrow) {
+                Entity entity = world.getEntity(entityId);
+                Position position = entity.getComponent(Position.class).copy();
+                Direction growDirection = Direction.CARDINAL_DIRECTIONS[random.nextInt(Direction.CARDINAL_DIRECTIONS.length)];
+                world.translateWraparound(position, growDirection);
+                if (world.isEmpty(position)) {
+                    EntityFactory entityFactory = world.getEntityFactory();
+                    Entity spawnedGrower = entityFactory.makeMonster(position.x, position.y, MonsterType.Grower);
+                    world.addEntity(spawnedGrower);
+                    tryGrow = false;
+                }
+
+            }
+            return true;
+        }
+    }
+
     public static class CannonBrain implements Brain {
         private final int entityId;
         private final Assets.Sounds sounds;

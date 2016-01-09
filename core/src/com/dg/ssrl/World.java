@@ -17,7 +17,9 @@ public class World {
     private static final String tag = "World";
 
 
+
     public static class Cell {
+
         public enum Type {
             Wall(false),
             Floor(true);
@@ -329,6 +331,15 @@ public class World {
                 }
                 return !containsSolidEntities;
             }
+        }
+        return false;
+    }
+
+
+    public boolean isEmpty(Position position) {
+        if (contains(position)) {
+            Cell cell = getCell(position);
+            return cell.isWalkable() && cell.getEntityCount() == 0;
         }
         return false;
     }

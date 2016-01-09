@@ -82,13 +82,16 @@ public class EntityFactory {
         entity.addComponent(new Solid(true));
         entity.addComponent(new Sprite(assets.getMonsterTextureRegion(monsterType)));
 
-        Brain brain = null;
+        Brain brain;
         switch (monsterType) {
             case Egg:
                 brain = new MonsterBrain.EggBrain(entity.id);
                 break;
             case Cannon:
                 brain = new MonsterBrain.CannonBrain(entity.id, assets.sounds);
+                break;
+            case Grower:
+                brain = new MonsterBrain.GrowerBrain(entity.id, assets.sounds);
                 break;
             default:
                 brain = new MonsterBrain(entity.id, assets.sounds);
