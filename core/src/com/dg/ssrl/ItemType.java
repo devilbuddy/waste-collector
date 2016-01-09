@@ -10,10 +10,13 @@ public enum ItemType {
 
 
     public static ItemType[] PICK_UPS = {
-            Ammo,
+            Ammo
+    };
+
+    public static ItemType[] RARE_PICK_UPS = {
             AmmoCrate,
-            Rocket,
-            Heart
+            Heart,
+            Rocket
     };
 
     public final String name;

@@ -153,10 +153,19 @@ public class Generator {
             Entity item = entityFactory.makeItem(itemPosition.x, itemPosition.y, ItemType.Waste);
             levelData.entities.add(item);
         }
-        int goodItemCount = 2 + random.nextInt(2);
-        for (int i = 0; i < goodItemCount; i++) {
+
+        int pickupCount = 2 + random.nextInt(2);
+        for (int i = 0; i < pickupCount; i++) {
             Position itemPosition = floors.remove(0);
             ItemType itemType = ItemType.PICK_UPS[random.nextInt(ItemType.PICK_UPS.length)];
+            Entity item = entityFactory.makeItem(itemPosition.x, itemPosition.y, itemType);
+            levelData.entities.add(item);
+        }
+
+        int rarePickupCount = random.nextInt(2) + (depth / 3);
+        for (int i = 0; i < rarePickupCount; i++) {
+            Position itemPosition = floors.remove(0);
+            ItemType itemType = ItemType.RARE_PICK_UPS[random.nextInt(ItemType.RARE_PICK_UPS.length)];
             Entity item = entityFactory.makeItem(itemPosition.x, itemPosition.y, itemType);
             levelData.entities.add(item);
         }
