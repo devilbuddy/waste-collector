@@ -141,7 +141,7 @@ public class MonsterBrain implements Brain {
 
         private Random random = new Random(System.currentTimeMillis());
 
-        private boolean tryGrow = true;
+        private float tryGrow = 1.0f;
 
         public GrowerBrain(int entityId, Assets.Sounds sounds) {
             this.entityId = entityId;
@@ -150,7 +150,8 @@ public class MonsterBrain implements Brain {
 
         @Override
         public boolean act(World world) {
-            if (tryGrow) {
+            boolean grow = random.nextFloat() < tryGrow;
+            if (grow) {
                 Entity entity = world.getEntity(entityId);
                 Position position = entity.getComponent(Position.class).copy();
                 Direction growDirection = Direction.CARDINAL_DIRECTIONS[random.nextInt(Direction.CARDINAL_DIRECTIONS.length)];
@@ -159,7 +160,9 @@ public class MonsterBrain implements Brain {
                     EntityFactory entityFactory = world.getEntityFactory();
                     Entity spawnedGrower = entityFactory.makeMonster(position.x, position.y, MonsterType.Grower);
                     world.addEntity(spawnedGrower);
-                    tryGrow = false;
+
+                    sounds.play(Assets.Sounds.SoundId.SPAWN);
+                    tryGrow = 0.1f;
                 }
 
             }
