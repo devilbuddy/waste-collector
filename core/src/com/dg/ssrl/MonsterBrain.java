@@ -69,17 +69,16 @@ public class MonsterBrain implements Brain {
 
         if (!moveAnimation.isBusy()) {
             final Position current = entity.getComponent(Position.class);
-
-            Direction targetDirection = Direction.NONE;
-
             ItemContainer itemContainer = entity.getComponent(ItemContainer.class);
+
+            Direction targetDirection;
             if (itemContainer != null && itemContainer.getAmount(ItemType.Key) > 0) {
                 targetDirection = findFleeDirection(world, current);
             } else {
                 targetDirection = findAttackDirection(world, current);
             }
 
-            boolean doMove = true;
+            boolean doMove = targetDirection != Direction.NONE;
             if (targetDirection == moveAnimation.direction) {
 
                 Position target = current.copy();
@@ -139,7 +138,7 @@ public class MonsterBrain implements Brain {
     public static class CannonBrain implements Brain {
         private final int entityId;
         private final Assets.Sounds sounds;
-        boolean rotate = true;
+
         public CannonBrain(int entityId, Assets.Sounds sounds) {
             this.entityId = entityId;
             this.sounds = sounds;
@@ -149,8 +148,10 @@ public class MonsterBrain implements Brain {
         public boolean act(World world) {
             Entity entity = world.getEntity(entityId);
             MoveAnimation moveAnimation = entity.getComponent(MoveAnimation.class);
-            rotate = true;
+
             if (world.getPlayer() != null) {
+                boolean rotate = true;
+
                 Position position = entity.getComponent(Position.class);
                 final Position bulletEnd = position.copy().translate(moveAnimation.direction);
                 boolean hitSomething = false;
@@ -178,7 +179,6 @@ public class MonsterBrain implements Brain {
                     BrainCore.move(world, entity, newDirection, sounds);
                 } else {
                     BrainCore.fire(world, entity, moveAnimation.direction, ItemType.Ammo, sounds);
-
                 }
             }
 

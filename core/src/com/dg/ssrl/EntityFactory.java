@@ -144,13 +144,24 @@ public class EntityFactory {
         moveAnimation.setPosition(x * Assets.TILE_SIZE, y * Assets.TILE_SIZE).setDirection(Direction.EAST);
         entity.addComponent(moveAnimation);
 
-        final ItemContainer itemContainer = new ItemContainer(new Runnable() {
-            @Override
-            public void run() {
-                entity.alive = false;
-            }
-        });
-
+        ItemContainer itemContainer;
+        if (itemType == ItemType.Heart) {
+            itemContainer = new ItemContainer(new OnEmptied() {
+                @Override
+                public void run(Entity emptiedBy) {
+                    Stats stats = emptiedBy.getComponent(Stats.class);
+                    stats.heal(1);
+                    entity.alive = false;
+                }
+            });
+        } else {
+            itemContainer = new ItemContainer(new OnEmptied() {
+                @Override
+                public void run(Entity emptiedBy) {
+                    entity.alive = false;
+                }
+            });
+        }
         if (itemType == ItemType.AmmoCrate) {
             itemContainer.add(ItemType.Ammo, 5);
         } else {

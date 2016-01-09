@@ -25,20 +25,25 @@ public class Components {
         }
     }
 
+    public interface OnEmptied {
+        void run(Entity emptiedBy);
+    }
     public static class ItemContainer implements Component {
 
         public Map<ItemType, Integer> content = new HashMap<ItemType, Integer>();
 
-        private final Runnable onEmptied;
+        private final OnEmptied onEmptied;
 
         public ItemContainer() {
-            this(new Runnable() {
+            this(new OnEmptied() {
                 @Override
-                public void run() {}
+                public void run(Entity emptiedBy) {
+
+                }
             });
         }
 
-        public ItemContainer(Runnable onEmptied) {
+        public ItemContainer(OnEmptied onEmptied) {
             this.onEmptied = onEmptied;
         }
 
@@ -76,13 +81,13 @@ public class Components {
             content.clear();
         }
 
-        public void emptyInto(ItemContainer other) {
+        public void emptyInto(ItemContainer other, Entity emptiedBy) {
             for (ItemType key : content.keySet()) {
                 int amountToAdd = content.get(key);
                 other.add(key, amountToAdd);
             }
             clear();
-            onEmptied.run();
+            onEmptied.run(emptiedBy);
         }
 
         @Override
@@ -140,6 +145,14 @@ public class Components {
         }
         private void updateHealthString() {
             healthString = "HEALTH " + health;
+        }
+
+        public void heal(int amount) {
+            health += amount;
+            if (health > maxHealth) {
+                health = maxHealth;
+            }
+            updateHealthString();
         }
 
         public void damage(int amount) {

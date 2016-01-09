@@ -70,7 +70,7 @@ public class BrainCore {
                         Entity e = world.getEntity(entityId);
                         ItemContainer pickupItem = e.getComponent(ItemContainer.class);
                         if (pickupItem != null) {
-                            pickupItem.emptyInto(itemContainer);
+                            pickupItem.emptyInto(itemContainer, entity);
                             Gdx.app.log(tag, itemContainer.toString());
                             sounds.play(Assets.Sounds.SoundId.PICKUP);
                         }

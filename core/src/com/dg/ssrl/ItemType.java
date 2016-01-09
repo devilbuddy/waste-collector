@@ -5,13 +5,15 @@ public enum ItemType {
     Ammo("AMMO", 1, 150f, Assets.Sounds.SoundId.LASER),
     AmmoCrate("AMMO_CRATE", 0, 0, Assets.Sounds.SoundId.NONE),
     Rocket("ROCKETS", 3, 80f, Assets.Sounds.SoundId.ROCKET),
-    Waste("WASTE", 0, 0, Assets.Sounds.SoundId.NONE);
+    Waste("WASTE", 0, 0, Assets.Sounds.SoundId.NONE),
+    Heart("HEART", 0, 0, Assets.Sounds.SoundId.NONE);
 
 
     public static ItemType[] PICK_UPS = {
             Ammo,
             AmmoCrate,
-            Rocket
+            Rocket,
+            Heart
     };
 
     public final String name;
