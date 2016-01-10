@@ -91,6 +91,7 @@ public class Assets {
     public GlyphLayoutCacheItem sectorReachedText;
     public GlyphLayoutCacheItem tapToStartText;
     public GlyphLayoutCacheItem scoreText;
+    public GlyphLayoutCacheItem congratulationsText;
 
     public Color floorColor = new Color(0x1f1f1fff);
 
@@ -167,7 +168,7 @@ public class Assets {
         sectorReachedText = new GlyphLayoutCacheItem("SECTOR REACHED", font);
         tapToStartText = new GlyphLayoutCacheItem("TAP TO START", font);
         scoreText = new GlyphLayoutCacheItem("SCORE", font);
-
+        congratulationsText = new GlyphLayoutCacheItem("CLEARED", font);
     }
 
     public TextureRegion getMonsterTextureRegion(MonsterType monsterType) {

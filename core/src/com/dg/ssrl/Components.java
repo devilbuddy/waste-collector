@@ -438,7 +438,9 @@ public class Components {
 
         public static class Particle {
             Vector2 velocity = new Vector2();
+            Vector2 acceleration = new Vector2();
             public Vector2 position = new Vector2();
+
             public Color color = new Color(Color.ORANGE);
 
             public Particle(float x, float y) {
@@ -446,24 +448,24 @@ public class Components {
             }
         }
 
-        private float duration = 0.3f;
+        private float duration;
         private float lifeTime = 0;
 
         public int numParticles = 20;
         public Particle[] particles;
 
-        private Vector2 tmp = new Vector2();
-
         Random r = new Random(System.currentTimeMillis());
-        Vector2 gravity = new Vector2(0, -20);
 
-        public Effect(float x, float y, int numParticles) {
+        public Effect(float x, float y, int numParticles, float duration) {
+            this.duration = duration;
             this.numParticles = numParticles;
             particles = new Particle[numParticles];
 
             for (int i = 0; i < numParticles; i++) {
-                particles[i] = new Particle(x, y);
-                particles[i].velocity.set((5 + r.nextInt(10)) * (r.nextBoolean() ? -1 : 1), ((5 + r.nextInt(10)) /* * (r.nextBoolean() ? -1 : 1)*/));
+                Particle p = new Particle(x, y);
+                p.acceleration.set((r.nextBoolean() ? -0.5f : 0.5f) * r.nextFloat(), (r.nextBoolean() ? -0.5f : 0.5f) * r.nextFloat());
+                p.velocity.set((r.nextBoolean() ? -0.25f : 0.25f) * r.nextFloat(),  (r.nextBoolean() ? -0.25f : 0.25f) * r.nextFloat());
+                particles[i] = p;
             }
         }
 
@@ -472,11 +474,14 @@ public class Components {
 
             for (int i = 0; i < numParticles; i++) {
                 Particle p = particles[i];
-                tmp.set(p.velocity).scl(delta);
-                particles[i].position.add(tmp);
 
-                tmp.set(gravity).scl(delta);
-                particles[i].position.add(tmp);
+                float dx = p.acceleration.x;
+                float dy = p.acceleration.y;
+
+                p.velocity.add(dx * delta, dy * delta);
+
+                p.position.add(p.velocity);
+
             }
         }
 

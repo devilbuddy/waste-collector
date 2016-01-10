@@ -93,7 +93,8 @@ public class Game extends ApplicationAdapter {
         PLAY,
         GAME_OVER,
         FADE_OUT_LEVEL,
-        FADE_IN_LEVEL
+        FADE_IN_LEVEL,
+		WIN
     }
 
     private State state = State.MENU;
@@ -220,6 +221,23 @@ public class Game extends ApplicationAdapter {
 				float y = mapRenderer.bounds.y + (mapRenderer.bounds.height / 3)*2 + gameOver.glyphLayout.height;
 				assets.font.setColor(Color.ORANGE);
 				assets.font.draw(spriteBatch, gameOver.text, x, y);
+			} else if (state == State.WIN) {
+
+				spriteBatch.setColor(Color.BLACK);
+				float hiddenHeight = mapRenderer.bounds.height;
+				float hiddenY = mapRenderer.bounds.y + mapRenderer.bounds.height - hiddenHeight;
+				spriteBatch.draw(assets.whitePixel, mapRenderer.bounds.x, hiddenY, mapRenderer.bounds.width, hiddenHeight);
+
+				Assets.GlyphLayoutCacheItem congratulations = assets.congratulationsText;
+				float x = mapRenderer.bounds.x + mapRenderer.bounds.width / 2 - congratulations.glyphLayout.width / 2;
+				float y = mapRenderer.bounds.y + (mapRenderer.bounds.height / 3)*2 + congratulations.glyphLayout.height;
+
+				Color tmp = new Color(Color.RED);
+				float add = stateTime - (int) stateTime;
+				tmp.add(add, add, add, 0);
+				assets.font.setColor(tmp);
+
+				assets.font.draw(spriteBatch, congratulations.text, x, y);
 			}
 		}
 
@@ -253,6 +271,38 @@ public class Game extends ApplicationAdapter {
 			assets.font.draw(spriteBatch, assets.tapToStartText.text, hudWidth / 2 - assets.tapToStartText.glyphLayout.width / 2, y);
 
 
+		} else if (state == State.GAME_OVER || state == State.WIN) {
+			Assets.GlyphLayoutCacheItem wasteCollected = assets.wasteCollectedText;
+			Assets.GlyphLayoutCacheItem sectorReached = assets.sectorReachedText;
+			Assets.GlyphLayoutCacheItem scoreLabel = assets.scoreText;
+
+			ScoreData scoreData = world.getScoreData();
+
+			assets.font.setColor(Color.YELLOW);
+
+			float y = (mapRenderer.bounds.y + mapRenderer.bounds.height/2) * 2 + assets.font.getLineHeight();
+
+			if (state != State.WIN) {
+				assets.font.draw(spriteBatch, sectorReached.text, hudWidth / 2 - sectorReached.glyphLayout.width / 2, y);
+
+				y -= assets.font.getLineHeight();
+				Assets.GlyphLayoutCacheItem sectorNumber = assets.getGlyphLayoutCacheItem(scoreData.getSectorString());
+				assets.font.draw(spriteBatch, sectorNumber.text, hudWidth / 2 - sectorNumber.glyphLayout.width / 2, y);
+			}
+
+			y -= assets.font.getLineHeight();
+			assets.font.draw(spriteBatch, wasteCollected.text, hudWidth/2 - wasteCollected.glyphLayout.width/2, y);
+
+			y -= assets.font.getLineHeight();
+			Assets.GlyphLayoutCacheItem amount = assets.getGlyphLayoutCacheItem(scoreData.getWasteCollectedString());
+			assets.font.draw(spriteBatch, amount.text, hudWidth/2 - amount.glyphLayout.width/2, y);
+
+			y -= assets.font.getLineHeight();
+			assets.font.draw(spriteBatch, scoreLabel.text, hudWidth/2 - scoreLabel.glyphLayout.width/2, y);
+
+			y -= assets.font.getLineHeight();
+			Assets.GlyphLayoutCacheItem score = assets.getGlyphLayoutCacheItem(scoreData.getScoreString());
+			assets.font.draw(spriteBatch, score.text, hudWidth/2 - score.glyphLayout.width/2, y);
 
 		} else {
 			Entity player = world.getPlayer();
@@ -285,40 +335,8 @@ public class Game extends ApplicationAdapter {
 					spriteBatch.draw(assets.whitePixel, 0, longPressBarY, longPressBarWidth, 2);
 				}
 			}
-			if (state == State.GAME_OVER) {
-				Assets.GlyphLayoutCacheItem wasteCollected = assets.wasteCollectedText;
-				Assets.GlyphLayoutCacheItem sectorReached = assets.sectorReachedText;
-				Assets.GlyphLayoutCacheItem scoreLabel = assets.scoreText;
-
-				ScoreData scoreData = world.getScoreData();
-
-				assets.font.setColor(Color.YELLOW);
-
-				float y = (mapRenderer.bounds.y + mapRenderer.bounds.height/2) * 2 + assets.font.getLineHeight();
-
-				assets.font.draw(spriteBatch, sectorReached.text, hudWidth/2 - sectorReached.glyphLayout.width/2, y);
-
-				y -= assets.font.getLineHeight();
-				Assets.GlyphLayoutCacheItem sectorNumber = assets.getGlyphLayoutCacheItem(scoreData.getSectorString());
-				assets.font.draw(spriteBatch, sectorNumber.text, hudWidth/2 - sectorNumber.glyphLayout.width/2, y);
-
-				y -= assets.font.getLineHeight();
-				assets.font.draw(spriteBatch, wasteCollected.text, hudWidth/2 - wasteCollected.glyphLayout.width/2, y);
-
-				y -= assets.font.getLineHeight();
-				Assets.GlyphLayoutCacheItem amount = assets.getGlyphLayoutCacheItem(scoreData.getWasteCollectedString());
-				assets.font.draw(spriteBatch, amount.text, hudWidth/2 - amount.glyphLayout.width/2, y);
-
-
-				y -= assets.font.getLineHeight();
-				assets.font.draw(spriteBatch, scoreLabel.text, hudWidth/2 - scoreLabel.glyphLayout.width/2, y);
-
-				y -= assets.font.getLineHeight();
-				Assets.GlyphLayoutCacheItem score = assets.getGlyphLayoutCacheItem(scoreData.getScoreString());
-				assets.font.draw(spriteBatch, score.text, hudWidth/2 - score.glyphLayout.width/2, y);
-
-			}
 		}
+
 	}
 
     private static final float SWITCH_LEVEL_ANIMATION_TIME = 0.75f;
@@ -360,8 +378,14 @@ public class Game extends ApplicationAdapter {
             }
             case FADE_OUT_LEVEL: {
                 if (stateTime > SWITCH_LEVEL_ANIMATION_TIME) {
-                    initWorld(false);
-                    setState(State.FADE_IN_LEVEL);
+					if (world.getDepth() >= World.MAX_SECTOR) {
+						//Win!
+						world.generateStats();
+						setState(State.WIN);
+					} else {
+						initWorld(false);
+						setState(State.FADE_IN_LEVEL);
+					}
                 }
                 break;
             }
@@ -371,11 +395,14 @@ public class Game extends ApplicationAdapter {
                 }
                 break;
             }
-            case GAME_OVER: {
-                world.update(delta);
+            case GAME_OVER:
+				world.update(delta);
+				if (playerInputAdapter.popAction() == PlayerInputAdapter.Action.FIRE) {
+					setState(State.MENU);
+				}
+				break;
+			case WIN: {
                 if (playerInputAdapter.popAction() == PlayerInputAdapter.Action.FIRE) {
-                    //initWorld(true);
-
                     setState(State.MENU);
                 }
                 break;

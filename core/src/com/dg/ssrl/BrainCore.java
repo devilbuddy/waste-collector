@@ -93,7 +93,7 @@ public class BrainCore {
                         moveAnimation.startBump(currentPosition, moveDirection, new Runnable() {
                             @Override
                             public void run() {
-                                Entity explosion = entityFactory.makeExplosion(targetPosition.x * Assets.TILE_SIZE + Assets.TILE_SIZE/2, targetPosition.y * Assets.TILE_SIZE + Assets.TILE_SIZE/2);
+                                Entity explosion = entityFactory.makeExplosion(targetPosition.x * Assets.TILE_SIZE + Assets.TILE_SIZE/2, targetPosition.y * Assets.TILE_SIZE + Assets.TILE_SIZE/2, 0.2f);
                                 world.addEntity(explosion);
 
                                 sounds.play(Assets.Sounds.SoundId.HIT);
@@ -171,7 +171,11 @@ public class BrainCore {
                         break;
                 }
                 for (int i = 0; i < itemType.damage; i++) {
-                    Entity explosion = entityFactory.makeExplosion(explosionX + i, explosionY + i);
+                    float duration = EntityFactory.BULLET_EXPLOSION_DURATION;
+                    if (itemType == ItemType.Rocket) {
+                        duration = EntityFactory.ROCKET_EXPLOSION_DURATION;
+                    }
+                    Entity explosion = entityFactory.makeExplosion(explosionX + i, explosionY + i, duration);
                     world.addEntity(explosion);
                 }
 

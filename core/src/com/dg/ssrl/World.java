@@ -73,6 +73,8 @@ public class World {
     private boolean completed;
     private ScoreData scoreData;
 
+    public static final int MAX_SECTOR = 10;
+
     public World(int width, int height, EntityFactory entityFactory, Scheduler scheduler, int depth) {
         this.width = width;
         this.height = height;
@@ -157,7 +159,7 @@ public class World {
         scheduler.update(this);
     }
 
-    private void generateStats() {
+    public void generateStats() {
         ItemContainer itemContainer = getPlayer().getComponent(ItemContainer.class);
         int wasteCount = itemContainer.getAmount(ItemType.Waste);
         scoreData = new ScoreData(depth, wasteCount);

@@ -118,10 +118,14 @@ public class EntityFactory {
         return entity;
     }
 
-    public Entity makeExplosion(float x, float y) {
+    public static final float BULLET_EXPLOSION_DURATION = 0.3f;
+    public static final float ROCKET_EXPLOSION_DURATION = 0.5f;
+
+
+    public Entity makeExplosion(float x, float y, float duration) {
         final Entity entity = createEntity();
         entity.addComponent(new Sprite(assets.whitePixel, 2));
-        final Effect effect = new Effect(x, y, 10);
+        final Effect effect = new Effect(x, y, 20, duration);
 
         entity.addComponent(effect);
 

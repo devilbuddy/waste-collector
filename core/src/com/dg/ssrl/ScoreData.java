@@ -15,11 +15,9 @@ public class ScoreData {
 		wasteCollectedString = "" + wasteCollected;
 		sectorString = "" + sector;
 
-		score = (int) (wasteCollected * 1.2f + sector);
+		score = (int) (wasteCollected * 1.5f + sector);
 		scoreString = "" + score;
 	}
-
-
 
 	public String getWasteCollectedString() {
 		return wasteCollectedString;
