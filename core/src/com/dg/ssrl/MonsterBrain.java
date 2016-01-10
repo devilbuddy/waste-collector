@@ -180,6 +180,8 @@ public class MonsterBrain implements Brain {
         private final int entityId;
         private final Assets.Sounds sounds;
 
+        private static final int ROTATE_DELAY = 2;
+        private int rotateDelay;
         public CannonBrain(int entityId, Assets.Sounds sounds) {
             this.entityId = entityId;
             this.sounds = sounds;
@@ -216,8 +218,12 @@ public class MonsterBrain implements Brain {
                 }
 
                 if (rotate) {
-                    Direction newDirection = moveAnimation.direction.turn();
-                    BrainCore.move(world, entity, newDirection, sounds);
+                    rotateDelay--;
+                    if (rotateDelay <= 0) {
+                        Direction newDirection = moveAnimation.direction.turn();
+                        BrainCore.move(world, entity, newDirection, sounds);
+                        rotateDelay = ROTATE_DELAY;
+                    }
                 } else {
                     BrainCore.fire(world, entity, moveAnimation.direction, ItemType.Ammo, sounds);
                 }

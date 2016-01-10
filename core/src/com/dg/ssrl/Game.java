@@ -240,18 +240,19 @@ public class Game extends ApplicationAdapter {
 			float logoY = (hudHeight/3 * 2) - logoH / 2;
 			spriteBatch.draw(assets.logo, logoX, logoY, logoW, logoH);
 
-			float x = hudWidth / 2 - assets.tapToStartText.glyphLayout.width / 2;
 			float y = hudHeight / 2 + assets.tapToStartText.glyphLayout.height;
-			assets.font.setColor(Color.ORANGE);
-			assets.font.draw(spriteBatch, assets.tapToStartText.text, x, y);
 
 			if (highScore != null) {
-				y -= assets.font.getLineHeight() * 2;
 				assets.font.setColor(Color.YELLOW);
 				Assets.GlyphLayoutCacheItem score = assets.getGlyphLayoutCacheItem("HI-SCORE " + highScore.score);
 				assets.font.draw(spriteBatch, score.text, hudWidth/2 - score.glyphLayout.width/2, y);
-
 			}
+
+			y -= assets.font.getLineHeight() * 2;
+			assets.font.setColor(Color.ORANGE);
+			assets.font.draw(spriteBatch, assets.tapToStartText.text, hudWidth / 2 - assets.tapToStartText.glyphLayout.width / 2, y);
+
+
 
 		} else {
 			Entity player = world.getPlayer();

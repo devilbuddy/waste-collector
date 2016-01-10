@@ -10,7 +10,7 @@ public enum MonsterType {
     Stealer(Actor.Speed.FAST, 1, true),
     Brute(Actor.Speed.MEDIUM, 3, false),
     Egg(Actor.Speed.EXTRA_SLOW, 1, true),
-    Cannon(Actor.Speed.SLOW, 1, false),
+    Cannon(Actor.Speed.MEDIUM, 1, false),
     Grower(Actor.Speed.EXTRA_SLOW, 1, false)
     ;
 
