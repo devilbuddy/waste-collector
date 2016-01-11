@@ -126,7 +126,7 @@ public class Assets {
         itemSprites.put(ItemType.AmmoCrate, tiles[10][1]);
         itemSprites.put(ItemType.Waste, tiles[8][3]);
         itemSprites.put(ItemType.Rocket, tiles[10][3]);
-        itemSprites.put(ItemType.Heart, tiles[8][4]);
+        itemSprites.put(ItemType.Heart, tiles[7][4]);
 
         bulletSprites.put(ItemType.Ammo, tiles[4][3]);
         bulletSprites.put(ItemType.Rocket, tiles[4][4]);
