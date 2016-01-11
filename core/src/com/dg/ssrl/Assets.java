@@ -13,9 +13,7 @@ import java.util.Map;
 
 public class Assets {
 
-
     public static class Sounds {
-
 
         public enum SoundId {
             LASER,
@@ -27,11 +25,6 @@ public class Assets {
             NONE
         }
         private Map<SoundId, Sound> sounds = new HashMap<SoundId, Sound>();
-
-
-        public Sounds() {
-
-        }
 
         public void create() {
             sounds.put(SoundId.LASER, Gdx.audio.newSound(Gdx.files.internal("laser-shoot.wav")));
@@ -72,7 +65,6 @@ public class Assets {
     public TextureRegion floor;
 
     public TextureRegion whitePixel;
-
 
     public TextureRegion[] exitFrames;
 

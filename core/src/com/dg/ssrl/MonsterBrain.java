@@ -29,10 +29,18 @@ public class MonsterBrain implements Brain {
             targetPosition.set(current);
             targetPosition = world.translateWraparound(targetPosition, direction);
 
-            int value = world.dijkstraMap[targetPosition.y][targetPosition.x];
-            if (value < lowestValue) {
-                lowestValue = value;
-                targetDirection = direction;
+            Entity player = world.getPlayer();
+            boolean targetIsPlayer = false;
+            if (player != null) {
+                targetIsPlayer = targetPosition.equals(player.getComponent(Position.class));
+            }
+
+            if (targetIsPlayer || world.isWalkable(targetPosition)) {
+                int value = world.dijkstraMap[targetPosition.y][targetPosition.x];
+                if (value < lowestValue) {
+                    lowestValue = value;
+                    targetDirection = direction;
+                }
             }
         }
         return targetDirection;
