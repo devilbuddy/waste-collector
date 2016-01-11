@@ -13,6 +13,8 @@ import java.util.Map;
 
 public class Assets {
 
+    public TextureRegion playerTextureRegion;
+
     public static class Sounds {
 
         public enum SoundId {
@@ -111,6 +113,7 @@ public class Assets {
 
         font = new BitmapFont(Gdx.files.internal("kongtext.fnt"));
 
+        monsterSprites.put(MonsterType.Player, tiles[4][2]);
         monsterSprites.put(MonsterType.Crawler, tiles[5][2]);
         monsterSprites.put(MonsterType.Stealer, tiles[5][4]);
         monsterSprites.put(MonsterType.Brute, tiles[5][3]);

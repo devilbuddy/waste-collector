@@ -20,13 +20,16 @@ public class EntityFactory {
 
     public Entity makePlayer(int x, int y, PlayerInputAdapter playerInputAdapter, Scheduler scheduler) {
         final Entity entity = createEntity();
+        final Actor actor = new Actor(new PlayerBrain(playerInputAdapter, scheduler, assets.sounds), MonsterType.Player.speed);
+        final MoveAnimation moveAnimation = new MoveAnimation(50f).setPosition(x * Assets.TILE_SIZE, y * Assets.TILE_SIZE).setDirection(Direction.EAST);
+        ItemContainer itemContainer = new ItemContainer();
+        itemContainer.add(ItemType.Ammo, 10);
+        itemContainer.add(ItemType.Rocket, 1);
+
         entity.addComponent(new Position(x, y));
         entity.addComponent(new Solid(true));
-        entity.addComponent(new Sprite(assets.tiles[4][2], 1));
-
-        final Actor actor = new Actor(new PlayerBrain(playerInputAdapter, scheduler, assets.sounds), MonsterType.Player.speed);
+        entity.addComponent(new Sprite(assets.getMonsterTextureRegion(MonsterType.Player), 1));
         entity.addComponent(actor);
-
         entity.addComponent(new Stats(MonsterType.Player, new OnDied() {
             @Override
             public void onDied() {
@@ -34,15 +37,8 @@ public class EntityFactory {
                 actor.alive = false;
             }
         }));
-        ItemContainer itemContainer = new ItemContainer();
-        itemContainer.add(ItemType.Ammo, 10);
-        itemContainer.add(ItemType.Rocket, 1);
         entity.addComponent(itemContainer);
-
-
-        final MoveAnimation moveAnimation = new MoveAnimation(50f).setPosition(x * Assets.TILE_SIZE, y * Assets.TILE_SIZE).setDirection(Direction.EAST);
         entity.addComponent(moveAnimation);
-
         entity.addComponent(new Update(new Updater() {
             @Override
             public void update(float delta, World world) {
@@ -55,11 +51,10 @@ public class EntityFactory {
 
     public Entity makeBullet(ItemType itemType) {
         Entity entity = createEntity();
-        entity.addComponent(new Sprite(assets.getBulletTextureRegion(itemType), 1));
-
         final MoveAnimation moveAnimation = new MoveAnimation(itemType.speed);
-        entity.addComponent(moveAnimation);
 
+        entity.addComponent(new Sprite(assets.getBulletTextureRegion(itemType), 1));
+        entity.addComponent(moveAnimation);
         entity.addComponent(new Update(new Updater() {
             @Override
             public void update(float delta, World world) {
@@ -94,7 +89,7 @@ public class EntityFactory {
                 brain = new MonsterBrain.GrowerBrain(entity.id, assets.sounds);
                 break;
             default:
-                brain = new MonsterBrain(entity.id, assets.sounds);
+                brain = new MonsterBrain(entity.id, monsterType, assets.sounds);
         }
         entity.addComponent(new Actor(brain, monsterType.speed));
 

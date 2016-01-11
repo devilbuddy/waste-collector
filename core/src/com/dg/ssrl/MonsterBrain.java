@@ -13,10 +13,12 @@ public class MonsterBrain implements Brain {
     private static final String tag = "MonsterBrain";
 
     private final int entityId;
+    private final MonsterType monsterType;
     private final Assets.Sounds sounds;
 
-    public MonsterBrain(int entityId, Assets.Sounds sounds) {
+    public MonsterBrain(int entityId, MonsterType monsterType, Assets.Sounds sounds) {
         this.entityId = entityId;
+        this.monsterType = monsterType;
         this.sounds = sounds;
     }
 
@@ -55,10 +57,12 @@ public class MonsterBrain implements Brain {
             targetPosition.set(current);
             targetPosition = world.translateWraparound(targetPosition, direction);
 
-            int value = world.dijkstraMap[targetPosition.y][targetPosition.x];
-            if (value != Integer.MAX_VALUE && value > highestValue) {
-                highestValue = value;
-                targetDirection = direction;
+            if (world.isWalkable(targetPosition)) {
+                int value = world.dijkstraMap[targetPosition.y][targetPosition.x];
+                if (value != Integer.MAX_VALUE && value > highestValue) {
+                    highestValue = value;
+                    targetDirection = direction;
+                }
             }
         }
         return targetDirection;
@@ -94,17 +98,13 @@ public class MonsterBrain implements Brain {
                     Entity targetEntity = world.getEntity(targetCell.getEntityId(i));
                     Stats targetStats = targetEntity.getComponent(Stats.class);
                     if (targetStats != null && targetStats.monsterType != MonsterType.Player) {
-                        //targetDirection = Direction.CARDINAL_DIRECTIONS[random.nextInt(Direction.CARDINAL_DIRECTIONS.length)];
                         doMove = false;
-                        //break;
                     }
                 }
             }
 
             if (doMove) {
-                //Gdx.app.log(tag, "targetDirection:" + targetDirection);
-                BrainCore.MoveResult moveResult = BrainCore.move(world, entity, targetDirection, sounds);
-                //return moveResult.acted;
+                BrainCore.move(world, entity, targetDirection, monsterType, sounds);
             }
             return true;
         } else {
@@ -229,7 +229,7 @@ public class MonsterBrain implements Brain {
                     rotateDelay--;
                     if (rotateDelay <= 0) {
                         Direction newDirection = moveAnimation.direction.turn();
-                        BrainCore.move(world, entity, newDirection, sounds);
+                        BrainCore.move(world, entity, newDirection, MonsterType.Cannon, sounds);
                         rotateDelay = ROTATE_DELAY;
                     }
                 } else {

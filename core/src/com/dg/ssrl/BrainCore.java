@@ -20,7 +20,7 @@ public class BrainCore {
 
     private static MoveResult moveResult = new MoveResult();
 
-    public static MoveResult move(final World world, final Entity entity, final Direction moveDirection, final Assets.Sounds sounds) {
+    public static MoveResult move(final World world, final Entity entity, final Direction moveDirection, final MonsterType monsterType, final Assets.Sounds sounds) {
         final EntityFactory entityFactory = world.getEntityFactory();
         final Scheduler scheduler = world.getScheduler();
         final MoveAnimation moveAnimation = entity.getComponent(MoveAnimation.class);
@@ -98,7 +98,7 @@ public class BrainCore {
 
                                 sounds.play(Assets.Sounds.SoundId.HIT);
 
-                                targetStats.damage(1);
+                                targetStats.damage(monsterType.bumpDamage);
                                 targetEntity.alive = targetStats.isAlive();
                                 scheduler.unlock();
                             }
