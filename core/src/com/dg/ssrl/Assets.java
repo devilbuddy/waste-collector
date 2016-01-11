@@ -91,6 +91,11 @@ public class Assets {
 
     public Map<String, GlyphLayoutCacheItem> glyphLayoutCacheItemMap = new HashMap<String, GlyphLayoutCacheItem>();
 
+    public static Color bulletExplosionColor = Color.ORANGE;
+    public static Color rocketExplosionColor = Color.RED;
+    public static Color eggHatchColor = Color.BROWN;
+    public static Color damageColor = Color.GOLD;
+
     public GlyphLayoutCacheItem getGlyphLayoutCacheItem(String text) {
         GlyphLayoutCacheItem item = glyphLayoutCacheItemMap.get(text);
         if (item == null) {

@@ -203,6 +203,12 @@ public class Components {
             return this;
         }
 
+        public Position translate(int dx, int dy) {
+            x += dx;
+            y += dy;
+            return this;
+        }
+
         public Position copy() {
             Position p = new Position();
             p.set(x, y);
@@ -235,6 +241,8 @@ public class Components {
             result = 31 * result + y;
             return result;
         }
+
+
     }
 
     public static class Sprite implements Component {
@@ -459,11 +467,11 @@ public class Components {
             Vector2 velocity = new Vector2();
             Vector2 acceleration = new Vector2();
             public Vector2 position = new Vector2();
+            public final Color color;
 
-            public Color color = new Color(Color.ORANGE);
-
-            public Particle(float x, float y) {
+            public Particle(float x, float y, Color color) {
                 position.set(x, y);
+                this.color = color;
             }
         }
 
@@ -472,16 +480,16 @@ public class Components {
 
         public int numParticles = 20;
         public Particle[] particles;
-
         Random r = new Random(System.currentTimeMillis());
 
-        public Effect(float x, float y, int numParticles, float duration) {
+        public Effect(float x, float y, int numParticles, float duration, Color color) {
             this.duration = duration;
             this.numParticles = numParticles;
+
             particles = new Particle[numParticles];
 
             for (int i = 0; i < numParticles; i++) {
-                Particle p = new Particle(x, y);
+                Particle p = new Particle(x, y, color);
                 p.acceleration.set((r.nextBoolean() ? -0.5f : 0.5f) * r.nextFloat(), (r.nextBoolean() ? -0.5f : 0.5f) * r.nextFloat());
                 p.velocity.set((r.nextBoolean() ? -0.25f : 0.25f) * r.nextFloat(),  (r.nextBoolean() ? -0.25f : 0.25f) * r.nextFloat());
                 particles[i] = p;

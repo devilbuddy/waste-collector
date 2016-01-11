@@ -1,5 +1,7 @@
 package com.dg.ssrl;
 
+import com.badlogic.gdx.graphics.Color;
+
 import java.util.Random;
 
 import static com.dg.ssrl.Components.Brain;
@@ -128,7 +130,7 @@ public class MonsterBrain implements Brain {
             ticksToActivate--;
             Position position = entity.getComponent(Position.class).copy();
 
-            Entity explosion = entityFactory.makeExplosion(position.x * Assets.TILE_SIZE + Assets.TILE_SIZE/2, position.y * Assets.TILE_SIZE + Assets.TILE_SIZE/2, 0.1f);
+            Entity explosion = entityFactory.makeExplosion(position.x * Assets.TILE_SIZE + Assets.TILE_SIZE/2, position.y * Assets.TILE_SIZE + Assets.TILE_SIZE/2, 0.2f, Color.RED);
             world.addEntity(explosion);
 
             if (ticksToActivate == 0) {

@@ -95,6 +95,7 @@ public class Generator {
         })
     };
 
+
     public static LevelData generate(long seed, int width, int height, int depth, EntityFactory entityFactory) {
         Random random = new Random(seed);
 

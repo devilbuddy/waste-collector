@@ -1,5 +1,7 @@
 package com.dg.ssrl;
 
+import com.badlogic.gdx.graphics.Color;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.dg.ssrl.Components.*;
@@ -111,9 +113,9 @@ public class EntityFactory {
     public static final float BULLET_EXPLOSION_DURATION = 0.3f;
     public static final float ROCKET_EXPLOSION_DURATION = 0.5f;
 
-    public Entity makeExplosion(float x, float y, float duration) {
+    public Entity makeExplosion(float x, float y, float duration, Color color) {
         final Entity entity = createEntity();
-        final Effect effect = new Effect(x, y, 20, duration);
+        final Effect effect = new Effect(x, y, 20, duration, color);
 
         entity.addComponent(effect);
         entity.addComponent(new Sprite(assets.whitePixel, 2));

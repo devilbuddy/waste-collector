@@ -273,9 +273,12 @@ public class Game extends ApplicationAdapter {
 
 		if (highScore != null) {
 			assets.font.setColor(Color.YELLOW);
-			y -= renderHudItemCentered(assets.getGlyphLayoutCacheItem("HI-SCORE " + highScore.score), y);
+			renderHudItemCentered(assets.getGlyphLayoutCacheItem("HI-SCORE " + highScore.score), y);
 		}
+
 		assets.font.setColor(Color.ORANGE);
+		y -= 2 *assets.font.getLineHeight();
+
 		renderHudItemCentered(assets.tapToStartText, y);
 	}
 

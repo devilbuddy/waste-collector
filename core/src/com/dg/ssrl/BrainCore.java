@@ -1,6 +1,7 @@
 package com.dg.ssrl;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 
 import static com.dg.ssrl.Components.MoveAnimation;
 import static com.dg.ssrl.Components.Position;
@@ -93,7 +94,7 @@ public class BrainCore {
                         moveAnimation.startBump(currentPosition, moveDirection, new Runnable() {
                             @Override
                             public void run() {
-                                Entity explosion = entityFactory.makeExplosion(targetPosition.x * Assets.TILE_SIZE + Assets.TILE_SIZE/2, targetPosition.y * Assets.TILE_SIZE + Assets.TILE_SIZE/2, 0.2f);
+                                Entity explosion = entityFactory.makeExplosion(targetPosition.x * Assets.TILE_SIZE + Assets.TILE_SIZE/2, targetPosition.y * Assets.TILE_SIZE + Assets.TILE_SIZE/2, 0.2f, Assets.damageColor);
                                 world.addEntity(explosion);
 
                                 sounds.play(Assets.Sounds.SoundId.HIT);
@@ -171,37 +172,67 @@ public class BrainCore {
                         break;
                 }
                 for (int i = 0; i < itemType.damage; i++) {
-                    float duration = EntityFactory.BULLET_EXPLOSION_DURATION;
-                    if (itemType == ItemType.Rocket) {
-                        duration = EntityFactory.ROCKET_EXPLOSION_DURATION;
+                    if (itemType == ItemType.Ammo) {
+                        float duration = EntityFactory.BULLET_EXPLOSION_DURATION;
+                        Color color = Assets.bulletExplosionColor;
+                        Entity explosion = entityFactory.makeExplosion(explosionX + i, explosionY + i, duration, color);
+                        world.addEntity(explosion);
+                    } else if (itemType == ItemType.Rocket) {
+                        float duration = EntityFactory.ROCKET_EXPLOSION_DURATION;
+                        Color color = Assets.rocketExplosionColor;
+                        Entity explosion = entityFactory.makeExplosion(explosionX + i, explosionY + i, duration, color);
+                        world.addEntity(explosion);
+
                     }
-                    Entity explosion = entityFactory.makeExplosion(explosionX + i, explosionY + i, duration);
-                    world.addEntity(explosion);
+
+
                 }
 
                 sounds.play(Assets.Sounds.SoundId.HIT);
                 if (hit) {
                     Gdx.app.log(tag, "hit in cell " + bulletEnd);
-                    World.Cell cell = world.getCell(bulletEnd.x, bulletEnd.y);
-                    int entityCount = cell.getEntityCount();
-                    for (int i = 0; i < entityCount; i++) {
-                        int entityId = cell.getEntityId(i);
-                        Entity hitEntity = world.getEntity(entityId);
+                    if (itemType == ItemType.Ammo) {
+                        projectileDamage(world, bulletEnd, itemType.damage);
+                    } else if (itemType == ItemType.Rocket) {
+                        Position p = bulletEnd.copy();
 
-                        Gdx.app.log(tag, "hit entity " + hitEntity);
-
-                        Components.Stats hitEntityStats = hitEntity.getComponent(Components.Stats.class);
-                        if (hitEntityStats != null) {
-                            Gdx.app.log(tag, "hit stats " + hitEntityStats);
-                            hitEntityStats.damage(itemType.damage);
-
+                        for (int y = -1; y < 2; y++) {
+                            for (int x = -1; x < 2; x++) {
+                                p.set(bulletEnd).translate(x, y);
+                                int damage = 1;
+                                if(p.equals(bulletEnd)) {
+                                    damage = itemType.damage;
+                                }
+                                projectileDamage(world, p, damage);
+                            }
                         }
+
+
                     }
+
                 }
             }
         });
 
         world.addEntity(bullet);
+    }
+
+    private static void projectileDamage(World world, Position bulletEnd, int damage) {
+        World.Cell cell = world.getCell(bulletEnd.x, bulletEnd.y);
+        int entityCount = cell.getEntityCount();
+        for (int i = 0; i < entityCount; i++) {
+            int entityId = cell.getEntityId(i);
+            Entity hitEntity = world.getEntity(entityId);
+
+            Gdx.app.log(tag, "hit entity " + hitEntity);
+
+            Components.Stats hitEntityStats = hitEntity.getComponent(Components.Stats.class);
+            if (hitEntityStats != null) {
+                Gdx.app.log(tag, "hit stats " + hitEntityStats);
+                hitEntityStats.damage(damage);
+
+            }
+        }
     }
 
 }
