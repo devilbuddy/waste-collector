@@ -8,12 +8,10 @@ class PlayerBrain implements Brain {
 	private static final String tag = "PlayerBrain";
 
     private final PlayerInputAdapter playerInputAdapter;
-    private final Scheduler scheduler;
     private final Assets.Sounds sounds;
 
-	public PlayerBrain(PlayerInputAdapter playerInputAdapter, Scheduler scheduler, Assets.Sounds sounds) {
+	public PlayerBrain(PlayerInputAdapter playerInputAdapter, Assets.Sounds sounds) {
         this.playerInputAdapter = playerInputAdapter;
-        this.scheduler = scheduler;
         this.sounds = sounds;
     }
 
@@ -28,9 +26,7 @@ class PlayerBrain implements Brain {
             Direction moveDirection = playerInputAdapter.getMovementDirection();
 
             if (moveDirection != Direction.NONE) {
-                //Gdx.app.log(tag, "moveDirection=" + moveDirection);
-
-                BrainCore.MoveResult moveResult = BrainCore.move(world, player, moveDirection, sounds);
+                BrainCore.MoveResult moveResult = BrainCore.move(world, player, moveDirection, MonsterType.Player, sounds);
                 acted = moveResult.acted;
                 if (moveResult.moved) {
                     world.updateDijkstraMap(moveResult.endPosition.x, moveResult.endPosition.y);
@@ -53,18 +49,18 @@ class PlayerBrain implements Brain {
 
         PlayerInputAdapter.Action action;
         while ((action = playerInputAdapter.popAction()) != null) {
-            if (action == PlayerInputAdapter.Action.FIRE) {
+            if (action == PlayerInputAdapter.Action.FIRE_PRIMARY) {
                 int ammoCount = itemContainer.getAmount(ItemType.Ammo);
                 if (ammoCount > 0) {
-                    Gdx.app.log(tag, "FIRE");
+                    Gdx.app.log(tag, "FIRE_PRIMARY");
                     itemContainer.remove(ItemType.Ammo, 1);
                     BrainCore.fire(world, player, moveAnimation.direction, ItemType.Ammo, sounds);
                     acted = true;
                 }
-            } else if (action == PlayerInputAdapter.Action.ROCKET) {
+            } else if (action == PlayerInputAdapter.Action.FIRE_SECONDARY) {
                 int rocketCount = itemContainer.getAmount(ItemType.Rocket);
                 if (rocketCount > 0) {
-                    Gdx.app.log(tag, "ROCKET");
+                    Gdx.app.log(tag, "FIRE_SECONDARY");
                     itemContainer.remove(ItemType.Rocket, 1);
                     BrainCore.fire(world, player, moveAnimation.direction, ItemType.Rocket, sounds);
                     acted = true;

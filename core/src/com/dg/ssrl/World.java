@@ -1,10 +1,9 @@
 package com.dg.ssrl;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.IntMap;
 
-import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.dg.ssrl.Components.Actor;
@@ -15,8 +14,6 @@ import static com.dg.ssrl.Components.Update;
 
 public class World {
     private static final String tag = "World";
-
-
 
     public static class Cell {
 
@@ -61,7 +58,10 @@ public class World {
     private final Scheduler scheduler;
 
     private final Cell[][] cells;
-    public ArrayList<Entity> entities = new ArrayList<Entity>();
+
+    private IntArray entitiesToRemove = new IntArray();
+    public IntMap<Entity> entities = new IntMap<Entity>();
+
     public Rectangle bounds = new Rectangle();
     public int playerEntityId;
     public int exitEntityId;
@@ -96,7 +96,7 @@ public class World {
         //Gdx.app.log(tag, "bounds: " + bounds);
     }
 
-    public int getDepth() {
+    public int getSector() {
         return depth;
     }
 
@@ -121,39 +121,45 @@ public class World {
     }
 
     public void update(float delta) {
-        for (int i = entities.size() - 1; i >= 0; i--) {
-            Entity entity = entities.get(i);
+        entitiesToRemove.clear();
+        for (IntMap.Entry<Entity> entry : entities.entries()) {
+            Entity entity = entry.value;
             if (entity.alive) {
                 Update update = entity.getComponent(Update.class);
                 if (update != null) {
                     update.update(delta, this);
                 }
             } else {
-                Actor actor = entity.getComponent(Actor.class);
-                if (actor != null) {
-                    scheduler.removeActor(actor);
-                }
-                Position position = entity.getComponent(Position.class);
-                if (position != null) {
-                    getCell(position.x, position.y).removeEntity(entity.id);
-                }
-                // dropped items
-                ItemContainer itemContainer = entity.getComponent(ItemContainer.class);
-                if (itemContainer != null && position != null) {
-                    for (ItemType itemType : itemContainer.content.keySet()) {
-                        Entity item = entityFactory.makeItem(position.x, position.y, itemType);
-                        addEntity(item);
-                    }
-                }
-
-                if (entity.id == playerEntityId) {
-                    generateStats();
-                    playerEntityId = -1;
-                }
-
-                entities.remove(i);
-
+                entitiesToRemove.add(entity.id);
             }
+        }
+
+        for (int i = 0; i < entitiesToRemove.size; i++) {
+            int entityId = entitiesToRemove.get(i);
+            Entity entity = entities.get(entityId);
+
+            Actor actor = entity.getComponent(Actor.class);
+            if (actor != null) {
+                scheduler.removeActor(actor);
+            }
+            Position position = entity.getComponent(Position.class);
+            if (position != null) {
+                getCell(position.x, position.y).removeEntity(entity.id);
+            }
+            // dropped items
+            ItemContainer itemContainer = entity.getComponent(ItemContainer.class);
+            if (itemContainer != null && position != null) {
+                for (ItemType itemType : itemContainer.content.keySet()) {
+                    Entity item = entityFactory.makeItem(position.x, position.y, itemType);
+                    addEntity(item);
+                }
+            }
+
+            if (entity.id == playerEntityId) {
+                generateStats();
+                playerEntityId = -1;
+            }
+            entities.remove(entityId);
         }
 
         scheduler.update(this);
@@ -254,7 +260,6 @@ public class World {
         return cells[y][x];
     }
 
-
     public Cell getCell(Position p) {
         return getCell(p.x, p.y);
     }
@@ -273,7 +278,7 @@ public class World {
     }
 
     public void addEntity(Entity entity) {
-        entities.add(entity);
+        entities.put(entity.id, entity);
 
         Components.Position position = entity.getComponent(Components.Position.class);
         if(position != null) {
@@ -293,12 +298,7 @@ public class World {
     }
 
     public Entity getEntity(int id) {
-        for (int i = 0; i < entities.size(); i++) {
-            if(entities.get(i).id == id) {
-                return entities.get(i);
-            }
-        }
-        return null;
+        return entities.get(id);
     }
 
     public void move(Entity entity, int toX, int toY) {

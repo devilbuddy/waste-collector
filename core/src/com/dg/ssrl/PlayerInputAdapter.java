@@ -11,8 +11,8 @@ public class PlayerInputAdapter extends InputAdapter implements GestureDetector.
     private static final String tag = "PlayerInputAdapter";
 
     public enum Action {
-        FIRE,
-        ROCKET
+        FIRE_PRIMARY,
+        FIRE_SECONDARY
     }
 
     private static final double ONE_PI_EIGHTS = (Math.PI) / 8;
@@ -23,7 +23,6 @@ public class PlayerInputAdapter extends InputAdapter implements GestureDetector.
     private static final double ELEVEN_PI_EIGHTS = (11 * Math.PI) / 8;
     private static final double THIRTEEN_PI_EIGHTS = (13 * Math.PI) / 8;
     private static final double FIFTEEN_PI_EIGHTS = (15 * Math.PI) / 8;
-
 
     private int touchSlop = 8;
     private int touchSlopSquare = touchSlop * touchSlop;
@@ -88,7 +87,7 @@ public class PlayerInputAdapter extends InputAdapter implements GestureDetector.
                 movementDirection = Direction.NONE;
                 break;
             case Input.Keys.SPACE:
-                actionQueue.add(Action.FIRE);
+                actionQueue.add(Action.FIRE_PRIMARY);
                 break;
         }
         return super.keyUp(keycode);
@@ -202,7 +201,7 @@ public class PlayerInputAdapter extends InputAdapter implements GestureDetector.
     @Override
     public boolean tap(float x, float y, int count, int button) {
         if(count == 1) {
-            actionQueue.add(Action.FIRE);
+            actionQueue.add(Action.FIRE_PRIMARY);
             return true;
         }
         return false;
@@ -211,7 +210,7 @@ public class PlayerInputAdapter extends InputAdapter implements GestureDetector.
     @Override
     public boolean longPress(float x, float y) {
         longPressFired = true;
-        actionQueue.add(Action.ROCKET);
+        actionQueue.add(Action.FIRE_SECONDARY);
         return true;
     }
 

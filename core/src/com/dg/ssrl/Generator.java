@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+
 import static com.dg.ssrl.Components.Position;
 
 public class Generator {
@@ -43,6 +44,18 @@ public class Generator {
                 "#.oooooo.#",
                 "#........#",
                 "####..####"
+        }),
+        new TemplateData(new String[] {
+                "#.######.#",
+                "..........",
+                "#..oooo..#",
+                "#.oooooo.#",
+                "#.oooooo.#",
+                "#.oooooo.#",
+                "#.oooooo.#",
+                "#..oooo..#",
+                "..........",
+                "#.######.#"
         }),
         new TemplateData(new String[] {
                 "##########",

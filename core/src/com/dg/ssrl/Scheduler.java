@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.dg.ssrl.Components.*;
+import static com.dg.ssrl.Components.Actor;
 
 public class Scheduler {
 
-    private AtomicInteger lockCount = new AtomicInteger(0);
+    private static final int MAX_ITERATIONS_PER_UPDATE = 5;
 
+    private AtomicInteger lockCount = new AtomicInteger(0);
     private List<Actor> queue = new ArrayList<Actor>();
 
     public void clear() {
@@ -35,13 +36,17 @@ public class Scheduler {
         }
     }
 
+    private boolean isLocked() {
+        return lockCount.get() > 0;
+    }
+
     public void update(World world) {
-        if (queue.size() == 0 || lockCount.get() > 0) {
+        if (queue.size() == 0 || isLocked()) {
             return;
         }
 
         int iterations = 0;
-        while (iterations < 5) {
+        while (iterations < MAX_ITERATIONS_PER_UPDATE) {
             Actor actor = queue.remove(0);
             if (actor.alive && actor.tick()) {
                 if (actor.act(world)) {
@@ -54,8 +59,8 @@ public class Scheduler {
             } else {
                 queue.add(actor);
             }
-            if (lockCount.get() > 0) {
-                iterations = 5;
+            if (isLocked()) {
+                break;
             } else {
                 iterations++;
             }

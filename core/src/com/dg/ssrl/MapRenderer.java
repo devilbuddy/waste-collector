@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.NumberUtils;
+import com.badlogic.gdx.utils.IntMap;
 
 import static com.dg.ssrl.Components.*;
 
@@ -92,9 +92,6 @@ public class MapRenderer {
         bounds.width = width * Assets.TILE_SIZE;
         bounds.height = height * Assets.TILE_SIZE;
 
-        //float verticalSpaceLeft = virtualHeight - bounds.height;
-        //int topGutterHeight = (int) (verticalSpaceLeft/3);
-
         bounds.x = virtualWidth/2 - bounds.width/2;
         bounds.y = virtualHeight - bounds.height - topGutterHeight;
 
@@ -130,8 +127,8 @@ public class MapRenderer {
         boolean needAnotherRenderPass = true;
         while (needAnotherRenderPass) {
             needAnotherRenderPass = false;
-            for (int i = 0 ; i < world.entities.size(); i++) {
-                Entity entity = world.entities.get(i);
+            for (IntMap.Entry<Entity> entry : world.entities.entries()) {
+                Entity entity = entry.value;
                 if (entity.alive) {
                     Sprite sprite = entity.getComponent(Sprite.class);
 

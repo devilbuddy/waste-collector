@@ -100,6 +100,8 @@ public class Game extends ApplicationAdapter {
     private State state = State.MENU;
 
 	public static final float LONG_PRESS_DURATION = 1.1f;
+	private static final int WORLD_WIDTH = 10;
+	private static final int WORLD_HEIGHT = 10;
 
 	public Game(Position[] debugScreenSizes) {
 		DebugInputSwitcher debugInputSwitcher = new DebugInputSwitcher(debugScreenSizes);
@@ -127,30 +129,27 @@ public class Game extends ApplicationAdapter {
         playerInputAdapter.clear();
 		scheduler.clear();
 
-		int depth = 0;
-
+		int sector = 0;
 		Entity oldPlayer = null;
 		if (world != null) {
 			oldPlayer = world.getPlayer();
 			if (!reset) {
-				depth = world.getDepth();
+				sector = world.getSector();
 			}
 		}
-		depth += 1;
+		sector += 1;
 
-		int width = 10;
-		int height = 10;
-		Generator.LevelData levelData = Generator.generate(System.currentTimeMillis(), width, height, depth, entityFactory);
+		Generator.LevelData levelData = Generator.generate(System.currentTimeMillis(), WORLD_WIDTH, WORLD_HEIGHT, sector, entityFactory);
 
-		world = new World(width, height, entityFactory, scheduler, depth);
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
+		world = new World(WORLD_WIDTH, WORLD_HEIGHT, entityFactory, scheduler, sector);
+		for (int y = 0; y < WORLD_HEIGHT; y++) {
+			for (int x = 0; x < WORLD_WIDTH; x++) {
 				world.getCell(x, y).type = levelData.tiles[y][x];
 			}
 		}
 
         if (reset) {
-            world.addPlayer(entityFactory.makePlayer(levelData.start.x, levelData.start.y, playerInputAdapter, scheduler));
+            world.addPlayer(entityFactory.makePlayer(levelData.start.x, levelData.start.y, playerInputAdapter));
         } else {
             oldPlayer.getComponent(Position.class).set(levelData.start);
             oldPlayer.getComponent(MoveAnimation.class).reset().setPosition(levelData.start.x * Assets.TILE_SIZE, levelData.start.y * Assets.TILE_SIZE);
@@ -317,7 +316,7 @@ public class Game extends ApplicationAdapter {
 
 				Stats stats = player.getComponent(Stats.class);
 				ItemContainer itemContainer = player.getComponent(ItemContainer.class);
-				String sectorString = "SECTOR " + world.getDepth();
+				String sectorString = "SECTOR " + world.getSector();
 
 				assets.font.setColor(Color.ORANGE);
 				assets.font.draw(spriteBatch, stats.healthString, firstColumnX, firstRowY);
@@ -353,7 +352,7 @@ public class Game extends ApplicationAdapter {
 
         switch (state) {
 			case MENU: {
-				if (playerInputAdapter.popAction() == PlayerInputAdapter.Action.FIRE) {
+				if (playerInputAdapter.popAction() == PlayerInputAdapter.Action.FIRE_PRIMARY) {
 					initWorld(true);
 					setState(State.PLAY);
 				}
@@ -378,7 +377,7 @@ public class Game extends ApplicationAdapter {
             }
             case FADE_OUT_LEVEL: {
                 if (stateTime > SWITCH_LEVEL_ANIMATION_TIME) {
-					if (world.getDepth() >= World.MAX_SECTOR) {
+					if (world.getSector() >= World.MAX_SECTOR) {
 						//Win!
 						world.generateStats();
 						setState(State.WIN);
@@ -397,12 +396,12 @@ public class Game extends ApplicationAdapter {
             }
             case GAME_OVER:
 				world.update(delta);
-				if (playerInputAdapter.popAction() == PlayerInputAdapter.Action.FIRE) {
+				if (playerInputAdapter.popAction() == PlayerInputAdapter.Action.FIRE_PRIMARY) {
 					setState(State.MENU);
 				}
 				break;
 			case WIN: {
-                if (playerInputAdapter.popAction() == PlayerInputAdapter.Action.FIRE) {
+                if (playerInputAdapter.popAction() == PlayerInputAdapter.Action.FIRE_PRIMARY) {
                     setState(State.MENU);
                 }
                 break;

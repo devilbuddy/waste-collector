@@ -18,9 +18,9 @@ public class EntityFactory {
         return new Entity(entityIdCounter.incrementAndGet());
     }
 
-    public Entity makePlayer(int x, int y, PlayerInputAdapter playerInputAdapter, Scheduler scheduler) {
+    public Entity makePlayer(int x, int y, PlayerInputAdapter playerInputAdapter) {
         final Entity entity = createEntity();
-        final Actor actor = new Actor(new PlayerBrain(playerInputAdapter, scheduler, assets.sounds), MonsterType.Player.speed);
+        final Actor actor = new Actor(new PlayerBrain(playerInputAdapter, assets.sounds), MonsterType.Player.speed);
         final MoveAnimation moveAnimation = new MoveAnimation(50f).setPosition(x * Assets.TILE_SIZE, y * Assets.TILE_SIZE).setDirection(Direction.EAST);
         ItemContainer itemContainer = new ItemContainer();
         itemContainer.add(ItemType.Ammo, 10);
@@ -65,34 +65,30 @@ public class EntityFactory {
         return entity;
     }
 
-    public Entity makeMonster(int x, int y, MonsterType monsterType) {
-         Position position = new Position(x, y);
+    private Brain makeBrain(MonsterType monsterType, int entityId) {
+        switch (monsterType) {
+            case Egg:
+                return new MonsterBrain.EggBrain(entityId);
+            case Cannon:
+                return new MonsterBrain.CannonBrain(entityId, assets.sounds);
+            case Grower:
+                return new MonsterBrain.GrowerBrain(entityId, assets.sounds);
+            default:
+                return new MonsterBrain(entityId, monsterType, assets.sounds);
+        }
+    }
 
+    public Entity makeMonster(int x, int y, MonsterType monsterType) {
+        final Entity entity = createEntity();
+        Position position = new Position(x, y);
         final MoveAnimation moveAnimation = new MoveAnimation(50f);
         moveAnimation.setPosition(x * Assets.TILE_SIZE, y * Assets.TILE_SIZE).setDirection(Direction.EAST);
 
-        final Entity entity = createEntity();
         entity.addComponent(position);
         entity.addComponent(moveAnimation);
         entity.addComponent(new Solid(true));
         entity.addComponent(new Sprite(assets.getMonsterTextureRegion(monsterType), 1));
-
-        Brain brain;
-        switch (monsterType) {
-            case Egg:
-                brain = new MonsterBrain.EggBrain(entity.id);
-                break;
-            case Cannon:
-                brain = new MonsterBrain.CannonBrain(entity.id, assets.sounds);
-                break;
-            case Grower:
-                brain = new MonsterBrain.GrowerBrain(entity.id, assets.sounds);
-                break;
-            default:
-                brain = new MonsterBrain(entity.id, monsterType, assets.sounds);
-        }
-        entity.addComponent(new Actor(brain, monsterType.speed));
-
+        entity.addComponent(new Actor(makeBrain(monsterType, entity.id), monsterType.speed));
         entity.addComponent(new Stats(monsterType, new OnDied() {
             @Override
             public void onDied() {
@@ -109,21 +105,18 @@ public class EntityFactory {
                 moveAnimation.update(delta, world);
             }
         }));
-
         return entity;
     }
 
     public static final float BULLET_EXPLOSION_DURATION = 0.3f;
     public static final float ROCKET_EXPLOSION_DURATION = 0.5f;
 
-
     public Entity makeExplosion(float x, float y, float duration) {
         final Entity entity = createEntity();
-        entity.addComponent(new Sprite(assets.whitePixel, 2));
         final Effect effect = new Effect(x, y, 20, duration);
 
         entity.addComponent(effect);
-
+        entity.addComponent(new Sprite(assets.whitePixel, 2));
         entity.addComponent(new Update(new Updater() {
             @Override
             public void update(float delta, World world) {
@@ -133,17 +126,16 @@ public class EntityFactory {
                 }
             }
         }));
-
         return entity;
     }
 
     public Entity makeItem(int x, int y, ItemType itemType) {
         final Entity entity = createEntity();
-        entity.addComponent(new Position(x, y));
-        entity.addComponent(new Sprite(assets.getItemTextureRegion(itemType), 0));
-
         final MoveAnimation moveAnimation = new MoveAnimation(50f);
         moveAnimation.setPosition(x * Assets.TILE_SIZE, y * Assets.TILE_SIZE).setDirection(Direction.EAST);
+
+        entity.addComponent(new Position(x, y));
+        entity.addComponent(new Sprite(assets.getItemTextureRegion(itemType), 0));
         entity.addComponent(moveAnimation);
 
         ItemContainer itemContainer;
@@ -175,17 +167,14 @@ public class EntityFactory {
     }
 
     public Entity makeExit(int x, int y) {
-
         final Entity entity = createEntity();
-        entity.addComponent(new Position(x, y));
-
         final MoveAnimation moveAnimation = new MoveAnimation(50f);
         moveAnimation.setPosition(x * Assets.TILE_SIZE, y * Assets.TILE_SIZE).setDirection(Direction.EAST);
-        entity.addComponent(moveAnimation);
-
         final Sprite sprite = new Sprite(assets.exitFrames, 0.2f, 0);
-        entity.addComponent(sprite);
 
+        entity.addComponent(new Position(x, y));
+        entity.addComponent(moveAnimation);
+        entity.addComponent(sprite);
         entity.addComponent(new Trigger(new TriggerAction() {
             @Override
             public void run(final World world, Entity triggeredBy) {
@@ -204,7 +193,6 @@ public class EntityFactory {
                 }
             }
         }));
-
         entity.addComponent(new Update(new Updater() {
             @Override
             public void update(float delta, World world) {
@@ -214,5 +202,4 @@ public class EntityFactory {
 
         return entity;
     }
-
 }
