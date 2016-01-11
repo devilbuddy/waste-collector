@@ -192,7 +192,7 @@ public class Game extends ApplicationAdapter {
         spriteBatch.setProjectionMatrix(mapCamera.combined);
 
 		float topGutterHeight = (4 * assets.font.getCapHeight()) / 2;
-
+		
 		if (state != State.MENU) {
 			mapRenderer.render(world, spriteBatch, topGutterHeight);
 
@@ -202,15 +202,14 @@ public class Game extends ApplicationAdapter {
 			float mapTopY = mapRenderer.bounds.y + mapRenderer.bounds.height;
 			spriteBatch.draw(assets.whitePixel, 0, mapTopY, width, height - mapTopY);
 
-			if (state == State.FADE_OUT_LEVEL) {
+			if (state == State.FADE_OUT_LEVEL || state == State.FADE_IN_LEVEL) {
 				spriteBatch.setColor(Color.BLACK);
-				float percentage = stateTime / SWITCH_LEVEL_ANIMATION_TIME;
-				float hiddenHeight = percentage * mapRenderer.bounds.height;
-				float hiddenY = mapRenderer.bounds.y + mapRenderer.bounds.height - hiddenHeight;
-				spriteBatch.draw(assets.whitePixel, mapRenderer.bounds.x, hiddenY, mapRenderer.bounds.width, hiddenHeight);
-			} else if (state == State.FADE_IN_LEVEL) {
-				spriteBatch.setColor(Color.BLACK);
-				float percentage = 1f - stateTime / SWITCH_LEVEL_ANIMATION_TIME;
+				float percentage;
+				if (state == State.FADE_IN_LEVEL) {
+					percentage = 1f - stateTime / SWITCH_LEVEL_ANIMATION_TIME;
+				} else {
+					percentage = stateTime / SWITCH_LEVEL_ANIMATION_TIME;
+				}
 				float hiddenHeight = percentage * mapRenderer.bounds.height;
 				float hiddenY = mapRenderer.bounds.y + mapRenderer.bounds.height - hiddenHeight;
 				spriteBatch.draw(assets.whitePixel, mapRenderer.bounds.x, hiddenY, mapRenderer.bounds.width, hiddenHeight);
@@ -221,7 +220,6 @@ public class Game extends ApplicationAdapter {
 				assets.font.setColor(Color.ORANGE);
 				assets.font.draw(spriteBatch, gameOver.text, x, y);
 			} else if (state == State.WIN) {
-
 				spriteBatch.setColor(Color.BLACK);
 				float hiddenHeight = mapRenderer.bounds.height;
 				float hiddenY = mapRenderer.bounds.y + mapRenderer.bounds.height - hiddenHeight;
@@ -245,97 +243,97 @@ public class Game extends ApplicationAdapter {
 		spriteBatch.end();
 	}
 
+	private float renderHudItemCentered(Assets.GlyphLayoutCacheItem glyphLayoutCacheItem, float y) {
+		assets.font.draw(spriteBatch, glyphLayoutCacheItem.text, hudWidth / 2 - glyphLayoutCacheItem.glyphLayout.width / 2, y);
+		return glyphLayoutCacheItem.glyphLayout.height;
+	}
+
 	private void renderHud() {
 		spriteBatch.setProjectionMatrix(hudCamera.combined);
-
 		if (state == State.MENU) {
-			spriteBatch.setColor(Color.WHITE);
-
-			float logoW = assets.logo.getRegionWidth() * 2;
-			float logoH = assets.logo.getRegionHeight() * 2;
-			float logoX = hudWidth/2 - logoW /2;
-			float logoY = (hudHeight/3 * 2) - logoH / 2;
-			spriteBatch.draw(assets.logo, logoX, logoY, logoW, logoH);
-
-			float y = hudHeight / 2 + assets.tapToStartText.glyphLayout.height;
-
-			if (highScore != null) {
-				assets.font.setColor(Color.YELLOW);
-				Assets.GlyphLayoutCacheItem score = assets.getGlyphLayoutCacheItem("HI-SCORE " + highScore.score);
-				assets.font.draw(spriteBatch, score.text, hudWidth/2 - score.glyphLayout.width/2, y);
-			}
-
-			y -= assets.font.getLineHeight() * 2;
-			assets.font.setColor(Color.ORANGE);
-			assets.font.draw(spriteBatch, assets.tapToStartText.text, hudWidth / 2 - assets.tapToStartText.glyphLayout.width / 2, y);
-
-
-		} else if (state == State.GAME_OVER || state == State.WIN) {
-			Assets.GlyphLayoutCacheItem wasteCollected = assets.wasteCollectedText;
-			Assets.GlyphLayoutCacheItem sectorReached = assets.sectorReachedText;
-			Assets.GlyphLayoutCacheItem scoreLabel = assets.scoreText;
-
-			ScoreData scoreData = world.getScoreData();
-
-			assets.font.setColor(Color.YELLOW);
-
-			float y = (mapRenderer.bounds.y + mapRenderer.bounds.height/2) * 2 + assets.font.getLineHeight();
-
-			if (state != State.WIN) {
-				assets.font.draw(spriteBatch, sectorReached.text, hudWidth / 2 - sectorReached.glyphLayout.width / 2, y);
-
-				y -= assets.font.getLineHeight();
-				Assets.GlyphLayoutCacheItem sectorNumber = assets.getGlyphLayoutCacheItem(scoreData.getSectorString());
-				assets.font.draw(spriteBatch, sectorNumber.text, hudWidth / 2 - sectorNumber.glyphLayout.width / 2, y);
-			}
-
-			y -= assets.font.getLineHeight();
-			assets.font.draw(spriteBatch, wasteCollected.text, hudWidth/2 - wasteCollected.glyphLayout.width/2, y);
-
-			y -= assets.font.getLineHeight();
-			Assets.GlyphLayoutCacheItem amount = assets.getGlyphLayoutCacheItem(scoreData.getWasteCollectedString());
-			assets.font.draw(spriteBatch, amount.text, hudWidth/2 - amount.glyphLayout.width/2, y);
-
-			y -= assets.font.getLineHeight();
-			assets.font.draw(spriteBatch, scoreLabel.text, hudWidth/2 - scoreLabel.glyphLayout.width/2, y);
-
-			y -= assets.font.getLineHeight();
-			Assets.GlyphLayoutCacheItem score = assets.getGlyphLayoutCacheItem(scoreData.getScoreString());
-			assets.font.draw(spriteBatch, score.text, hudWidth/2 - score.glyphLayout.width/2, y);
-
+			renderMainMenuHud();
+		} else if (state == State.WIN) {
+			renderWinHud();
+		} else if (state == State.GAME_OVER) {
+			renderGameOverHud();
 		} else {
-			Entity player = world.getPlayer();
-			if (player != null) {
+			renderGameHud();
+		}
+	}
 
-				float firstColumnX = 4;
-				float firstRowY = hudHeight;
-				float secondColumnX = hudWidth / 2;
-				float secondRowY = hudHeight - assets.font.getCapHeight();
-				float thirdRowY = hudHeight - 2 * assets.font.getCapHeight();
-				float fourthRowY = hudHeight - 3 * assets.font.getCapHeight();
+	private void renderMainMenuHud() {
+		spriteBatch.setColor(Color.WHITE);
+		float logoW = assets.logo.getRegionWidth() * 2;
+		float logoH = assets.logo.getRegionHeight() * 2;
+		float logoX = hudWidth/2 - logoW /2;
+		float logoY = (hudHeight/3 * 2) - logoH / 2;
+		spriteBatch.draw(assets.logo, logoX, logoY, logoW, logoH);
 
-				Stats stats = player.getComponent(Stats.class);
-				ItemContainer itemContainer = player.getComponent(ItemContainer.class);
-				String sectorString = "SECTOR " + world.getSector();
+		float y = hudHeight / 2 + assets.tapToStartText.glyphLayout.height;
 
-				assets.font.setColor(Color.ORANGE);
-				assets.font.draw(spriteBatch, stats.healthString, firstColumnX, firstRowY);
-				assets.font.draw(spriteBatch, itemContainer.getAmountString(ItemType.Ammo), firstColumnX, secondRowY);
-				assets.font.draw(spriteBatch, itemContainer.getAmountString(ItemType.Rocket), firstColumnX, thirdRowY);
+		if (highScore != null) {
+			assets.font.setColor(Color.YELLOW);
+			y -= renderHudItemCentered(assets.getGlyphLayoutCacheItem("HI-SCORE " + highScore.score), y);
+		}
+		assets.font.setColor(Color.ORANGE);
+		renderHudItemCentered(assets.tapToStartText, y);
+	}
 
-				assets.font.draw(spriteBatch, sectorString, secondColumnX, firstRowY);
-				assets.font.draw(spriteBatch, itemContainer.getAmountString(ItemType.Waste), secondColumnX, secondRowY);
+	private void renderWinHud() {
+		ScoreData scoreData = world.getScoreData();
+		assets.font.setColor(Color.YELLOW);
+		float y = (mapRenderer.bounds.y + mapRenderer.bounds.height/2) * 2 + assets.font.getLineHeight();
 
-				float percentage = playerInputAdapter.getLongPressPercentage();
-				if (percentage > 0.1f && itemContainer.getAmount(ItemType.Rocket) > 0) {
-					float longPressBarWidth = hudWidth * percentage;
-					float longPressBarY = fourthRowY - 5; //(mapRenderer.bounds.y * 2) - 3;
-					spriteBatch.setColor(Color.RED);
-					spriteBatch.draw(assets.whitePixel, 0, longPressBarY, longPressBarWidth, 2);
-				}
+		y -= renderHudItemCentered(assets.wasteCollectedText, y);
+		y -= renderHudItemCentered(assets.getGlyphLayoutCacheItem(scoreData.getWasteCollectedString()), y);
+		y -= renderHudItemCentered(assets.scoreText, y);
+		renderHudItemCentered(assets.getGlyphLayoutCacheItem(scoreData.getScoreString()), y);
+	}
+
+	private void renderGameOverHud() {
+		ScoreData scoreData = world.getScoreData();
+		assets.font.setColor(Color.YELLOW);
+		float y = (mapRenderer.bounds.y + mapRenderer.bounds.height/2) * 2 + assets.font.getLineHeight();
+
+		y -= renderHudItemCentered(assets.sectorReachedText, y);
+		y -= renderHudItemCentered(assets.getGlyphLayoutCacheItem(scoreData.getSectorString()), y);
+		y -= renderHudItemCentered(assets.wasteCollectedText, y);
+		y -= renderHudItemCentered(assets.getGlyphLayoutCacheItem(scoreData.getWasteCollectedString()), y);
+		y -= renderHudItemCentered(assets.scoreText, y);
+		renderHudItemCentered(assets.getGlyphLayoutCacheItem(scoreData.getScoreString()), y);
+	}
+
+	private void renderGameHud() {
+		Entity player = world.getPlayer();
+		if (player != null) {
+
+			float firstColumnX = 4;
+			float firstRowY = hudHeight;
+			float secondColumnX = hudWidth / 2;
+			float secondRowY = hudHeight - assets.font.getCapHeight();
+			float thirdRowY = hudHeight - 2 * assets.font.getCapHeight();
+			float fourthRowY = hudHeight - 3 * assets.font.getCapHeight();
+
+			Stats stats = player.getComponent(Stats.class);
+			ItemContainer itemContainer = player.getComponent(ItemContainer.class);
+			String sectorString = "SECTOR " + world.getSector();
+
+			assets.font.setColor(Color.ORANGE);
+			assets.font.draw(spriteBatch, stats.healthString, firstColumnX, firstRowY);
+			assets.font.draw(spriteBatch, itemContainer.getAmountString(ItemType.Ammo), firstColumnX, secondRowY);
+			assets.font.draw(spriteBatch, itemContainer.getAmountString(ItemType.Rocket), firstColumnX, thirdRowY);
+
+			assets.font.draw(spriteBatch, sectorString, secondColumnX, firstRowY);
+			assets.font.draw(spriteBatch, itemContainer.getAmountString(ItemType.Waste), secondColumnX, secondRowY);
+
+			float percentage = playerInputAdapter.getLongPressPercentage();
+			if (percentage > 0.1f && itemContainer.getAmount(ItemType.Rocket) > 0) {
+				float longPressBarWidth = hudWidth * percentage;
+				float longPressBarY = fourthRowY - 5; //(mapRenderer.bounds.y * 2) - 3;
+				spriteBatch.setColor(Color.RED);
+				spriteBatch.draw(assets.whitePixel, 0, longPressBarY, longPressBarWidth, 2);
 			}
 		}
-
 	}
 
     private static final float SWITCH_LEVEL_ANIMATION_TIME = 0.75f;
