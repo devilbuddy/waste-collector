@@ -69,7 +69,7 @@ public class Assets {
     public TextureRegion whitePixel;
 
     public TextureRegion[] exitFrames;
-    public TextureRegion teleporter;
+    public TextureRegion[] teleporterFrames;
 
     public TextureRegion logo;
 
@@ -138,7 +138,7 @@ public class Assets {
 
 
         exitFrames = new TextureRegion[] {tiles[12][1], tiles[12][2], tiles[12][3], tiles[12][2], tiles[12][1], tiles[12][0]};
-        teleporter = tiles[12][1];
+        teleporterFrames = new TextureRegion[] {tiles[13][0], tiles[13][1], tiles[13][2], tiles[13][3], tiles[13][4]};
 
         logo = new TextureRegion(tilesTexture, 80, 112, 48, 16);
 

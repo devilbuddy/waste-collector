@@ -179,7 +179,7 @@ public class EntityFactory {
         final Entity entity = createEntity();
         final MoveAnimation moveAnimation = new MoveAnimation(50f);
         moveAnimation.setPosition(x * Assets.TILE_SIZE, y * Assets.TILE_SIZE).setDirection(Direction.EAST);
-        final Sprite sprite = new Sprite(assets.teleporter, 0);
+        final Sprite sprite = new Sprite(assets.teleporterFrames, 0.2f, 0);
         sprite.color.set(Color.RED);
         entity.addComponent(new Position(x, y));
         entity.addComponent(moveAnimation);
@@ -200,12 +200,14 @@ public class EntityFactory {
                     }
                 }
                 if (free.size() > 0) {
+                    EntityFactory entityFactory = world.getEntityFactory();
                     Position oldPosition = triggeredBy.getComponent(Position.class);
-                    Entity explosion = world.getEntityFactory().makeExplosion(oldPosition.x * Assets.TILE_SIZE + Assets.TILE_SIZE/2, oldPosition.y * Assets.TILE_SIZE + Assets.TILE_SIZE/2, Color.MAGENTA);
-                    world.addEntity(explosion);
+                    world.addEntity(entityFactory.makeExplosion(oldPosition.x * Assets.TILE_SIZE + Assets.TILE_SIZE / 2, oldPosition.y * Assets.TILE_SIZE + Assets.TILE_SIZE / 2, Color.MAGENTA));
 
                     Collections.shuffle(free, random);
                     Position target = free.get(0);
+                    world.addEntity(entityFactory.makeExplosion(target.x * Assets.TILE_SIZE + Assets.TILE_SIZE / 2, target.y * Assets.TILE_SIZE + Assets.TILE_SIZE / 2, Color.MAGENTA));
+
                     world.move(triggeredBy, target.x, target.y);
                     MoveAnimation triggeredByMoveAnimation = triggeredBy.getComponent(MoveAnimation.class);
                     triggeredByMoveAnimation.setPosition(target.x * Assets.TILE_SIZE, target.y * Assets.TILE_SIZE);
@@ -216,9 +218,11 @@ public class EntityFactory {
             float x = 0;
             @Override
             public void update(float delta, World world) {
+                sprite.update(delta);
+
                 x+= delta;
                 if (x < 1) {
-                    sprite.color.lerp(Color.SKY, delta*3);
+                    sprite.color.lerp(Color.PURPLE, delta*3);
                 } else {
                     sprite.color.lerp(Color.RED, delta*3);
                     if (x > 2) {
@@ -234,7 +238,7 @@ public class EntityFactory {
         final Entity entity = createEntity();
         final MoveAnimation moveAnimation = new MoveAnimation(50f);
         moveAnimation.setPosition(x * Assets.TILE_SIZE, y * Assets.TILE_SIZE).setDirection(Direction.EAST);
-        final Sprite sprite = new Sprite(assets.exitFrames, 0.2f, 0);
+        final Sprite sprite = new Sprite(assets.exitFrames, 0.1f, 0);
 
         entity.addComponent(new Position(x, y));
         entity.addComponent(moveAnimation);
