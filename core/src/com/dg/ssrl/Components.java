@@ -347,6 +347,10 @@ public class Components {
             this.stateTime = 0;
         }
 
+        public void startTurn(Direction direction) {
+            startTurn(direction, null);
+        }
+
         public void startBump(Position start, Direction direction, Runnable callback) {
             bounds.x = start.x * Assets.TILE_SIZE;
             bounds.y = start.y * Assets.TILE_SIZE;
@@ -408,8 +412,10 @@ public class Components {
         }
 
         private void onDone() {
-            callback.run();
-            callback = null;
+            if (callback != null) {
+                callback.run();
+                callback = null;
+            }
             state = State.DONE;
         }
     }

@@ -130,7 +130,7 @@ public class MonsterBrain implements Brain {
             ticksToActivate--;
             Position position = entity.getComponent(Position.class).copy();
 
-            Entity explosion = entityFactory.makeExplosion(position.x * Assets.TILE_SIZE + Assets.TILE_SIZE/2, position.y * Assets.TILE_SIZE + Assets.TILE_SIZE/2, 0.2f, Color.RED);
+            Entity explosion = entityFactory.makeDamageEffect(position.x * Assets.TILE_SIZE + Assets.TILE_SIZE/2, position.y * Assets.TILE_SIZE + Assets.TILE_SIZE/2);
             world.addEntity(explosion);
 
             if (ticksToActivate == 0) {

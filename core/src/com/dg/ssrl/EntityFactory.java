@@ -110,12 +110,15 @@ public class EntityFactory {
         return entity;
     }
 
-    public static final float BULLET_EXPLOSION_DURATION = 0.3f;
-    public static final float ROCKET_EXPLOSION_DURATION = 0.5f;
+    private static final float EXPLOSION_DURATION = 0.3f;
 
-    public Entity makeExplosion(float x, float y, float duration, Color color) {
+    public Entity makeDamageEffect(float x, float y) {
+        return makeExplosion(x, y, Assets.damageColor);
+    }
+
+    public Entity makeExplosion(float x, float y, Color color) {
         final Entity entity = createEntity();
-        final Effect effect = new Effect(x, y, 20, duration, color);
+        final Effect effect = new Effect(x, y, 20, EXPLOSION_DURATION, color);
 
         entity.addComponent(effect);
         entity.addComponent(new Sprite(assets.whitePixel, 2));
