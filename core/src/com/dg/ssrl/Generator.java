@@ -152,7 +152,7 @@ public class Generator {
         Position keyPosition = floors.remove(0);
         levelData.entities.add(entityFactory.makeItem(keyPosition.x, keyPosition.y, ItemType.Key));
 
-        if (depth % 2 == 0) {
+        if (random.nextBoolean()) {
             Position teleporterPosition = floors.remove(0);
             levelData.entities.add(entityFactory.makeTeleporter(teleporterPosition.x, teleporterPosition.y));
         }

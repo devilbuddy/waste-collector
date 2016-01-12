@@ -202,6 +202,8 @@ public class EntityFactory {
                     world.move(triggeredBy, target.x, target.y);
                     MoveAnimation triggeredByMoveAnimation = triggeredBy.getComponent(MoveAnimation.class);
                     triggeredByMoveAnimation.setPosition(target.x * Assets.TILE_SIZE, target.y * Assets.TILE_SIZE);
+
+                    assets.sounds.play(Assets.Sounds.SoundId.TELEPORT);
                 }
             }
         }));

@@ -387,6 +387,8 @@ public class Game extends ApplicationAdapter {
 								world.addEntity(robot);
 								world.addEntity(entityFactory.makeExplosion(p.x * Assets.TILE_SIZE + Assets.TILE_SIZE / 2, p.y * Assets.TILE_SIZE + Assets.TILE_SIZE / 2, Color.MAGENTA));
 								world.canSpawnRobot = false;
+								assets.sounds.play(Assets.Sounds.SoundId.TELEPORT);
+
 							}
 						}
 					}
