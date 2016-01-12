@@ -11,7 +11,8 @@ public enum MonsterType {
     Brute(Actor.Speed.MEDIUM, 3, false, 2),
     Egg(Actor.Speed.EXTRA_SLOW, 1, true, 0),
     Cannon(Actor.Speed.MEDIUM, 1, false, 0),
-    Grower(Actor.Speed.EXTRA_SLOW, 1, false, 0)
+    Grower(Actor.Speed.EXTRA_SLOW, 1, false, 0),
+    Robot(Actor.Speed.FAST, 3, false, 1)
     ;
 
     public static MonsterType[] ENEMIES = {

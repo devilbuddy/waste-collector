@@ -12,6 +12,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 
+import java.util.Random;
+
 import static com.dg.ssrl.Components.ItemContainer;
 import static com.dg.ssrl.Components.MoveAnimation;
 import static com.dg.ssrl.Components.Position;
@@ -139,6 +141,7 @@ public class Game extends ApplicationAdapter {
 		}
 		sector += 1;
 
+
 		Generator.LevelData levelData = Generator.generate(System.currentTimeMillis(), WORLD_WIDTH, WORLD_HEIGHT, sector, entityFactory);
 
 		world = new World(WORLD_WIDTH, WORLD_HEIGHT, entityFactory, scheduler, sector);
@@ -155,6 +158,10 @@ public class Game extends ApplicationAdapter {
             oldPlayer.getComponent(MoveAnimation.class).reset().setPosition(levelData.start.x * Assets.TILE_SIZE, levelData.start.y * Assets.TILE_SIZE);
             world.addPlayer(oldPlayer);
         }
+
+		int wasteStart = world.getPlayer().getComponent(ItemContainer.class).getAmount(ItemType.Waste);
+		world.wasteTarget = levelData.wasteCount + wasteStart;
+
 		world.addExit(entityFactory.makeExit(levelData.exit.x, levelData.exit.y));
 
 		for (int i = 0; i < levelData.entities.size(); i++) {
@@ -371,6 +378,16 @@ public class Game extends ApplicationAdapter {
 					ItemContainer itemContainer = world.getPlayer().getComponent(ItemContainer.class);
 					boolean hasKey = itemContainer.getAmount(ItemType.Key) > 0;
 					world.getExit().getComponent(Sprite.class).enableAnimation(hasKey);
+
+					if (world.canSpawnRobot) {
+						if (itemContainer.getAmount(ItemType.Waste) == world.wasteTarget) {
+							Position p = world.getRandomFreePosition(new Random(System.currentTimeMillis()));
+							Entity robot = entityFactory.makeMonster(p.x, p.y, MonsterType.Robot);
+							world.addEntity(robot);
+							world.addEntity(entityFactory.makeExplosion(p.x * Assets.TILE_SIZE + Assets.TILE_SIZE / 2, p.y * Assets.TILE_SIZE + Assets.TILE_SIZE / 2, Color.MAGENTA));
+							world.canSpawnRobot = false;
+						}
+					}
 
                     world.update(delta);
                 }

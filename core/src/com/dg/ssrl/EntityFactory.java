@@ -191,21 +191,12 @@ public class EntityFactory {
             @Override
             public void run(final World world, Entity triggeredBy) {
 
-                List<Position> free = new ArrayList<Position>();
-                for (int y = 0; y < world.getHeight(); y++) {
-                    for (int x = 0; x < world.getWidth(); x++) {
-                        if (world.isEmpty(x, y)) {
-                            free.add(new Position(x, y));
-                        }
-                    }
-                }
-                if (free.size() > 0) {
+                Position target = world.getRandomFreePosition(random);
+                if (target != null) {
                     EntityFactory entityFactory = world.getEntityFactory();
                     Position oldPosition = triggeredBy.getComponent(Position.class);
                     world.addEntity(entityFactory.makeExplosion(oldPosition.x * Assets.TILE_SIZE + Assets.TILE_SIZE / 2, oldPosition.y * Assets.TILE_SIZE + Assets.TILE_SIZE / 2, Color.MAGENTA));
 
-                    Collections.shuffle(free, random);
-                    Position target = free.get(0);
                     world.addEntity(entityFactory.makeExplosion(target.x * Assets.TILE_SIZE + Assets.TILE_SIZE / 2, target.y * Assets.TILE_SIZE + Assets.TILE_SIZE / 2, Color.MAGENTA));
 
                     world.move(triggeredBy, target.x, target.y);

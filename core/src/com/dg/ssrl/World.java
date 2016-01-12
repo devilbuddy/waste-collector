@@ -4,6 +4,10 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntMap;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.dg.ssrl.Components.Actor;
@@ -66,14 +70,15 @@ public class World {
     public int playerEntityId;
     public int exitEntityId;
     public int depth;
+    public int wasteTarget;
     public int sequenceId;
-
+    public boolean canSpawnRobot = false;
     public int[][] dijkstraMap;
 
     private boolean completed;
     private ScoreData scoreData;
 
-    public static final int MAX_SECTOR = 10;
+    public static final int MAX_SECTOR = 20;
 
     public World(int width, int height, EntityFactory entityFactory, Scheduler scheduler, int depth) {
         this.width = width;
@@ -81,6 +86,8 @@ public class World {
         this.entityFactory = entityFactory;
         this.scheduler = scheduler;
         this.depth = depth;
+        this.canSpawnRobot = depth % 3 == 0;
+
         this.sequenceId = ID_GENERATOR.incrementAndGet();
 
         cells = new Cell[height][width];
@@ -93,7 +100,22 @@ public class World {
         }
 
         bounds.set(0, 0, width * Assets.TILE_SIZE, height * Assets.TILE_SIZE);
-        //Gdx.app.log(tag, "bounds: " + bounds);
+    }
+
+    public Position getRandomFreePosition(Random random) {
+        List<Position> free = new ArrayList<Position>();
+        for (int y = 0; y < getHeight(); y++) {
+            for (int x = 0; x < getWidth(); x++) {
+                if (isEmpty(x, y)) {
+                    free.add(new Position(x, y));
+                }
+            }
+        }
+        if (free.size() > 0) {
+            Collections.shuffle(free, random);
+            return free.get(0);
+        }
+        return null;
     }
 
     public int getSector() {

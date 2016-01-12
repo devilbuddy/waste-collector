@@ -16,6 +16,7 @@ public class Generator {
         public Position start = new Position(0,0);
         public Position exit = new Position(0,0);
         public List<Entity> entities = new ArrayList<Entity>();
+        public int wasteCount;
     }
 
     private static class TemplateData {
@@ -151,8 +152,10 @@ public class Generator {
         Position keyPosition = floors.remove(0);
         levelData.entities.add(entityFactory.makeItem(keyPosition.x, keyPosition.y, ItemType.Key));
 
-        Position teleporterPosition = floors.remove(0);
-        levelData.entities.add(entityFactory.makeTeleporter(teleporterPosition.x, teleporterPosition.y));
+        if (depth % 2 == 0) {
+            Position teleporterPosition = floors.remove(0);
+            levelData.entities.add(entityFactory.makeTeleporter(teleporterPosition.x, teleporterPosition.y));
+        }
 
         // monsters
         int monsterCount = Math.min(2 + random.nextInt(depth), 7);
@@ -172,6 +175,7 @@ public class Generator {
                 Position itemPosition = floors.remove(0);
                 Entity item = entityFactory.makeItem(itemPosition.x, itemPosition.y, ItemType.Waste);
                 levelData.entities.add(item);
+                levelData.wasteCount++;
             }
         }
 
