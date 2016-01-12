@@ -151,37 +151,48 @@ public class Generator {
         Position keyPosition = floors.remove(0);
         levelData.entities.add(entityFactory.makeItem(keyPosition.x, keyPosition.y, ItemType.Key));
 
+        Position teleporterPosition = floors.remove(0);
+        levelData.entities.add(entityFactory.makeTeleporter(teleporterPosition.x, teleporterPosition.y));
+
         // monsters
-        int monsterCount = Math.min(2 + random.nextInt(depth), 6);
+        int monsterCount = Math.min(2 + random.nextInt(depth), 7);
         for (int i = 0; i < monsterCount; i++) {
-            Position monsterPosition = floors.remove(0);
-            MonsterType monsterType = MonsterType.ENEMIES[random.nextInt(MonsterType.ENEMIES.length)];
-            Entity monster = entityFactory.makeMonster(monsterPosition.x, monsterPosition.y, monsterType);
-            levelData.entities.add(monster);
+            if (floors.size() > 0) {
+                Position monsterPosition = floors.remove(0);
+                MonsterType monsterType = MonsterType.ENEMIES[random.nextInt(MonsterType.ENEMIES.length)];
+                Entity monster = entityFactory.makeMonster(monsterPosition.x, monsterPosition.y, monsterType);
+                levelData.entities.add(monster);
+            }
         }
 
         // items
         int wasteCount = 2 + random.nextInt(2);
         for (int i = 0; i < wasteCount; i++) {
-            Position itemPosition = floors.remove(0);
-            Entity item = entityFactory.makeItem(itemPosition.x, itemPosition.y, ItemType.Waste);
-            levelData.entities.add(item);
+            if (floors.size() > 0) {
+                Position itemPosition = floors.remove(0);
+                Entity item = entityFactory.makeItem(itemPosition.x, itemPosition.y, ItemType.Waste);
+                levelData.entities.add(item);
+            }
         }
 
         int pickupCount = 2 + random.nextInt(2);
         for (int i = 0; i < pickupCount; i++) {
-            Position itemPosition = floors.remove(0);
-            ItemType itemType = ItemType.PICK_UPS[random.nextInt(ItemType.PICK_UPS.length)];
-            Entity item = entityFactory.makeItem(itemPosition.x, itemPosition.y, itemType);
-            levelData.entities.add(item);
+            if (floors.size() > 0) {
+                Position itemPosition = floors.remove(0);
+                ItemType itemType = ItemType.PICK_UPS[random.nextInt(ItemType.PICK_UPS.length)];
+                Entity item = entityFactory.makeItem(itemPosition.x, itemPosition.y, itemType);
+                levelData.entities.add(item);
+            }
         }
 
         int rarePickupCount = random.nextInt(2) + (depth / 3);
         for (int i = 0; i < rarePickupCount; i++) {
-            Position itemPosition = floors.remove(0);
-            ItemType itemType = ItemType.RARE_PICK_UPS[random.nextInt(ItemType.RARE_PICK_UPS.length)];
-            Entity item = entityFactory.makeItem(itemPosition.x, itemPosition.y, itemType);
-            levelData.entities.add(item);
+            if (floors.size() > 0) {
+                Position itemPosition = floors.remove(0);
+                ItemType itemType = ItemType.RARE_PICK_UPS[random.nextInt(ItemType.RARE_PICK_UPS.length)];
+                Entity item = entityFactory.makeItem(itemPosition.x, itemPosition.y, itemType);
+                levelData.entities.add(item);
+            }
         }
 
         return levelData;

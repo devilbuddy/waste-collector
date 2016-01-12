@@ -10,14 +10,6 @@ public class Entity {
     public final int id;
     public boolean alive = true;
 
-    @Override
-    public String toString() {
-        return "Entity{" +
-                "components=" + components +
-                ", id=" + id +
-                '}';
-    }
-
     public Entity(int id) {
         this.id = id;
     }
@@ -29,5 +21,13 @@ public class Entity {
 
     public void addComponent(Component component) {
         components.put(component.getClass(), component);
+    }
+
+    @Override
+    public String toString() {
+        return "Entity{" +
+                "components=" + components +
+                ", id=" + id +
+                '}';
     }
 }

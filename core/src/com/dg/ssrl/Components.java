@@ -249,6 +249,7 @@ public class Components {
         private final TextureRegion[] textureRegions;
         private final float frameDuration;
         public final int renderPass;
+        public final Color color = new Color(Color.WHITE);
 
         private float stateTime;
         private boolean animationEnabled = true;
@@ -362,7 +363,7 @@ public class Components {
             bounds.getPosition(this.start);
             tmp.set(this.start);
             bounds.getPosition(target);
-            target.add(direction.dx * Assets.TILE_SIZE/2, direction.dy * Assets.TILE_SIZE/2);
+            target.add(direction.dx * 3, direction.dy * 3);
 
         }
 
@@ -397,7 +398,7 @@ public class Components {
                 stateTime += delta;
                 float alpha = stateTime / 0.3f;
 
-                tmp.interpolate(target, alpha, Interpolation.bounceIn);
+                tmp.interpolate(target, alpha, Interpolation.pow3);
                 bounds.setPosition(tmp);
 
                 if (alpha > 1f) {

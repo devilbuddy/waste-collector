@@ -2,6 +2,10 @@ package com.dg.ssrl;
 
 import com.badlogic.gdx.graphics.Color;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.dg.ssrl.Components.*;
@@ -168,6 +172,61 @@ public class EntityFactory {
         }
         entity.addComponent(itemContainer);
 
+        return entity;
+    }
+
+    public Entity makeTeleporter(int x, int y) {
+        final Entity entity = createEntity();
+        final MoveAnimation moveAnimation = new MoveAnimation(50f);
+        moveAnimation.setPosition(x * Assets.TILE_SIZE, y * Assets.TILE_SIZE).setDirection(Direction.EAST);
+        final Sprite sprite = new Sprite(assets.teleporter, 0);
+        sprite.color.set(Color.RED);
+        entity.addComponent(new Position(x, y));
+        entity.addComponent(moveAnimation);
+        entity.addComponent(sprite);
+        entity.addComponent(new Trigger(new TriggerAction() {
+
+            Random random = new Random(System.currentTimeMillis());
+
+            @Override
+            public void run(final World world, Entity triggeredBy) {
+
+                List<Position> free = new ArrayList<Position>();
+                for (int y = 0; y < world.getHeight(); y++) {
+                    for (int x = 0; x < world.getWidth(); x++) {
+                        if (world.isEmpty(x, y)) {
+                            free.add(new Position(x, y));
+                        }
+                    }
+                }
+                if (free.size() > 0) {
+                    Position oldPosition = triggeredBy.getComponent(Position.class);
+                    Entity explosion = world.getEntityFactory().makeExplosion(oldPosition.x * Assets.TILE_SIZE + Assets.TILE_SIZE/2, oldPosition.y * Assets.TILE_SIZE + Assets.TILE_SIZE/2, Color.MAGENTA);
+                    world.addEntity(explosion);
+
+                    Collections.shuffle(free, random);
+                    Position target = free.get(0);
+                    world.move(triggeredBy, target.x, target.y);
+                    MoveAnimation triggeredByMoveAnimation = triggeredBy.getComponent(MoveAnimation.class);
+                    triggeredByMoveAnimation.setPosition(target.x * Assets.TILE_SIZE, target.y * Assets.TILE_SIZE);
+                }
+            }
+        }));
+        entity.addComponent(new Update(new Updater() {
+            float x = 0;
+            @Override
+            public void update(float delta, World world) {
+                x+= delta;
+                if (x < 1) {
+                    sprite.color.lerp(Color.SKY, delta*3);
+                } else {
+                    sprite.color.lerp(Color.RED, delta*3);
+                    if (x > 2) {
+                        x = 0;
+                    }
+                }
+            }
+        }));
         return entity;
     }
 

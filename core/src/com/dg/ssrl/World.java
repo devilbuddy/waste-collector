@@ -337,13 +337,16 @@ public class World {
         return false;
     }
 
-
-    public boolean isEmpty(Position position) {
-        if (contains(position)) {
-            Cell cell = getCell(position);
+    public boolean isEmpty(int x, int y) {
+        if (contains(x, y)) {
+            Cell cell = getCell(x, y);
             return cell.isWalkable() && cell.getEntityCount() == 0;
         }
         return false;
+    }
+
+    public boolean isEmpty(Position position) {
+        return isEmpty(position.x, position.y);
     }
 
     public boolean containsEntityWithComponent(Position position, Class clazz) {

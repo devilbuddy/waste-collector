@@ -134,6 +134,7 @@ public class MapRenderer {
 
                     if (sprite != null) {
                         if (sprite.renderPass == renderPass) {
+                            spriteBatch.setColor(sprite.color);
                             MoveAnimation moveAnimation = entity.getComponent(MoveAnimation.class);
 
                             if (moveAnimation != null) {

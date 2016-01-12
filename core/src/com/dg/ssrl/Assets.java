@@ -69,6 +69,7 @@ public class Assets {
     public TextureRegion whitePixel;
 
     public TextureRegion[] exitFrames;
+    public TextureRegion teleporter;
 
     public TextureRegion logo;
 
@@ -93,8 +94,7 @@ public class Assets {
 
     public static Color bulletExplosionColor = Color.ORANGE;
     public static Color rocketExplosionColor = Color.RED;
-    public static Color eggHatchColor = Color.BROWN;
-    public static Color damageColor = Color.GOLD;
+    public static Color damageColor = Color.FIREBRICK;
 
     public GlyphLayoutCacheItem getGlyphLayoutCacheItem(String text) {
         GlyphLayoutCacheItem item = glyphLayoutCacheItemMap.get(text);
@@ -138,6 +138,7 @@ public class Assets {
 
 
         exitFrames = new TextureRegion[] {tiles[12][1], tiles[12][2], tiles[12][3], tiles[12][2], tiles[12][1], tiles[12][0]};
+        teleporter = tiles[12][1];
 
         logo = new TextureRegion(tilesTexture, 80, 112, 48, 16);
 
