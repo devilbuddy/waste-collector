@@ -155,37 +155,23 @@ public class BrainCore {
                 bullet.alive = false;
                 scheduler.unlock();
 
-                float explosionX = bulletEnd.x * Assets.TILE_SIZE + Assets.TILE_SIZE / 2;
-                float explosionY = bulletEnd.y * Assets.TILE_SIZE + Assets.TILE_SIZE / 2;
-                switch (direction) {
-                    case NORTH:
-                        explosionY -= Assets.TILE_SIZE / 2;
-                        break;
-                    case SOUTH:
-                        explosionY += Assets.TILE_SIZE / 2;
-                        break;
-                    case EAST:
-                        explosionX -= Assets.TILE_SIZE / 2;
-                        break;
-                    case WEST:
-                        explosionX += Assets.TILE_SIZE / 2;
-                        break;
-                }
-                for (int i = 0; i < itemType.damage; i++) {
-                    if (itemType == ItemType.Ammo) {
-                        float duration = EntityFactory.BULLET_EXPLOSION_DURATION;
-                        Color color = Assets.bulletExplosionColor;
-                        Entity explosion = entityFactory.makeExplosion(explosionX + i, explosionY + i, duration, color);
-                        world.addEntity(explosion);
-                    } else if (itemType == ItemType.Rocket) {
-                        float duration = EntityFactory.ROCKET_EXPLOSION_DURATION;
-                        Color color = Assets.rocketExplosionColor;
-                        Entity explosion = entityFactory.makeExplosion(explosionX + i, explosionY + i, duration, color);
-                        world.addEntity(explosion);
+                float explosionCenterX = bulletEnd.x * Assets.TILE_SIZE + Assets.TILE_SIZE / 2;
+                float explosionCenterY = bulletEnd.y * Assets.TILE_SIZE + Assets.TILE_SIZE / 2;
 
+                if (itemType == ItemType.Ammo) {
+                    Entity explosion = entityFactory.makeExplosion(explosionCenterX, explosionCenterY, EntityFactory.BULLET_EXPLOSION_DURATION, Assets.bulletExplosionColor);
+                    world.addEntity(explosion);
+                } else if (itemType == ItemType.Rocket) {
+                    for (int y = -1; y < 2; y++) {
+                        for (int x = -1; x < 2; x++) {
+                            Color color = Assets.bulletExplosionColor;
+                            if(x == 0 && y == 0) {
+                                color = Assets.rocketExplosionColor;
+                            }
+                            Entity explosion = entityFactory.makeExplosion(explosionCenterX + x * Assets.TILE_SIZE, explosionCenterY + y * Assets.TILE_SIZE, EntityFactory.BULLET_EXPLOSION_DURATION, color);
+                            world.addEntity(explosion);
+                        }
                     }
-
-
                 }
 
                 sounds.play(Assets.Sounds.SoundId.HIT);
@@ -199,17 +185,16 @@ public class BrainCore {
                         for (int y = -1; y < 2; y++) {
                             for (int x = -1; x < 2; x++) {
                                 p.set(bulletEnd).translate(x, y);
-                                int damage = 1;
-                                if(p.equals(bulletEnd)) {
-                                    damage = itemType.damage;
+                                if (world.contains(p)) {
+                                    int damage = 1;
+                                    if(x == 0 && y == 0) {
+                                        damage = itemType.damage;
+                                    }
+                                    projectileDamage(world, p, damage);
                                 }
-                                projectileDamage(world, p, damage);
                             }
                         }
-
-
                     }
-
                 }
             }
         });
@@ -217,8 +202,8 @@ public class BrainCore {
         world.addEntity(bullet);
     }
 
-    private static void projectileDamage(World world, Position bulletEnd, int damage) {
-        World.Cell cell = world.getCell(bulletEnd.x, bulletEnd.y);
+    private static void projectileDamage(World world, Position position, int damage) {
+        World.Cell cell = world.getCell(position.x, position.y);
         int entityCount = cell.getEntityCount();
         for (int i = 0; i < entityCount; i++) {
             int entityId = cell.getEntityId(i);
@@ -230,7 +215,6 @@ public class BrainCore {
             if (hitEntityStats != null) {
                 Gdx.app.log(tag, "hit stats " + hitEntityStats);
                 hitEntityStats.damage(damage);
-
             }
         }
     }
