@@ -102,6 +102,26 @@ public class World {
         bounds.set(0, 0, width * Assets.TILE_SIZE, height * Assets.TILE_SIZE);
     }
 
+    public Position getFreePositionFurthestFromPlayer() {
+        int value = 0;
+        Position p = new Position();
+        boolean found = true;
+
+        for (int y = 0; y < getHeight(); y++) {
+            for (int x = 0; x < getWidth(); x++) {
+                if (isEmpty(x,y) && dijkstraMap[y][x] > value) {
+                    value = dijkstraMap[y][x];
+                    p.set(x, y);
+                    found = true;
+                }
+            }
+        }
+        if (found) {
+            return p;
+        }
+        return null;
+    }
+
     public Position getRandomFreePosition(Random random) {
         List<Position> free = new ArrayList<Position>();
         for (int y = 0; y < getHeight(); y++) {

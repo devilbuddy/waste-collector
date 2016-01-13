@@ -381,11 +381,13 @@ public class Game extends ApplicationAdapter {
 
 					if (world.canSpawnRobot) {
 						if (itemContainer.getAmount(ItemType.Waste) == world.wasteTarget) {
-							Position p = world.getRandomFreePosition(new Random(System.currentTimeMillis()));
-							Entity robot = entityFactory.makeMonster(p.x, p.y, MonsterType.Robot);
-							world.addEntity(robot);
-							world.addEntity(entityFactory.makeExplosion(p.x * Assets.TILE_SIZE + Assets.TILE_SIZE / 2, p.y * Assets.TILE_SIZE + Assets.TILE_SIZE / 2, Color.MAGENTA));
-							world.canSpawnRobot = false;
+							Position p = world.getFreePositionFurthestFromPlayer();
+							if (p != null) {
+								Entity robot = entityFactory.makeMonster(p.x, p.y, MonsterType.Robot);
+								world.addEntity(robot);
+								world.addEntity(entityFactory.makeExplosion(p.x * Assets.TILE_SIZE + Assets.TILE_SIZE / 2, p.y * Assets.TILE_SIZE + Assets.TILE_SIZE / 2, Color.MAGENTA));
+								world.canSpawnRobot = false;
+							}
 						}
 					}
 
