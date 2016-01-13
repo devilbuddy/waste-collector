@@ -63,9 +63,7 @@ public class Assets {
     public TextureRegion[][] tiles;
     public BitmapFont font;
 
-    public TextureRegion wallSolid;
 
-    public TextureRegion wall;
     public TextureRegion floor;
 
     public TextureRegion whitePixel;
@@ -108,62 +106,60 @@ public class Assets {
     }
 
     public void create() {
-        tilesTexture = new Texture(Gdx.files.internal("tiles.png"));
+        tilesTexture = new Texture(Gdx.files.internal("sprites.png"));
 
         tiles = TextureRegion.split(tilesTexture, TILE_SIZE, TILE_SIZE);
 
-        wallSolid = tiles[2][0];
-        wall = tiles[2][1];
-        floor = tiles[1][15];
 
-        whitePixel = new TextureRegion(tilesTexture, 18,18,1,1);
+        floor = tiles[2][0];
+        whitePixel = new TextureRegion(tilesTexture, 11,19,1,1);
 
         font = new BitmapFont(Gdx.files.internal("kongtext.fnt"));
 
-        monsterSprites.put(MonsterType.Player, tiles[4][2]);
-        monsterSprites.put(MonsterType.Crawler, tiles[5][2]);
-        monsterSprites.put(MonsterType.Stealer, tiles[5][4]);
-        monsterSprites.put(MonsterType.Brute, tiles[5][3]);
-        monsterSprites.put(MonsterType.Egg, tiles[11][0]);
-        monsterSprites.put(MonsterType.Cannon, tiles[5][5]);
-        monsterSprites.put(MonsterType.Grower, tiles[5][6]);
-        monsterSprites.put(MonsterType.Robot, tiles[5][0]);
+        monsterSprites.put(MonsterType.Player, tiles[4][0]);
+        monsterSprites.put(MonsterType.Crawler, tiles[5][1]);
+        monsterSprites.put(MonsterType.Stealer, tiles[5][3]);
+        monsterSprites.put(MonsterType.Brute, tiles[6][2]);
+        monsterSprites.put(MonsterType.Egg, tiles[6][6]);
+        monsterSprites.put(MonsterType.Cannon, tiles[6][4]);
+        monsterSprites.put(MonsterType.Grower, tiles[5][5]);
+        monsterSprites.put(MonsterType.Robot, tiles[6][0]);
 
-        itemSprites.put(ItemType.Key, tiles[9][0]);
-        itemSprites.put(ItemType.Ammo, tiles[10][0]);
-        itemSprites.put(ItemType.AmmoCrate, tiles[10][1]);
-        itemSprites.put(ItemType.Waste, tiles[8][3]);
-        itemSprites.put(ItemType.Rocket, tiles[10][3]);
-        itemSprites.put(ItemType.Heart, tiles[7][4]);
+        itemSprites.put(ItemType.Key, tiles[3][3]);
+        itemSprites.put(ItemType.Ammo, tiles[3][4]);
+        itemSprites.put(ItemType.AmmoCrate, tiles[3][5]);
+        itemSprites.put(ItemType.Waste, tiles[3][6]);
+        itemSprites.put(ItemType.Rocket, tiles[3][1]);
+        itemSprites.put(ItemType.Heart, tiles[3][2]);
 
-        bulletSprites.put(ItemType.Ammo, tiles[4][3]);
-        bulletSprites.put(ItemType.Rocket, tiles[4][4]);
+        bulletSprites.put(ItemType.Ammo, tiles[4][2]);
+        bulletSprites.put(ItemType.Rocket, tiles[4][3]);
 
 
-        exitFrames = new TextureRegion[] {tiles[12][1], tiles[12][2], tiles[12][3], tiles[12][2], tiles[12][1], tiles[12][0]};
-        teleporterFrames = new TextureRegion[] {tiles[13][0], tiles[13][1], tiles[13][2], tiles[13][3], tiles[13][4]};
+        exitFrames = new TextureRegion[] {tiles[8][1], tiles[8][2], tiles[8][3], tiles[8][2], tiles[8][1], tiles[8][0]};
+        teleporterFrames = new TextureRegion[] {tiles[9][0], tiles[9][1], tiles[9][2], tiles[9][3]};
 
-        logo = new TextureRegion(tilesTexture, 80, 112, 48, 16);
+        logo = new TextureRegion(tilesTexture, 0, 88, 47, 15);
 
         sounds.create();
 
         autoTileSet = new TextureRegion[] {
-                tiles[0][16],
-                tiles[1][17],
-                tiles[0][18],
-                tiles[1][19],
-                tiles[0][20],
-                tiles[1][21],
-                tiles[0][22],
-                tiles[1][23],
-                tiles[0][24],
-                tiles[1][25],
-                tiles[0][26],
-                tiles[1][27],
-                tiles[0][28],
-                tiles[1][29],
-                tiles[0][30],
-                tiles[1][31],
+                tiles[0][0],
+                tiles[1][1],
+                tiles[0][2],
+                tiles[1][3],
+                tiles[0][4],
+                tiles[1][5],
+                tiles[0][6],
+                tiles[1][7],
+                tiles[0][8],
+                tiles[1][9],
+                tiles[0][10],
+                tiles[1][11],
+                tiles[0][12],
+                tiles[1][13],
+                tiles[0][14],
+                tiles[1][15],
         };
 
 

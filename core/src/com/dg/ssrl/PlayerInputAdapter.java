@@ -89,6 +89,9 @@ public class PlayerInputAdapter extends InputAdapter implements GestureDetector.
             case Input.Keys.SPACE:
                 actionQueue.add(Action.FIRE_PRIMARY);
                 break;
+            case Input.Keys.ENTER:
+                actionQueue.add(Action.FIRE_SECONDARY);
+                break;
         }
         return super.keyUp(keycode);
     }
