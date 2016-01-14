@@ -299,10 +299,10 @@ public class Game extends ApplicationAdapter {
 
 		assets.font.setColor(Color.ORANGE);
 		y -= 2 *assets.font.getLineHeight();
-
 		renderHudItemCentered(assets.tapToStartText, y);
 
-		renderInstructionComponent(instructionComponents[instructionComponentIndex], spriteBatch);
+		y -= 2.5f * assets.font.getLineHeight();
+		renderInstructionComponent(instructionComponents[instructionComponentIndex], spriteBatch, y);
 	}
 
 	private void renderWinHud() {
@@ -377,7 +377,7 @@ public class Game extends ApplicationAdapter {
         switch (state) {
 			case MENU: {
 				updateStarField(delta);
-				updateInstructionComponents(delta, 80);
+				updateInstructionComponents(delta);
 				if (playerInputAdapter.popAction() == PlayerInputAdapter.Action.FIRE_PRIMARY) {
 					initWorld(true);
 					setState(State.PLAY);
@@ -458,9 +458,11 @@ public class Game extends ApplicationAdapter {
 
 		boolean in = true;
 
-		public InstructionComponent(String text, Sprite sprite) {
+		public InstructionComponent(String text, Sprite sprite, int x) {
 			this.text = text;
 			this.sprite = sprite;
+
+			position.x = x;
 		}
 
 		public void update(float delta) {
@@ -469,7 +471,7 @@ public class Game extends ApplicationAdapter {
 
 	}
 
-	public void updateInstructionComponents(float delta, float targetY) {
+	public void updateInstructionComponents(float delta) {
 		InstructionComponent instructionComponent = instructionComponents[instructionComponentIndex];
 		instructionComponent.update(delta);
 
@@ -477,13 +479,13 @@ public class Game extends ApplicationAdapter {
 		easeTime += delta;
 		float alpha = easeTime/EASE_TIME;
 		if (instructionComponent.in) {
-			instructionTarget.y = targetY;
+			instructionTarget.x = width*2 / 2;
 			if (easeTime > EASE_TIME) {
 				instructionComponent.in = false;
 				easeTime = 0;
 			}
 		} else {
-			instructionTarget.y = -10;
+			instructionTarget.x = -width;
 			if (easeTime > EASE_TIME) {
 				//done
 				instructionComponent.in = true;
@@ -505,19 +507,23 @@ public class Game extends ApplicationAdapter {
 	private InstructionComponent[] instructionComponents;
 
 	private void createInstructionComponents() {
+		int x = width * 2 + 80;
 		instructionComponents = new InstructionComponent[] {
-				new InstructionComponent("COLLECT", new Sprite(assets.getItemTextureRegion(ItemType.Waste))),
-				new InstructionComponent("SURVIVE", new Sprite(assets.getMonsterTextureRegion(MonsterType.Crawler))),
-				new InstructionComponent("GET KEY", new Sprite(assets.getItemTextureRegion(ItemType.Key))),
-				new InstructionComponent("ESCAPE", new Sprite(assets.exitFrames, 0.1f, 0))
+				new InstructionComponent("COLLECT", new Sprite(assets.getItemTextureRegion(ItemType.Waste)), x),
+				new InstructionComponent("SURVIVE", new Sprite(assets.getMonsterTextureRegion(MonsterType.Crawler)), x),
+				new InstructionComponent("REVIVE", new Sprite(assets.getItemTextureRegion(ItemType.Heart)), x),
+				new InstructionComponent("WARP", new Sprite(assets.teleporterFrames, 0.2f, 0, Color.PURPLE), x),
+				new InstructionComponent("GET KEY", new Sprite(assets.getItemTextureRegion(ItemType.Key)), x),
+				new InstructionComponent("ESCAPE", new Sprite(assets.exitFrames, 0.1f, 0), x)
 		};
 	}
 
+	private void renderInstructionComponent(InstructionComponent instructionComponent, SpriteBatch spriteBatch, float topY) {
 
-	private void renderInstructionComponent(InstructionComponent instructionComponent, SpriteBatch spriteBatch) {
-		float topY = instructionComponent.position.y;
+		float x = instructionComponent.position.x;
 		Assets.GlyphLayoutCacheItem text = assets.getGlyphLayoutCacheItem(instructionComponent.text);
-		assets.font.draw(spriteBatch, text.text, hudWidth/2 - text.glyphLayout.width/2, topY);
+		assets.font.setColor(Color.ORANGE);
+		assets.font.draw(spriteBatch, text.text, x - text.glyphLayout.width/2, topY);
 
 		topY -= assets.font.getLineHeight();
 
@@ -529,7 +535,7 @@ public class Game extends ApplicationAdapter {
 		int displayWidth = w * 2;
 		int displayHeight = h * 2;
 
-		spriteBatch.draw(sprite.getTextureRegion(), hudWidth/2 - displayWidth/2, topY - displayHeight, displayWidth, displayHeight);
+		spriteBatch.draw(sprite.getTextureRegion(), x - displayWidth/2, topY - displayHeight, displayWidth, displayHeight);
 	}
 
 

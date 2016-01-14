@@ -249,7 +249,7 @@ public class Components {
         private final TextureRegion[] textureRegions;
         private final float frameDuration;
         public final int renderPass;
-        public final Color color = new Color(Color.WHITE);
+        public final Color color;
 
         private float stateTime;
         private boolean animationEnabled = true;
@@ -262,10 +262,15 @@ public class Components {
             this(new TextureRegion[]{ textureRegion}, 1, renderPass);
         }
 
-        public Sprite(TextureRegion[] textureRegions, float frameDuration, int renderPass) {
+        public Sprite(TextureRegion[] textureRegions, float frameDuration, int renderPass, Color color) {
             this.textureRegions = textureRegions;
             this.frameDuration = frameDuration;
             this.renderPass = renderPass;
+            this.color = color;
+        }
+
+        public Sprite(TextureRegion[] textureRegions, float frameDuration, int renderPass) {
+            this(textureRegions, frameDuration, renderPass, Color.WHITE);
         }
 
         public void enableAnimation(boolean animationEnabled) {
