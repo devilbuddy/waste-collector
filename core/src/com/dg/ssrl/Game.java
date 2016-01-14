@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.math.Vector2;
 
 import java.util.Random;
 
@@ -125,6 +126,7 @@ public class Game extends ApplicationAdapter {
 		entityFactory = new EntityFactory(assets);
 
 		highScore = loadScore();
+		createStarField();
     }
 
 	private void initWorld(boolean reset) {
@@ -185,6 +187,8 @@ public class Game extends ApplicationAdapter {
 		hudHeight = height * 2;
 		hudCamera.setToOrtho(false, hudWidth, hudHeight);
         hudCamera.update();
+
+		initStarField();
     }
 
 	@Override
@@ -269,6 +273,17 @@ public class Game extends ApplicationAdapter {
 	}
 
 	private void renderMainMenuHud() {
+
+
+		for (int i = 0; i < NUM_STARS; i++) {
+			Star star = stars[i];
+			spriteBatch.setColor(star.color);
+
+			spriteBatch.draw(assets.whitePixel, star.position.x, star.position.y);
+
+		}
+
+
 		spriteBatch.setColor(Color.WHITE);
 		float logoW = assets.logo.getRegionWidth() * 2;
 		float logoH = assets.logo.getRegionHeight() * 2;
@@ -360,6 +375,7 @@ public class Game extends ApplicationAdapter {
 
         switch (state) {
 			case MENU: {
+				updateStarField(delta);
 				if (playerInputAdapter.popAction() == PlayerInputAdapter.Action.FIRE_PRIMARY) {
 					initWorld(true);
 					setState(State.PLAY);
@@ -431,6 +447,55 @@ public class Game extends ApplicationAdapter {
         }
 
 
+	}
+
+	private static class Star {
+		Vector2 position = new Vector2();
+		Vector2 velocity = new Vector2();
+		Color color = new Color();
+
+		public void update(float delta) {
+			float dx = velocity.x * delta;
+			float dy = velocity.y * delta;
+			position.add(dx, dy);
+		}
+	}
+
+	private static final int NUM_STARS = 50;
+
+	private Star[] stars;
+	private Random random = new Random(System.currentTimeMillis());
+
+	private void createStarField() {
+		stars = new Star[NUM_STARS];
+		for (int i = 0; i < NUM_STARS; i++) {
+			stars[i] = new Star();
+		}
+	}
+
+	private void initStarField() {
+		for (int i = 0; i < NUM_STARS; i++) {
+			Star star = stars[i];
+			star.position.x = random.nextInt(hudWidth);
+			star.position.y = random.nextInt(hudHeight);
+
+			float velocityPercent = random.nextFloat();
+			star.velocity.y = 50f * velocityPercent;
+
+			star.color.set(Color.WHITE);
+			star.color.mul(velocityPercent);
+		}
+	}
+
+	private void updateStarField(float delta) {
+		for (int i = 0; i < NUM_STARS; i++) {
+			Star star = stars[i];
+			star.update(delta);
+			if (star.position.y > hudHeight) {
+				star.position.y = -1;
+				star.position.x = random.nextInt(hudWidth);
+			}
+		}
 	}
 
 	private static final String SCORE_PREFERENCES = "highscore";
