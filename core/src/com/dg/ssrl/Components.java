@@ -249,7 +249,7 @@ public class Components {
         private final TextureRegion[] textureRegions;
         private final float frameDuration;
         public final int renderPass;
-        public final Color color;
+        public Color color = new Color(Color.WHITE);
 
         private float stateTime;
         private boolean animationEnabled = true;
@@ -266,7 +266,7 @@ public class Components {
             this.textureRegions = textureRegions;
             this.frameDuration = frameDuration;
             this.renderPass = renderPass;
-            this.color = color;
+            this.color.set(color);
         }
 
         public Sprite(TextureRegion[] textureRegions, float frameDuration, int renderPass) {

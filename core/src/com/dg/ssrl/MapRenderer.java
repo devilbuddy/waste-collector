@@ -95,6 +95,8 @@ public class MapRenderer {
         bounds.x = virtualWidth/2 - bounds.width/2;
         bounds.y = virtualHeight - bounds.height - topGutterHeight;
 
+        //spriteBatch.setColor(Color.WHITE);
+
         float yy = bounds.y;
         for (int y = 0; y < height; y++) {
             float xx = bounds.x;
@@ -175,6 +177,7 @@ public class MapRenderer {
     }
 
     private void renderWithFacing(Vector2 position, Direction direction, Sprite sprite, SpriteBatch spriteBatch) {
+        spriteBatch.setColor(sprite.color);
         switch (direction) {
             case NORTH:
                 spriteBatch.draw(sprite.getTextureRegion(), bounds.x + position.x, bounds.y + position.y, 4, 4, 8, 8, 1, 1, 270);

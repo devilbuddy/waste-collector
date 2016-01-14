@@ -212,7 +212,7 @@ public class EntityFactory {
             @Override
             public void update(float delta, World world) {
                 sprite.update(delta);
-
+                
                 x+= delta;
                 if (x < 1) {
                     sprite.color.lerp(Color.PURPLE, delta*3);
@@ -222,6 +222,7 @@ public class EntityFactory {
                         x = 0;
                     }
                 }
+
             }
         }));
         return entity;

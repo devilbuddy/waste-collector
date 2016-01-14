@@ -456,12 +456,13 @@ public class Game extends ApplicationAdapter {
 		final Sprite sprite;
 		Vector2 position = new Vector2();
 
+		float startX;
 		boolean in = true;
 
 		public InstructionComponent(String text, Sprite sprite, int x) {
 			this.text = text;
 			this.sprite = sprite;
-
+			startX = x;
 			position.x = x;
 		}
 
@@ -475,27 +476,28 @@ public class Game extends ApplicationAdapter {
 		InstructionComponent instructionComponent = instructionComponents[instructionComponentIndex];
 		instructionComponent.update(delta);
 
-
 		easeTime += delta;
 		float alpha = easeTime/EASE_TIME;
 		if (instructionComponent.in) {
 			instructionTarget.x = width*2 / 2;
+			instructionComponent.position.interpolate(instructionTarget, alpha, Interpolation.pow2In);
+
 			if (easeTime > EASE_TIME) {
 				instructionComponent.in = false;
 				easeTime = 0;
 			}
 		} else {
 			instructionTarget.x = -width;
+			instructionComponent.position.interpolate(instructionTarget, alpha, Interpolation.pow2In);
+
 			if (easeTime > EASE_TIME) {
 				//done
 				instructionComponent.in = true;
+				instructionComponent.position.x = instructionComponent.startX;
 				easeTime = 0;
 				instructionComponentIndex = (instructionComponentIndex + 1) % instructionComponents.length;
 			}
 		}
-		instructionComponent.position.interpolate(instructionTarget, alpha, Interpolation.pow2In);
-
-
 
 	}
 
@@ -535,6 +537,7 @@ public class Game extends ApplicationAdapter {
 		int displayWidth = w * 2;
 		int displayHeight = h * 2;
 
+		spriteBatch.setColor(sprite.color);
 		spriteBatch.draw(sprite.getTextureRegion(), x - displayWidth/2, topY - displayHeight, displayWidth, displayHeight);
 	}
 
