@@ -179,8 +179,7 @@ public class EntityFactory {
         final Entity entity = createEntity();
         final MoveAnimation moveAnimation = new MoveAnimation(50f);
         moveAnimation.setPosition(x * Assets.TILE_SIZE, y * Assets.TILE_SIZE).setDirection(Direction.EAST);
-        final Sprite sprite = new Sprite(assets.teleporterFrames, 0.2f, 0);
-        sprite.color.set(Color.RED);
+        final Sprite sprite = new Sprite(assets.teleporterFrames, 0.2f, 0, Assets.SEA_BLUE);
         entity.addComponent(new Position(x, y));
         entity.addComponent(moveAnimation);
         entity.addComponent(sprite);
@@ -208,21 +207,9 @@ public class EntityFactory {
             }
         }));
         entity.addComponent(new Update(new Updater() {
-            float x = 0;
             @Override
             public void update(float delta, World world) {
                 sprite.update(delta);
-                
-                x+= delta;
-                if (x < 1) {
-                    sprite.color.lerp(Color.PURPLE, delta*3);
-                } else {
-                    sprite.color.lerp(Color.RED, delta*3);
-                    if (x > 2) {
-                        x = 0;
-                    }
-                }
-
             }
         }));
         return entity;
@@ -232,7 +219,7 @@ public class EntityFactory {
         final Entity entity = createEntity();
         final MoveAnimation moveAnimation = new MoveAnimation(50f);
         moveAnimation.setPosition(x * Assets.TILE_SIZE, y * Assets.TILE_SIZE).setDirection(Direction.EAST);
-        final Sprite sprite = new Sprite(assets.exitFrames, 0.1f, 0);
+        final Sprite sprite = new Sprite(assets.exitFrames, 0.1f, 0, Assets.SKY_BLUE);
 
         entity.addComponent(new Position(x, y));
         entity.addComponent(moveAnimation);

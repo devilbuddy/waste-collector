@@ -108,13 +108,16 @@ public class Game extends ApplicationAdapter {
 	private static final int WORLD_WIDTH = 10;
 	private static final int WORLD_HEIGHT = 10;
 
+
+	private GestureDetector gestureDetector;
 	public Game(Position[] debugScreenSizes) {
 		DebugInputSwitcher debugInputSwitcher = new DebugInputSwitcher(debugScreenSizes);
 		playerInputAdapter = new PlayerInputAdapter();
+		gestureDetector = new GestureDetector(20, 0.1f, LONG_PRESS_DURATION, 0.15f, playerInputAdapter);
 
-        inputMultiplexer.addProcessor(debugInputSwitcher);
+		inputMultiplexer.addProcessor(debugInputSwitcher);
 		inputMultiplexer.addProcessor(playerInputAdapter);
-        inputMultiplexer.addProcessor(new GestureDetector(20, 0.1f, LONG_PRESS_DURATION, 0.15f, playerInputAdapter));
+        inputMultiplexer.addProcessor(gestureDetector);
 		mapRenderer = new MapRenderer(assets);
 
 		scheduler = new Scheduler();
@@ -352,12 +355,14 @@ public class Game extends ApplicationAdapter {
 			assets.font.draw(spriteBatch, sectorString, secondColumnX, firstRowY);
 			assets.font.draw(spriteBatch, itemContainer.getAmountString(ItemType.Waste), secondColumnX, secondRowY);
 
-			float percentage = playerInputAdapter.getLongPressPercentage();
-			if (percentage > 0.1f && itemContainer.getAmount(ItemType.Rocket) > 0) {
-				float longPressBarWidth = hudWidth * percentage;
-				float longPressBarY = fourthRowY - 5; //(mapRenderer.bounds.y * 2) - 3;
-				spriteBatch.setColor(Color.RED);
-				spriteBatch.draw(assets.whitePixel, 0, longPressBarY, longPressBarWidth, 2);
+			if (gestureDetector.isLongPressed()) {
+				float percentage = playerInputAdapter.getLongPressPercentage();
+				if (percentage > 0.1f && itemContainer.getAmount(ItemType.Rocket) > 0) {
+					float longPressBarWidth = hudWidth * percentage;
+					float longPressBarY = fourthRowY - 5; //(mapRenderer.bounds.y * 2) - 3;
+					spriteBatch.setColor(Color.RED);
+					spriteBatch.draw(assets.whitePixel, 0, longPressBarY, longPressBarWidth, 2);
+				}
 			}
 		}
 	}
@@ -502,7 +507,7 @@ public class Game extends ApplicationAdapter {
 	}
 
 	private float easeTime = 0;
-	private static final float EASE_TIME = 2;
+	private static final float EASE_TIME = 2.5f;
 
 	private Vector2 instructionTarget = new Vector2();
 	private int instructionComponentIndex = 0;
@@ -511,12 +516,13 @@ public class Game extends ApplicationAdapter {
 	private void createInstructionComponents() {
 		int x = width * 2 + 80;
 		instructionComponents = new InstructionComponent[] {
-				new InstructionComponent("COLLECT", new Sprite(assets.getItemTextureRegion(ItemType.Waste)), x),
-				new InstructionComponent("SURVIVE", new Sprite(assets.getMonsterTextureRegion(MonsterType.Crawler)), x),
-				new InstructionComponent("REVIVE", new Sprite(assets.getItemTextureRegion(ItemType.Heart)), x),
-				new InstructionComponent("WARP", new Sprite(assets.teleporterFrames, 0.2f, 0, Color.PURPLE), x),
-				new InstructionComponent("GET KEY", new Sprite(assets.getItemTextureRegion(ItemType.Key)), x),
-				new InstructionComponent("ESCAPE", new Sprite(assets.exitFrames, 0.1f, 0), x)
+				new InstructionComponent("[GARBAGE-MAN]", new Sprite(assets.getMonsterTextureRegion(MonsterType.Player)), x),
+				new InstructionComponent("[COLLECT]", new Sprite(assets.getItemTextureRegion(ItemType.Waste)), x),
+				new InstructionComponent("[SURVIVE]", new Sprite(assets.getMonsterTextureRegion(MonsterType.Crawler)), x),
+				new InstructionComponent("[REVIVE]", new Sprite(assets.getItemTextureRegion(ItemType.Heart)), x),
+				new InstructionComponent("[WARP]", new Sprite(assets.teleporterFrames, 0.2f, 0, Assets.SEA_BLUE), x),
+				new InstructionComponent("[KEYCARD]", new Sprite(assets.getItemTextureRegion(ItemType.Key)), x),
+				new InstructionComponent("[ESCAPE]", new Sprite(assets.exitFrames, 0.1f, 0, Assets.SKY_BLUE), x)
 		};
 	}
 
@@ -538,7 +544,7 @@ public class Game extends ApplicationAdapter {
 		int displayHeight = h * 2;
 
 		spriteBatch.setColor(sprite.color);
-		spriteBatch.draw(sprite.getTextureRegion(), x - displayWidth/2, topY - displayHeight, displayWidth, displayHeight);
+		spriteBatch.draw(sprite.getTextureRegion(), x - displayWidth/2, topY - displayHeight - 4, displayWidth, displayHeight);
 	}
 
 

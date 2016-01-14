@@ -89,7 +89,8 @@ public class Assets {
     public GlyphLayoutCacheItem congratulationsText;
 
     public Color floorColor = new Color(0x1f1f1fff);
-
+    public static final Color SEA_BLUE = new Color(0x005784ff);
+    public static final Color SKY_BLUE = new Color(0xB2DCEFff);
     public Map<String, GlyphLayoutCacheItem> glyphLayoutCacheItemMap = new HashMap<String, GlyphLayoutCacheItem>();
 
     public static Color bulletExplosionColor = Color.ORANGE;
