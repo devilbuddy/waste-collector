@@ -109,11 +109,11 @@ public class Game extends ApplicationAdapter {
 	private static final int WORLD_HEIGHT = 10;
 
 
-	private GestureDetector gestureDetector;
+	private GestureDetectorExtended gestureDetector;
 	public Game(Position[] debugScreenSizes) {
 		DebugInputSwitcher debugInputSwitcher = new DebugInputSwitcher(debugScreenSizes);
 		playerInputAdapter = new PlayerInputAdapter();
-		gestureDetector = new GestureDetector(20, 0.1f, LONG_PRESS_DURATION, 0.15f, playerInputAdapter);
+		gestureDetector = new GestureDetectorExtended(20, 0.1f, LONG_PRESS_DURATION, 0.15f, playerInputAdapter);
 
 		inputMultiplexer.addProcessor(debugInputSwitcher);
 		inputMultiplexer.addProcessor(playerInputAdapter);
@@ -355,11 +355,11 @@ public class Game extends ApplicationAdapter {
 			assets.font.draw(spriteBatch, sectorString, secondColumnX, firstRowY);
 			assets.font.draw(spriteBatch, itemContainer.getAmountString(ItemType.Waste), secondColumnX, secondRowY);
 
-			if (gestureDetector.isLongPressed()) {
+			if (gestureDetector.isLongPressScheduled()) {
 				float percentage = playerInputAdapter.getLongPressPercentage();
 				if (percentage > 0.1f && itemContainer.getAmount(ItemType.Rocket) > 0) {
 					float longPressBarWidth = hudWidth * percentage;
-					float longPressBarY = fourthRowY - 5; //(mapRenderer.bounds.y * 2) - 3;
+					float longPressBarY = fourthRowY - 5;
 					spriteBatch.setColor(Color.RED);
 					spriteBatch.draw(assets.whitePixel, 0, longPressBarY, longPressBarWidth, 2);
 				}
@@ -507,7 +507,7 @@ public class Game extends ApplicationAdapter {
 	}
 
 	private float easeTime = 0;
-	private static final float EASE_TIME = 2.5f;
+	private static final float EASE_TIME = 2.0f;
 
 	private Vector2 instructionTarget = new Vector2();
 	private int instructionComponentIndex = 0;
@@ -517,9 +517,11 @@ public class Game extends ApplicationAdapter {
 		int x = width * 2 + 80;
 		instructionComponents = new InstructionComponent[] {
 				new InstructionComponent("[GARBAGE-MAN]", new Sprite(assets.getMonsterTextureRegion(MonsterType.Player)), x),
-				new InstructionComponent("[COLLECT]", new Sprite(assets.getItemTextureRegion(ItemType.Waste)), x),
-				new InstructionComponent("[SURVIVE]", new Sprite(assets.getMonsterTextureRegion(MonsterType.Crawler)), x),
-				new InstructionComponent("[REVIVE]", new Sprite(assets.getItemTextureRegion(ItemType.Heart)), x),
+				new InstructionComponent("[GARBAGE]", new Sprite(assets.getItemTextureRegion(ItemType.Waste)), x),
+				new InstructionComponent("[AMMO]", new Sprite(assets.getItemTextureRegion(ItemType.Ammo)), x),
+				new InstructionComponent("[5X-AMMO]", new Sprite(assets.getItemTextureRegion(ItemType.AmmoCrate)), x),
+				new InstructionComponent("[ROCKET]", new Sprite(assets.getItemTextureRegion(ItemType.Rocket)), x),
+				new InstructionComponent("[HEALTH]", new Sprite(assets.getItemTextureRegion(ItemType.Heart)), x),
 				new InstructionComponent("[WARP]", new Sprite(assets.teleporterFrames, 0.2f, 0, Assets.SEA_BLUE), x),
 				new InstructionComponent("[KEYCARD]", new Sprite(assets.getItemTextureRegion(ItemType.Key)), x),
 				new InstructionComponent("[ESCAPE]", new Sprite(assets.exitFrames, 0.1f, 0, Assets.SKY_BLUE), x)
