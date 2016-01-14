@@ -254,6 +254,10 @@ public class Components {
         private float stateTime;
         private boolean animationEnabled = true;
 
+        public Sprite(TextureRegion textureRegion) {
+            this(new TextureRegion[]{ textureRegion}, 1, 0);
+        }
+
         public Sprite(TextureRegion textureRegion, int renderPass) {
             this(new TextureRegion[]{ textureRegion}, 1, renderPass);
         }

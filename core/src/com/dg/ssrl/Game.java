@@ -10,7 +10,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.Random;
@@ -127,6 +129,7 @@ public class Game extends ApplicationAdapter {
 
 		highScore = loadScore();
 		createStarField();
+		createInstructionComponents();
     }
 
 	private void initWorld(boolean reset) {
@@ -274,15 +277,11 @@ public class Game extends ApplicationAdapter {
 
 	private void renderMainMenuHud() {
 
-
 		for (int i = 0; i < NUM_STARS; i++) {
 			Star star = stars[i];
 			spriteBatch.setColor(star.color);
-
 			spriteBatch.draw(assets.whitePixel, star.position.x, star.position.y);
-
 		}
-
 
 		spriteBatch.setColor(Color.WHITE);
 		float logoW = assets.logo.getRegionWidth() * 2;
@@ -302,6 +301,8 @@ public class Game extends ApplicationAdapter {
 		y -= 2 *assets.font.getLineHeight();
 
 		renderHudItemCentered(assets.tapToStartText, y);
+
+		renderInstructionComponent(instructionComponents[instructionComponentIndex], spriteBatch);
 	}
 
 	private void renderWinHud() {
@@ -376,6 +377,7 @@ public class Game extends ApplicationAdapter {
         switch (state) {
 			case MENU: {
 				updateStarField(delta);
+				updateInstructionComponents(delta, 80);
 				if (playerInputAdapter.popAction() == PlayerInputAdapter.Action.FIRE_PRIMARY) {
 					initWorld(true);
 					setState(State.PLAY);
@@ -448,6 +450,88 @@ public class Game extends ApplicationAdapter {
 
 
 	}
+
+	private static class InstructionComponent {
+		final String text;
+		final Sprite sprite;
+		Vector2 position = new Vector2();
+
+		boolean in = true;
+
+		public InstructionComponent(String text, Sprite sprite) {
+			this.text = text;
+			this.sprite = sprite;
+		}
+
+		public void update(float delta) {
+			sprite.update(delta);
+		}
+
+	}
+
+	public void updateInstructionComponents(float delta, float targetY) {
+		InstructionComponent instructionComponent = instructionComponents[instructionComponentIndex];
+		instructionComponent.update(delta);
+
+
+		easeTime += delta;
+		float alpha = easeTime/EASE_TIME;
+		if (instructionComponent.in) {
+			instructionTarget.y = targetY;
+			if (easeTime > EASE_TIME) {
+				instructionComponent.in = false;
+				easeTime = 0;
+			}
+		} else {
+			instructionTarget.y = -10;
+			if (easeTime > EASE_TIME) {
+				//done
+				instructionComponent.in = true;
+				easeTime = 0;
+				instructionComponentIndex = (instructionComponentIndex + 1) % instructionComponents.length;
+			}
+		}
+		instructionComponent.position.interpolate(instructionTarget, alpha, Interpolation.pow2In);
+
+
+
+	}
+
+	private float easeTime = 0;
+	private static final float EASE_TIME = 2;
+
+	private Vector2 instructionTarget = new Vector2();
+	private int instructionComponentIndex = 0;
+	private InstructionComponent[] instructionComponents;
+
+	private void createInstructionComponents() {
+		instructionComponents = new InstructionComponent[] {
+				new InstructionComponent("COLLECT", new Sprite(assets.getItemTextureRegion(ItemType.Waste))),
+				new InstructionComponent("SURVIVE", new Sprite(assets.getMonsterTextureRegion(MonsterType.Crawler))),
+				new InstructionComponent("GET KEY", new Sprite(assets.getItemTextureRegion(ItemType.Key))),
+				new InstructionComponent("ESCAPE", new Sprite(assets.exitFrames, 0.1f, 0))
+		};
+	}
+
+
+	private void renderInstructionComponent(InstructionComponent instructionComponent, SpriteBatch spriteBatch) {
+		float topY = instructionComponent.position.y;
+		Assets.GlyphLayoutCacheItem text = assets.getGlyphLayoutCacheItem(instructionComponent.text);
+		assets.font.draw(spriteBatch, text.text, hudWidth/2 - text.glyphLayout.width/2, topY);
+
+		topY -= assets.font.getLineHeight();
+
+		Sprite sprite = instructionComponent.sprite;
+		TextureRegion textureRegion = sprite.getTextureRegion();
+		int w = textureRegion.getRegionWidth();
+		int h = textureRegion.getRegionHeight();
+
+		int displayWidth = w * 2;
+		int displayHeight = h * 2;
+
+		spriteBatch.draw(sprite.getTextureRegion(), hudWidth/2 - displayWidth/2, topY - displayHeight, displayWidth, displayHeight);
+	}
+
 
 	private static class Star {
 		Vector2 position = new Vector2();
