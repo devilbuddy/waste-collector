@@ -16,8 +16,13 @@ public enum MonsterType {
     ;
 
     public static MonsterType[] ENEMIES = {
-            Crawler, Stealer, Egg, Brute, Cannon, Grower
+            Crawler, Stealer, Brute,
     };
+
+    public static MonsterType[] STATIONARY_ENEMIES = {
+            Egg, Cannon, Grower
+    };
+
 
     public final Actor.Speed speed;
     public final int hitPoints;

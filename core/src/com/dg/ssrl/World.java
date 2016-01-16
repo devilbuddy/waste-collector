@@ -166,13 +166,18 @@ public class World {
         entitiesToRemove.clear();
         for (IntMap.Entry<Entity> entry : entities.entries()) {
             Entity entity = entry.value;
-            if (entity.alive) {
-                Update update = entity.getComponent(Update.class);
-                if (update != null) {
-                    update.update(delta, this);
+            // TODO: Nullptr crash here because entity is null
+            // TODO: shouldnt happen need to fix :(
+            // TODO: to repro - fire rocket right at start.. doesnt happen every time
+            if (entity != null) {
+                if (entity.alive) {
+                    Update update = entity.getComponent(Update.class);
+                    if (update != null) {
+                        update.update(delta, this);
+                    }
+                } else {
+                    entitiesToRemove.add(entity.id);
                 }
-            } else {
-                entitiesToRemove.add(entity.id);
             }
         }
 

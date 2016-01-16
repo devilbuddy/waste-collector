@@ -1,5 +1,7 @@
 package com.dg.ssrl;
 
+import com.badlogic.gdx.Gdx;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -147,6 +149,11 @@ public class Generator {
         Collections.shuffle(floors, random);
 
         levelData.start = floors.remove(0);
+        // remove immediate neighbors from list of floors
+        for (Direction direction : Direction.CARDINAL_DIRECTIONS) {
+            floors.remove(levelData.start.copy().translate(direction));
+        }
+
         levelData.exit = floors.remove(0);
 
         Position keyPosition = floors.remove(0);
@@ -158,11 +165,17 @@ public class Generator {
         }
 
         // monsters
-        int monsterCount = Math.min(2 + random.nextInt(depth), 7);
+        int monsterCount = 2 + (int)Math.sqrt(depth) + (depth/6);
+
+        float stationaryChance = 0.25f;
         for (int i = 0; i < monsterCount; i++) {
             if (floors.size() > 0) {
                 Position monsterPosition = floors.remove(0);
                 MonsterType monsterType = MonsterType.ENEMIES[random.nextInt(MonsterType.ENEMIES.length)];
+                float spawnStationary = random.nextFloat();
+                if (spawnStationary < stationaryChance) {
+                    monsterType = MonsterType.STATIONARY_ENEMIES[random.nextInt(MonsterType.STATIONARY_ENEMIES.length)];
+                }
                 Entity monster = entityFactory.makeMonster(monsterPosition.x, monsterPosition.y, monsterType);
                 levelData.entities.add(monster);
             }
