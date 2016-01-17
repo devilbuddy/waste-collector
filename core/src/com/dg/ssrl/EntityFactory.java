@@ -151,16 +151,30 @@ public class EntityFactory {
         if (itemType == ItemType.Heart) {
             itemContainer = new ItemContainer(new OnEmptied() {
                 @Override
-                public void run(Entity emptiedBy) {
+                public void run(Entity emptiedBy, World world) {
                     Stats stats = emptiedBy.getComponent(Stats.class);
                     stats.heal(1);
+                    entity.alive = false;
+                }
+            });
+        } else if (itemType == ItemType.Adrenaline) {
+            itemContainer = new ItemContainer(new OnEmptied() {
+                @Override
+                public void run(Entity emptiedBy, World world) {
+                    EntityFactory entityFactory = world.getEntityFactory();
+
+                    Actor actor = emptiedBy.getComponent(Actor.class);
+                    if (actor != null) {
+                        Entity adrenaline = entityFactory.createAdrenaline(emptiedBy.id);
+                        world.addEntity(adrenaline);
+                    }
                     entity.alive = false;
                 }
             });
         } else {
             itemContainer = new ItemContainer(new OnEmptied() {
                 @Override
-                public void run(Entity emptiedBy) {
+                public void run(Entity emptiedBy, World world) {
                     entity.alive = false;
                 }
             });
@@ -171,6 +185,41 @@ public class EntityFactory {
             itemContainer.add(itemType, 1);
         }
         entity.addComponent(itemContainer);
+
+        return entity;
+    }
+
+    private Entity createAdrenaline(final int affectingEntityId) {
+        final Entity entity = createEntity();
+
+        final int duration = 10;
+
+        Actor actor = new Actor(new Brain() {
+            int ticks = 0;
+            @Override
+            public boolean act(World world) {
+                Entity affecting = world.getEntity(affectingEntityId);
+                if (affecting != null) {
+                    Actor affectedActor = affecting.getComponent(Actor.class);
+                    affectedActor.setSpeed(Actor.Speed.FAST);
+                    ticks++;
+                    if (ticks > duration) {
+                        entity.alive = false;
+                        affectedActor.resetSpeed();
+                    } else {
+                        Position position = affecting.getComponent(Position.class);
+                        EntityFactory entityFactory = world.getEntityFactory();
+                        world.addEntity(entityFactory.makeExplosion(position.x * Assets.TILE_SIZE + Assets.TILE_SIZE / 2, position.y * Assets.TILE_SIZE + Assets.TILE_SIZE / 2, Assets.LIGHT_YELLOW));
+                    }
+                } else {
+                    entity.alive = false;
+                }
+                return true;
+            }
+        }, Actor.Speed.MEDIUM);
+
+
+        entity.addComponent(actor);
 
         return entity;
     }

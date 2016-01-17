@@ -26,7 +26,7 @@ public class Components {
     }
 
     public interface OnEmptied {
-        void run(Entity emptiedBy);
+        void run(Entity emptiedBy, World world);
     }
     public static class ItemContainer implements Component {
 
@@ -37,7 +37,7 @@ public class Components {
         public ItemContainer() {
             this(new OnEmptied() {
                 @Override
-                public void run(Entity emptiedBy) {
+                public void run(Entity emptiedBy, World world) {
 
                 }
             });
@@ -81,13 +81,18 @@ public class Components {
             content.clear();
         }
 
-        public void emptyInto(ItemContainer other, Entity emptiedBy) {
+        public void emptyInto(ItemContainer other) {
             for (ItemType key : content.keySet()) {
-                int amountToAdd = content.get(key);
-                other.add(key, amountToAdd);
+                if (!key.consumedOnPickUp) {
+                    int amountToAdd = content.get(key);
+                    other.add(key, amountToAdd);
+                }
             }
             clear();
-            onEmptied.run(emptiedBy);
+        }
+
+        public void onEmptied(Entity emptiedBy, World world) {
+            onEmptied.run(emptiedBy, world);
         }
 
         @Override
@@ -449,11 +454,13 @@ public class Components {
         }
 
         public Brain brain;
-        private final Speed speed;
+        private final Speed baseSpeed;
+        private Speed speed;
         private int ticks;
         public boolean alive = true;
         public Actor(Brain brain, Speed speed) {
             this.brain = brain;
+            this.baseSpeed = speed;
             this.speed = speed;
         }
 
@@ -464,6 +471,14 @@ public class Components {
             } else {
                 return false;
             }
+        }
+
+        public void setSpeed(Speed newSpeed) {
+            this.speed = newSpeed;
+        }
+
+        public void resetSpeed() {
+            this.speed = baseSpeed;
         }
 
         public void reset() {

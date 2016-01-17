@@ -522,6 +522,7 @@ public class Game extends ApplicationAdapter {
 				new InstructionComponent("[5X-AMMO]", new Sprite(assets.getItemTextureRegion(ItemType.AmmoCrate)), x),
 				new InstructionComponent("[ROCKET]", new Sprite(assets.getItemTextureRegion(ItemType.Rocket)), x),
 				new InstructionComponent("[HEALTH]", new Sprite(assets.getItemTextureRegion(ItemType.Heart)), x),
+				new InstructionComponent("[ADRENALINE]", new Sprite(assets.getItemTextureRegion(ItemType.Adrenaline)), x),
 				new InstructionComponent("[WARP]", new Sprite(assets.teleporterFrames, 0.2f, 0, Assets.SEA_BLUE), x),
 				new InstructionComponent("[KEYCARD]", new Sprite(assets.getItemTextureRegion(ItemType.Key)), x),
 				new InstructionComponent("[ESCAPE]", new Sprite(assets.exitFrames, 0.1f, 0, Assets.SKY_BLUE), x)

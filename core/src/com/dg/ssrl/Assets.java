@@ -13,8 +13,6 @@ import java.util.Map;
 
 public class Assets {
 
-    public TextureRegion playerTextureRegion;
-
     public static class Sounds {
 
         public enum SoundId {
@@ -91,6 +89,8 @@ public class Assets {
     public Color floorColor = new Color(0x1f1f1fff);
     public static final Color SEA_BLUE = new Color(0x005784ff);
     public static final Color SKY_BLUE = new Color(0xB2DCEFff);
+    public static final Color LIGHT_YELLOW = new Color(0xeeb62fff);
+
     public Map<String, GlyphLayoutCacheItem> glyphLayoutCacheItemMap = new HashMap<String, GlyphLayoutCacheItem>();
 
     public static Color bulletExplosionColor = Color.ORANGE;
@@ -132,6 +132,7 @@ public class Assets {
         itemSprites.put(ItemType.Waste, tiles[3][6]);
         itemSprites.put(ItemType.Rocket, tiles[3][1]);
         itemSprites.put(ItemType.Heart, tiles[3][2]);
+        itemSprites.put(ItemType.Adrenaline, tiles[3][7]);
 
         bulletSprites.put(ItemType.Ammo, tiles[4][2]);
         bulletSprites.put(ItemType.Rocket, tiles[4][3]);
