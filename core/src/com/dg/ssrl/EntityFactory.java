@@ -6,20 +6,19 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.dg.ssrl.Components.Actor;
-import static com.dg.ssrl.Components.Brain;
+import static com.dg.ssrl.Components.Actor.Brain;
 import static com.dg.ssrl.Components.Effect;
 import static com.dg.ssrl.Components.ItemContainer;
 import static com.dg.ssrl.Components.MoveAnimation;
-import static com.dg.ssrl.Components.OnDied;
-import static com.dg.ssrl.Components.OnEmptied;
+import static com.dg.ssrl.Components.Stats.OnDied;
+import static com.dg.ssrl.Components.ItemContainer.OnEmptied;
 import static com.dg.ssrl.Components.Position;
 import static com.dg.ssrl.Components.Solid;
 import static com.dg.ssrl.Components.Sprite;
 import static com.dg.ssrl.Components.Stats;
 import static com.dg.ssrl.Components.Trigger;
-import static com.dg.ssrl.Components.TriggerAction;
 import static com.dg.ssrl.Components.Update;
-import static com.dg.ssrl.Components.Updater;
+import static com.dg.ssrl.Components.Update.Updater;
 
 public class EntityFactory {
 
@@ -169,7 +168,7 @@ public class EntityFactory {
                 }
             });
         } else if (itemType == ItemType.Adrenaline) {
-            itemContainer = new ItemContainer(new OnEmptied() {
+            itemContainer = new ItemContainer(new ItemContainer.OnEmptied() {
                 @Override
                 public void run(Entity emptiedBy, World world) {
                     EntityFactory entityFactory = world.getEntityFactory();
@@ -243,7 +242,7 @@ public class EntityFactory {
         entity.addComponent(new Position(x, y));
         entity.addComponent(moveAnimation);
         entity.addComponent(sprite);
-        entity.addComponent(new Trigger(new TriggerAction() {
+        entity.addComponent(new Trigger(new Trigger.TriggerAction() {
 
             Random random = new Random(System.currentTimeMillis());
 
@@ -284,7 +283,7 @@ public class EntityFactory {
         entity.addComponent(new Position(x, y));
         entity.addComponent(moveAnimation);
         entity.addComponent(sprite);
-        entity.addComponent(new Trigger(new TriggerAction() {
+        entity.addComponent(new Trigger(new Trigger.TriggerAction() {
             @Override
             public void run(final World world, Entity triggeredBy) {
                 Entity player = world.getPlayer();

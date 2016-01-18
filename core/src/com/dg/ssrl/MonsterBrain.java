@@ -2,7 +2,7 @@ package com.dg.ssrl;
 
 import java.util.Random;
 
-import static com.dg.ssrl.Components.Brain;
+import static com.dg.ssrl.Components.Actor.Brain;
 import static com.dg.ssrl.Components.ItemContainer;
 import static com.dg.ssrl.Components.MoveAnimation;
 import static com.dg.ssrl.Components.Position;

@@ -3,7 +3,7 @@ package com.dg.ssrl;
 import com.badlogic.gdx.Gdx;
 import static com.dg.ssrl.Components.*;
 
-class PlayerBrain implements Brain {
+class PlayerBrain implements Actor.Brain {
 
 	private static final String tag = "PlayerBrain";
 

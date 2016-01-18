@@ -14,25 +14,24 @@ import static com.dg.ssrl.Entity.Component;
 
 public class Components {
 
-    public interface TriggerAction {
-        void run(World world, Entity triggeredBy);
-    }
-
     public static class Trigger implements Component {
+        public interface TriggerAction {
+            void run(World world, Entity triggeredBy);
+        }
+
         public final TriggerAction triggerAction;
         public Trigger(TriggerAction triggerAction) {
             this.triggerAction = triggerAction;
         }
     }
 
-    public interface OnEmptied {
-        void run(Entity emptiedBy, World world);
-    }
     public static class ItemContainer implements Component {
-
-        public Map<ItemType, Integer> content = new HashMap<ItemType, Integer>();
+        public interface OnEmptied {
+            void run(Entity emptiedBy, World world);
+        }
 
         private final OnEmptied onEmptied;
+        public Map<ItemType, Integer> content = new HashMap<ItemType, Integer>();
 
         public ItemContainer() {
             this(new OnEmptied() {
@@ -115,10 +114,6 @@ public class Components {
         }
     }
 
-    public interface Updater {
-        void update(float delta, World world);
-    }
-
     public static class Update implements Component {
         private final Updater updater;
         public Update(Updater updater) {
@@ -127,10 +122,10 @@ public class Components {
         public void update(float delta, World world) {
             updater.update(delta, world);
         }
-    }
 
-    public interface OnDied {
-        void onDied();
+        public interface Updater {
+            void update(float delta, World world);
+        }
     }
 
     public static class Stats implements Component {
@@ -179,6 +174,10 @@ public class Components {
                     "health=" + health +
                     ", maxHealth=" + maxHealth +
                     '}';
+        }
+
+        public interface OnDied {
+            void onDied();
         }
     }
 
@@ -431,11 +430,11 @@ public class Components {
         }
     }
 
-    public interface Brain {
-        boolean act(World world);
-    }
-
     public static class Actor implements Component {
+
+        public interface Brain {
+            boolean act(World world);
+        }
 
         public enum Speed {
             EXTRA_SLOW(7),
