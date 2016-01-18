@@ -10,11 +10,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.Vector2;
-
-import java.util.Random;
 
 import static com.dg.ssrl.Components.ItemContainer;
 import static com.dg.ssrl.Components.MoveAnimation;
@@ -91,6 +86,7 @@ public class Game extends ApplicationAdapter {
 	private EntityFactory entityFactory;
 	private World world;
 
+	private MainMenu mainMenu;
 	private ScoreData highScore;
 
     private enum State {
@@ -126,13 +122,10 @@ public class Game extends ApplicationAdapter {
 	public void create () {
 		Gdx.input.setInputProcessor(inputMultiplexer);
 		spriteBatch = new SpriteBatch();
-
         assets.create();
 		entityFactory = new EntityFactory(assets);
-
 		highScore = loadScore();
-		createStarField();
-		createInstructionComponents();
+		mainMenu = new MainMenu(assets);
     }
 
 	@Override
@@ -157,7 +150,6 @@ public class Game extends ApplicationAdapter {
 		}
 		sector += 1;
 
-
 		Generator.LevelData levelData = Generator.generate(System.currentTimeMillis(), WORLD_WIDTH, WORLD_HEIGHT, sector, entityFactory);
 
 		world = new World(WORLD_WIDTH, WORLD_HEIGHT, entityFactory, scheduler, sector);
@@ -176,7 +168,7 @@ public class Game extends ApplicationAdapter {
         }
 
 		int wasteStart = world.getPlayer().getComponent(ItemContainer.class).getAmount(ItemType.Waste);
-		world.wasteTarget = levelData.wasteCount + wasteStart;
+		world.setWasteTarget(levelData.wasteCount + wasteStart);
 
 		world.addExit(entityFactory.makeExit(levelData.exit.x, levelData.exit.y));
 
@@ -202,12 +194,11 @@ public class Game extends ApplicationAdapter {
 		hudCamera.setToOrtho(false, hudWidth, hudHeight);
         hudCamera.update();
 
-		initStarField();
+		mainMenu.resize(hudWidth, hudHeight);
     }
 
 	@Override
 	public void render () {
-
 		timeStep.update();
 
 		Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -262,7 +253,6 @@ public class Game extends ApplicationAdapter {
 				assets.font.draw(spriteBatch, congratulations.text, x, y);
 			}
 		}
-
 		renderHud();
 
 		spriteBatch.end();
@@ -276,7 +266,7 @@ public class Game extends ApplicationAdapter {
 	private void renderHud() {
 		spriteBatch.setProjectionMatrix(hudCamera.combined);
 		if (state == State.MENU) {
-			renderMainMenuHud();
+			mainMenu.render(spriteBatch, highScore);
 		} else if (state == State.WIN) {
 			renderWinHud();
 		} else if (state == State.GAME_OVER) {
@@ -284,36 +274,6 @@ public class Game extends ApplicationAdapter {
 		} else {
 			renderGameHud();
 		}
-	}
-
-	private void renderMainMenuHud() {
-
-		for (int i = 0; i < NUM_STARS; i++) {
-			Star star = stars[i];
-			spriteBatch.setColor(star.color);
-			spriteBatch.draw(assets.whitePixel, star.position.x, star.position.y);
-		}
-
-		spriteBatch.setColor(Color.WHITE);
-		float logoW = assets.logo.getRegionWidth() * 2;
-		float logoH = assets.logo.getRegionHeight() * 2;
-		float logoX = hudWidth/2 - logoW /2;
-		float logoY = (hudHeight/3 * 2) - logoH / 2;
-		spriteBatch.draw(assets.logo, logoX, logoY, logoW, logoH);
-
-		float y = hudHeight / 2 + assets.tapToStartText.glyphLayout.height;
-
-		if (highScore != null) {
-			assets.font.setColor(Color.YELLOW);
-			renderHudItemCentered(assets.getGlyphLayoutCacheItem("HI-SCORE " + highScore.score), y);
-		}
-
-		assets.font.setColor(Color.ORANGE);
-		y -= 2 *assets.font.getLineHeight();
-		renderHudItemCentered(assets.tapToStartText, y);
-
-		y -= 2.5f * assets.font.getLineHeight();
-		renderInstructionComponent(instructionComponents[instructionComponentIndex], spriteBatch, y);
 	}
 
 	private void renderWinHud() {
@@ -389,8 +349,7 @@ public class Game extends ApplicationAdapter {
 
         switch (state) {
 			case MENU: {
-				updateStarField(delta);
-				updateInstructionComponents(delta);
+				mainMenu.update(delta);
 				if (playerInputAdapter.popAction() == PlayerInputAdapter.Action.FIRE_PRIMARY) {
 					initWorld(true);
 					setState(State.PLAY);
@@ -411,7 +370,7 @@ public class Game extends ApplicationAdapter {
 					world.getExit().getComponent(Sprite.class).enableAnimation(hasKey);
 
 					if (world.canSpawnRobot) {
-						if (itemContainer.getAmount(ItemType.Waste) == world.wasteTarget) {
+						if (itemContainer.getAmount(ItemType.Waste) == world.getWasteTarget()) {
 							Position p = world.getFreePositionFurthestFromPlayer();
 							if (p != null) {
 								Entity robot = entityFactory.makeMonster(p.x, p.y, MonsterType.Robot);
@@ -464,149 +423,15 @@ public class Game extends ApplicationAdapter {
 
 	}
 
-	private static class InstructionComponent {
-		final String text;
-		final Sprite sprite;
-		Vector2 position = new Vector2();
-
-		float startX;
-		boolean in = true;
-
-		public InstructionComponent(String text, Sprite sprite, int x) {
-			this.text = text;
-			this.sprite = sprite;
-			startX = x;
-			position.x = x;
-		}
-
-		public void update(float delta) {
-			sprite.update(delta);
-		}
-
-	}
-
-	public void updateInstructionComponents(float delta) {
-		InstructionComponent instructionComponent = instructionComponents[instructionComponentIndex];
-		instructionComponent.update(delta);
-
-		easeTime += delta;
-		float alpha = easeTime/EASE_TIME;
-		if (instructionComponent.in) {
-			instructionTarget.x = width*2 / 2;
-			instructionComponent.position.interpolate(instructionTarget, alpha, Interpolation.pow2In);
-
-			if (easeTime > EASE_TIME) {
-				instructionComponent.in = false;
-				easeTime = 0;
-			}
-		} else {
-			instructionTarget.x = -width;
-			instructionComponent.position.interpolate(instructionTarget, alpha, Interpolation.pow2In);
-
-			if (easeTime > EASE_TIME) {
-				//done
-				instructionComponent.in = true;
-				instructionComponent.position.x = instructionComponent.startX;
-				easeTime = 0;
-				instructionComponentIndex = (instructionComponentIndex + 1) % instructionComponents.length;
-			}
-		}
-
-	}
-
-	private float easeTime = 0;
-	private static final float EASE_TIME = 2.0f;
-
-	private Vector2 instructionTarget = new Vector2();
-	private int instructionComponentIndex = 0;
-	private InstructionComponent[] instructionComponents;
-
-	private void createInstructionComponents() {
-		int x = width * 2 + 80;
-		instructionComponents = new InstructionComponent[] {
-				new InstructionComponent("[GARBAGE-MAN]", new Sprite(assets.getMonsterTextureRegion(MonsterType.Player)), x),
-				new InstructionComponent("[GARBAGE]", new Sprite(assets.getItemTextureRegion(ItemType.Waste)), x),
-				new InstructionComponent("[AMMO]", new Sprite(assets.getItemTextureRegion(ItemType.Ammo)), x),
-				new InstructionComponent("[5X-AMMO]", new Sprite(assets.getItemTextureRegion(ItemType.AmmoCrate)), x),
-				new InstructionComponent("[ROCKET]", new Sprite(assets.getItemTextureRegion(ItemType.Rocket)), x),
-				new InstructionComponent("[HEALTH]", new Sprite(assets.getItemTextureRegion(ItemType.Heart)), x),
-				new InstructionComponent("[ADRENALINE]", new Sprite(assets.getItemTextureRegion(ItemType.Adrenaline)), x),
-				new InstructionComponent("[WARP]", new Sprite(assets.teleporterFrames, 0.2f, 0, Assets.SEA_BLUE), x),
-				new InstructionComponent("[KEYCARD]", new Sprite(assets.getItemTextureRegion(ItemType.Key)), x),
-				new InstructionComponent("[ESCAPE]", new Sprite(assets.exitFrames, 0.1f, 0, Assets.SKY_BLUE), x)
-		};
-	}
-
-	private void renderInstructionComponent(InstructionComponent instructionComponent, SpriteBatch spriteBatch, float topY) {
-
-		float x = instructionComponent.position.x;
-		Assets.GlyphLayoutCacheItem text = assets.getGlyphLayoutCacheItem(instructionComponent.text);
-		assets.font.setColor(Color.ORANGE);
-		assets.font.draw(spriteBatch, text.text, x - text.glyphLayout.width/2, topY);
-
-		topY -= assets.font.getLineHeight();
-
-		Sprite sprite = instructionComponent.sprite;
-		TextureRegion textureRegion = sprite.getTextureRegion();
-		int w = textureRegion.getRegionWidth();
-		int h = textureRegion.getRegionHeight();
-
-		int displayWidth = w * 2;
-		int displayHeight = h * 2;
-
-		spriteBatch.setColor(sprite.color);
-		spriteBatch.draw(sprite.getTextureRegion(), x - displayWidth/2, topY - displayHeight - 4, displayWidth, displayHeight);
-	}
 
 
-	private static class Star {
-		Vector2 position = new Vector2();
-		Vector2 velocity = new Vector2();
-		Color color = new Color();
 
-		public void update(float delta) {
-			float dx = velocity.x * delta;
-			float dy = velocity.y * delta;
-			position.add(dx, dy);
-		}
-	}
 
-	private static final int NUM_STARS = 50;
 
-	private Star[] stars;
-	private Random random = new Random(System.currentTimeMillis());
 
-	private void createStarField() {
-		stars = new Star[NUM_STARS];
-		for (int i = 0; i < NUM_STARS; i++) {
-			stars[i] = new Star();
-		}
-	}
 
-	private void initStarField() {
-		for (int i = 0; i < NUM_STARS; i++) {
-			Star star = stars[i];
-			star.position.x = random.nextInt(hudWidth);
-			star.position.y = random.nextInt(hudHeight);
 
-			float velocityPercent = random.nextFloat();
-			star.velocity.y = 50f * velocityPercent;
 
-			star.color.set(Color.WHITE);
-			star.color.mul(velocityPercent);
-		}
-	}
-
-	private void updateStarField(float delta) {
-		for (int i = 0; i < NUM_STARS; i++) {
-			Star star = stars[i];
-			star.update(delta);
-			if (star.position.y > hudHeight) {
-				star.position.y = -1;
-				star.position.x = random.nextInt(hudWidth);
-			}
-		}
-	}
 
 	private static final String SCORE_PREFERENCES = "highscore";
 	private static final String SCORE_VERSION_KEY = "version";

@@ -70,7 +70,7 @@ public class World {
     public int playerEntityId;
     public int exitEntityId;
     public int depth;
-    public int wasteTarget;
+    private int wasteTarget;
     public int sequenceId;
     public boolean canSpawnRobot = false;
     public int[][] dijkstraMap;
@@ -100,6 +100,14 @@ public class World {
         }
 
         bounds.set(0, 0, width * Assets.TILE_SIZE, height * Assets.TILE_SIZE);
+    }
+
+    public void setWasteTarget(int wasteTarget) {
+        this.wasteTarget = wasteTarget;
+    }
+
+    public int getWasteTarget() {
+        return wasteTarget;
     }
 
     public Position getFreePositionFurthestFromPlayer() {
