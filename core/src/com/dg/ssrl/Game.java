@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 
@@ -82,6 +81,7 @@ public class Game extends ApplicationAdapter {
 
 	private InputMultiplexer inputMultiplexer = new InputMultiplexer();
 	private PlayerInputAdapter playerInputAdapter;
+	private GestureDetectorExtended gestureDetector;
 
     private Assets assets = new Assets();
 	private SpriteBatch spriteBatch;
@@ -109,7 +109,6 @@ public class Game extends ApplicationAdapter {
 	private static final int WORLD_HEIGHT = 10;
 
 
-	private GestureDetectorExtended gestureDetector;
 	public Game(Position[] debugScreenSizes) {
 		DebugInputSwitcher debugInputSwitcher = new DebugInputSwitcher(debugScreenSizes);
 		playerInputAdapter = new PlayerInputAdapter();
@@ -127,6 +126,7 @@ public class Game extends ApplicationAdapter {
 	public void create () {
 		Gdx.input.setInputProcessor(inputMultiplexer);
 		spriteBatch = new SpriteBatch();
+
         assets.create();
 		entityFactory = new EntityFactory(assets);
 
@@ -134,6 +134,14 @@ public class Game extends ApplicationAdapter {
 		createStarField();
 		createInstructionComponents();
     }
+
+	@Override
+	public void pause () {
+		Gdx.app.log(tag, "pause");
+		if (state == State.PLAY || state == State.FADE_IN_LEVEL || state == State.FADE_OUT_LEVEL) {
+
+		}
+	}
 
 	private void initWorld(boolean reset) {
         playerInputAdapter.clear();

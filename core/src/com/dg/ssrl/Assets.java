@@ -57,8 +57,8 @@ public class Assets {
 
     public static final int TILE_SIZE = 8;
 
-    public Texture tilesTexture;
-    public TextureRegion[][] tiles;
+    private Texture tilesTexture;
+    private TextureRegion[][] tiles;
     public BitmapFont font;
 
 
@@ -91,7 +91,7 @@ public class Assets {
     public static final Color SKY_BLUE = new Color(0xB2DCEFff);
     public static final Color LIGHT_YELLOW = new Color(0xeeb62fff);
 
-    public Map<String, GlyphLayoutCacheItem> glyphLayoutCacheItemMap = new HashMap<String, GlyphLayoutCacheItem>();
+    private Map<String, GlyphLayoutCacheItem> glyphLayoutCacheItemMap = new HashMap<String, GlyphLayoutCacheItem>();
 
     public static Color bulletExplosionColor = Color.ORANGE;
     public static Color rocketExplosionColor = Color.RED;

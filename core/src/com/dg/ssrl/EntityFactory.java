@@ -2,13 +2,24 @@ package com.dg.ssrl;
 
 import com.badlogic.gdx.graphics.Color;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.dg.ssrl.Components.*;
+import static com.dg.ssrl.Components.Actor;
+import static com.dg.ssrl.Components.Brain;
+import static com.dg.ssrl.Components.Effect;
+import static com.dg.ssrl.Components.ItemContainer;
+import static com.dg.ssrl.Components.MoveAnimation;
+import static com.dg.ssrl.Components.OnDied;
+import static com.dg.ssrl.Components.OnEmptied;
+import static com.dg.ssrl.Components.Position;
+import static com.dg.ssrl.Components.Solid;
+import static com.dg.ssrl.Components.Sprite;
+import static com.dg.ssrl.Components.Stats;
+import static com.dg.ssrl.Components.Trigger;
+import static com.dg.ssrl.Components.TriggerAction;
+import static com.dg.ssrl.Components.Update;
+import static com.dg.ssrl.Components.Updater;
 
 public class EntityFactory {
 

@@ -1,7 +1,5 @@
 package com.dg.ssrl;
 
-import com.badlogic.gdx.graphics.Color;
-
 import java.util.Random;
 
 import static com.dg.ssrl.Components.Brain;

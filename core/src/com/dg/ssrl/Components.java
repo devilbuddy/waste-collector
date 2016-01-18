@@ -232,12 +232,8 @@ public class Components {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-
             Position position = (Position) o;
-
-            if (x != position.x) return false;
-            return y == position.y;
-
+            return x == position.x && y == position.y;
         }
 
         @Override
@@ -466,11 +462,7 @@ public class Components {
 
         public boolean tick() {
             ticks++;
-            if (ticks >= speed.ticksToAct) {
-                return true;
-            } else {
-                return false;
-            }
+            return ticks >= speed.ticksToAct;
         }
 
         public void setSpeed(Speed newSpeed) {

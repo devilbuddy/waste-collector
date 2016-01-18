@@ -143,7 +143,6 @@ public class BrainCore {
 
         sounds.play(itemType.soundId);
         final Entity bullet = entityFactory.makeBullet(itemType);
-        final boolean hit = hitSomething;
         scheduler.lock();
         bullet.getComponent(MoveAnimation.class).startMove(bulletStart, distanceTiles * Assets.TILE_SIZE, direction, new Runnable() {
             @Override
@@ -171,27 +170,27 @@ public class BrainCore {
                 }
 
                 sounds.play(Assets.Sounds.SoundId.HIT);
-                if (hit) {
-                    Gdx.app.log(tag, "hit in cell " + bulletEnd);
-                    if (itemType == ItemType.Ammo) {
-                        projectileDamage(world, bulletEnd, itemType.damage);
-                    } else if (itemType == ItemType.Rocket) {
-                        Position p = bulletEnd.copy();
 
-                        for (int y = -1; y < 2; y++) {
-                            for (int x = -1; x < 2; x++) {
-                                p.set(bulletEnd).translate(x, y);
-                                if (world.contains(p)) {
-                                    int damage = 1;
-                                    if(x == 0 && y == 0) {
-                                        damage = itemType.damage;
-                                    }
-                                    projectileDamage(world, p, damage);
+                Gdx.app.log(tag, "hit in cell " + bulletEnd);
+                if (itemType == ItemType.Ammo) {
+                    projectileDamage(world, bulletEnd, itemType.damage);
+                } else if (itemType == ItemType.Rocket) {
+                    Position p = bulletEnd.copy();
+
+                    for (int y = -1; y < 2; y++) {
+                        for (int x = -1; x < 2; x++) {
+                            p.set(bulletEnd).translate(x, y);
+                            if (world.contains(p)) {
+                                int damage = 1;
+                                if(x == 0 && y == 0) {
+                                    damage = itemType.damage;
                                 }
+                                projectileDamage(world, p, damage);
                             }
                         }
                     }
                 }
+
             }
         });
 

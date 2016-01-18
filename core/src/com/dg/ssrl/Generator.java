@@ -1,7 +1,5 @@
 package com.dg.ssrl;
 
-import com.badlogic.gdx.Gdx;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

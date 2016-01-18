@@ -15,8 +15,7 @@ public class Entity {
     }
 
     public <T> T getComponent(Class<T> clazz) {
-        T component = (T)components.get(clazz);
-        return component;
+        return (T)components.get(clazz);
     }
 
     public void addComponent(Component component) {
