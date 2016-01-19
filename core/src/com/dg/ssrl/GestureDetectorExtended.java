@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,9 +17,11 @@
 package com.dg.ssrl;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
@@ -62,9 +64,9 @@ public class GestureDetectorExtended extends InputAdapter {
 		return longPressTask.isScheduled();
 	}
 
-	/** Creates a new GestureDetectorExtended with default values: halfTapSquareSize=20, tapCountInterval=0.4f, longPressDuration=1.1f,
+	/** Creates a new GestureDetector with default values: halfTapSquareSize=20, tapCountInterval=0.4f, longPressDuration=1.1f,
 	 * maxFlingDelay=0.15f. */
-	public GestureDetectorExtended(GestureListener listener) {
+	public GestureDetectorExtended (GestureListener listener) {
 		this(20, 0.4f, 1.1f, 0.15f, listener);
 	}
 
@@ -76,8 +78,8 @@ public class GestureDetectorExtended extends InputAdapter {
 	 * @param maxFlingDelay time in seconds the finger must have been dragged for a fling event to be fired, see
 	 *           {@link GestureListener#fling(float, float, int)}
 	 * @param listener May be null if the listener will be set later. */
-	public GestureDetectorExtended(float halfTapSquareSize, float tapCountInterval, float longPressDuration, float maxFlingDelay,
-								   GestureListener listener) {
+	public GestureDetectorExtended (float halfTapSquareSize, float tapCountInterval, float longPressDuration, float maxFlingDelay,
+							GestureListener listener) {
 		this.tapSquareSize = halfTapSquareSize;
 		this.tapCountInterval = (long)(tapCountInterval * 1000000000l);
 		this.longPressSeconds = longPressDuration;
@@ -186,7 +188,7 @@ public class GestureDetectorExtended extends InputAdapter {
 		if (inTapSquare) {
 			// handle taps
 			if (lastTapButton != button || lastTapPointer != pointer || TimeUtils.nanoTime() - lastTapTime > tapCountInterval
-				|| !isWithinTapSquare(x, y, lastTapX, lastTapY)) tapCount = 0;
+					|| !isWithinTapSquare(x, y, lastTapX, lastTapY)) tapCount = 0;
 			tapCount++;
 			lastTapTime = TimeUtils.nanoTime();
 			lastTapX = x;

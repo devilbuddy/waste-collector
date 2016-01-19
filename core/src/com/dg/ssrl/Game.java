@@ -104,22 +104,23 @@ public class Game extends ApplicationAdapter {
 	private static final int WORLD_WIDTH = 10;
 	private static final int WORLD_HEIGHT = 10;
 
+	private DebugInputSwitcher debugInputSwitcher;
 
 	public Game(Position[] debugScreenSizes) {
-		DebugInputSwitcher debugInputSwitcher = new DebugInputSwitcher(debugScreenSizes);
-		playerInputAdapter = new PlayerInputAdapter();
-		gestureDetector = new GestureDetectorExtended(20, 0.1f, LONG_PRESS_DURATION, 0.15f, playerInputAdapter);
-
-		inputMultiplexer.addProcessor(debugInputSwitcher);
-		inputMultiplexer.addProcessor(playerInputAdapter);
-        inputMultiplexer.addProcessor(gestureDetector);
-		mapRenderer = new MapRenderer(assets);
-
-		scheduler = new Scheduler();
+		debugInputSwitcher = new DebugInputSwitcher(debugScreenSizes);
 	}
 
 	@Override
 	public void create () {
+		playerInputAdapter = new PlayerInputAdapter();
+		gestureDetector = new GestureDetectorExtended(20, 0.1f, LONG_PRESS_DURATION, 0.15f, playerInputAdapter);
+		inputMultiplexer.addProcessor(debugInputSwitcher);
+		inputMultiplexer.addProcessor(playerInputAdapter);
+		inputMultiplexer.addProcessor(gestureDetector);
+		mapRenderer = new MapRenderer(assets);
+
+		scheduler = new Scheduler();
+
 		Gdx.input.setInputProcessor(inputMultiplexer);
 		spriteBatch = new SpriteBatch();
         assets.create();

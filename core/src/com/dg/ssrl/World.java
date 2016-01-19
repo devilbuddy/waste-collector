@@ -162,6 +162,10 @@ public class World {
         return playerEntityId == -1;
     }
 
+    public boolean isRunning() {
+        return !(isCompleted() || isGameOver());
+    }
+
     public EntityFactory getEntityFactory() {
         return entityFactory;
     }

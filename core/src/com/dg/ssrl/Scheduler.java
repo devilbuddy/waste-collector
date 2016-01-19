@@ -46,7 +46,7 @@ public class Scheduler {
         }
 
         int iterations = 0;
-        while (iterations < MAX_ITERATIONS_PER_UPDATE) {
+        while (world.isRunning() && iterations < MAX_ITERATIONS_PER_UPDATE) {
             Actor actor = queue.remove(0);
             if (actor.alive && actor.tick()) {
                 if (actor.act(world)) {
