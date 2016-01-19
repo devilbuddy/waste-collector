@@ -20,6 +20,8 @@ import static com.dg.ssrl.Components.Trigger;
 import static com.dg.ssrl.Components.Update;
 import static com.dg.ssrl.Components.Update.Updater;
 
+import static com.dg.ssrl.MonsterBrains.*;
+
 public class EntityFactory {
 
     private final Assets assets;
@@ -84,13 +86,13 @@ public class EntityFactory {
     private Brain makeBrain(MonsterType monsterType, int entityId) {
         switch (monsterType) {
             case Egg:
-                return new MonsterBrain.EggBrain(entityId);
+                return new EggBrain(entityId);
             case Cannon:
-                return new MonsterBrain.CannonBrain(entityId, assets.sounds);
+                return new CannonBrain(entityId, assets.sounds);
             case Grower:
-                return new MonsterBrain.GrowerBrain(entityId, assets.sounds);
+                return new GrowerBrain(entityId, assets.sounds);
             default:
-                return new MonsterBrain(entityId, monsterType, assets.sounds);
+                return new RegularBrain(entityId, monsterType, assets.sounds);
         }
     }
 

@@ -8,110 +8,113 @@ import static com.dg.ssrl.Components.MoveAnimation;
 import static com.dg.ssrl.Components.Position;
 import static com.dg.ssrl.Components.Stats;
 
-public class MonsterBrains implements Brain {
+public class MonsterBrains {
 
-    private static final String tag = "MonsterBrains";
+    public static class RegularBrain implements Brain {
+        private static final String tag = "RegularBrain";
 
-    private final int entityId;
-    private final MonsterType monsterType;
-    private final Assets.Sounds sounds;
+        private final int entityId;
+        private final MonsterType monsterType;
+        private final Assets.Sounds sounds;
 
-    public MonsterBrains(int entityId, MonsterType monsterType, Assets.Sounds sounds) {
-        this.entityId = entityId;
-        this.monsterType = monsterType;
-        this.sounds = sounds;
-    }
+        public RegularBrain(int entityId, MonsterType monsterType, Assets.Sounds sounds) {
+            this.entityId = entityId;
+            this.monsterType = monsterType;
+            this.sounds = sounds;
+        }
 
-    private Direction findAttackDirection(World world, final Position current) {
-        Direction targetDirection = Direction.NONE;
-        Position targetPosition = current.copy();
+        private Direction findAttackDirection(World world, final Position current) {
+            Direction targetDirection = Direction.NONE;
+            Position targetPosition = current.copy();
 
-        int lowestValue = world.dijkstraMap[current.y][current.x];
-        for (Direction direction : Direction.CARDINAL_DIRECTIONS) {
-            targetPosition.set(current);
-            targetPosition = world.translateWraparound(targetPosition, direction);
+            int lowestValue = world.dijkstraMap[current.y][current.x];
+            for (Direction direction : Direction.CARDINAL_DIRECTIONS) {
+                targetPosition.set(current);
+                targetPosition = world.translateWraparound(targetPosition, direction);
 
-            Entity player = world.getPlayer();
-            boolean targetIsPlayer = false;
-            if (player != null) {
-                targetIsPlayer = targetPosition.equals(player.getComponent(Position.class));
-            }
-
-            if (targetIsPlayer || world.isWalkable(targetPosition)) {
-                int value = world.dijkstraMap[targetPosition.y][targetPosition.x];
-                if (value < lowestValue) {
-                    lowestValue = value;
-                    targetDirection = direction;
+                Entity player = world.getPlayer();
+                boolean targetIsPlayer = false;
+                if (player != null) {
+                    targetIsPlayer = targetPosition.equals(player.getComponent(Position.class));
                 }
-            }
-        }
-        return targetDirection;
-    }
 
-    private Direction findFleeDirection(World world, final Position current) {
-        Direction targetDirection = Direction.NONE;
-        Position targetPosition = current.copy();
-
-        int highestValue = 0;
-        for (Direction direction : Direction.CARDINAL_DIRECTIONS) {
-            targetPosition.set(current);
-            targetPosition = world.translateWraparound(targetPosition, direction);
-
-            if (world.isWalkable(targetPosition)) {
-                int value = world.dijkstraMap[targetPosition.y][targetPosition.x];
-                if (value != Integer.MAX_VALUE && value > highestValue) {
-                    highestValue = value;
-                    targetDirection = direction;
-                }
-            }
-        }
-        return targetDirection;
-    }
-
-    @Override
-    public boolean act(final World world) {
-        final Entity entity = world.getEntity(entityId);
-        if (!entity.alive) {
-            return true;
-        }
-        final MoveAnimation moveAnimation = entity.getComponent(MoveAnimation.class);
-
-        if (!moveAnimation.isBusy()) {
-            final Position current = entity.getComponent(Position.class);
-            ItemContainer itemContainer = entity.getComponent(ItemContainer.class);
-
-            Direction targetDirection;
-            if (itemContainer != null && itemContainer.getAmount(ItemType.Key) > 0) {
-                targetDirection = findFleeDirection(world, current);
-            } else {
-                targetDirection = findAttackDirection(world, current);
-            }
-
-            boolean doMove = targetDirection != Direction.NONE;
-            if (targetDirection == moveAnimation.direction) {
-
-                Position target = current.copy();
-                world.translateWraparound(target, targetDirection);
-
-                World.Cell targetCell = world.getCell(target);
-                for (int i = 0; i < targetCell.getEntityCount(); i++) {
-                    Entity targetEntity = world.getEntity(targetCell.getEntityId(i));
-                    Stats targetStats = targetEntity.getComponent(Stats.class);
-                    if (targetStats != null && targetStats.monsterType != MonsterType.Player) {
-                        doMove = false;
+                if (targetIsPlayer || world.isWalkable(targetPosition)) {
+                    int value = world.dijkstraMap[targetPosition.y][targetPosition.x];
+                    if (value < lowestValue) {
+                        lowestValue = value;
+                        targetDirection = direction;
                     }
                 }
             }
+            return targetDirection;
+        }
 
-            if (doMove) {
-                BrainCore.MoveResult moveResult = BrainCore.move(world, entity, targetDirection, monsterType, sounds);
-                return moveResult.acted;
+        private Direction findFleeDirection(World world, final Position current) {
+            Direction targetDirection = Direction.NONE;
+            Position targetPosition = current.copy();
+
+            int highestValue = 0;
+            for (Direction direction : Direction.CARDINAL_DIRECTIONS) {
+                targetPosition.set(current);
+                targetPosition = world.translateWraparound(targetPosition, direction);
+
+                if (world.isWalkable(targetPosition)) {
+                    int value = world.dijkstraMap[targetPosition.y][targetPosition.x];
+                    if (value != Integer.MAX_VALUE && value > highestValue) {
+                        highestValue = value;
+                        targetDirection = direction;
+                    }
+                }
             }
-            return true;
-        } else {
-            return false;
+            return targetDirection;
+        }
+
+        @Override
+        public boolean act(final World world) {
+            final Entity entity = world.getEntity(entityId);
+            if (!entity.alive) {
+                return true;
+            }
+            final MoveAnimation moveAnimation = entity.getComponent(MoveAnimation.class);
+
+            if (!moveAnimation.isBusy()) {
+                final Position current = entity.getComponent(Position.class);
+                ItemContainer itemContainer = entity.getComponent(ItemContainer.class);
+
+                Direction targetDirection;
+                if (itemContainer != null && itemContainer.getAmount(ItemType.Key) > 0) {
+                    targetDirection = findFleeDirection(world, current);
+                } else {
+                    targetDirection = findAttackDirection(world, current);
+                }
+
+                boolean doMove = targetDirection != Direction.NONE;
+                if (targetDirection == moveAnimation.direction) {
+
+                    Position target = current.copy();
+                    world.translateWraparound(target, targetDirection);
+
+                    World.Cell targetCell = world.getCell(target);
+                    for (int i = 0; i < targetCell.getEntityCount(); i++) {
+                        Entity targetEntity = world.getEntity(targetCell.getEntityId(i));
+                        Stats targetStats = targetEntity.getComponent(Stats.class);
+                        if (targetStats != null && targetStats.monsterType != MonsterType.Player) {
+                            doMove = false;
+                        }
+                    }
+                }
+
+                if (doMove) {
+                    BrainCore.MoveResult moveResult = BrainCore.move(world, entity, targetDirection, monsterType, sounds);
+                    return moveResult.acted;
+                }
+                return true;
+            } else {
+                return false;
+            }
         }
     }
+
 
     public static class EggBrain implements Brain {
         private final int entityId;
