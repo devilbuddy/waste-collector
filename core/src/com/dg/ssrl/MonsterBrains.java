@@ -8,15 +8,15 @@ import static com.dg.ssrl.Components.MoveAnimation;
 import static com.dg.ssrl.Components.Position;
 import static com.dg.ssrl.Components.Stats;
 
-public class MonsterBrain implements Brain {
+public class MonsterBrains implements Brain {
 
-    private static final String tag = "MonsterBrain";
+    private static final String tag = "MonsterBrains";
 
     private final int entityId;
     private final MonsterType monsterType;
     private final Assets.Sounds sounds;
 
-    public MonsterBrain(int entityId, MonsterType monsterType, Assets.Sounds sounds) {
+    public MonsterBrains(int entityId, MonsterType monsterType, Assets.Sounds sounds) {
         this.entityId = entityId;
         this.monsterType = monsterType;
         this.sounds = sounds;
