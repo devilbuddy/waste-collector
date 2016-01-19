@@ -30,11 +30,9 @@ public class MainMenu {
         float startX;
         boolean in = true;
 
-        public InstructionComponent(String text, Components.Sprite sprite, int x) {
+        public InstructionComponent(String text, Components.Sprite sprite) {
             this.text = text;
             this.sprite = sprite;
-            startX = x;
-            position.x = x;
         }
 
         public void update(float delta) {
@@ -73,18 +71,17 @@ public class MainMenu {
             stars[i] = new Star();
         }
 
-        int x = 1000;
         instructionComponents = new InstructionComponent[] {
-                new InstructionComponent("[GARBAGE-MAN]", new Components.Sprite(assets.getMonsterTextureRegion(MonsterType.Player)), x),
-                new InstructionComponent("[GARBAGE]", new Components.Sprite(assets.getItemTextureRegion(ItemType.Waste)), x),
-                new InstructionComponent("[AMMO]", new Components.Sprite(assets.getItemTextureRegion(ItemType.Ammo)), x),
-                new InstructionComponent("[5X-AMMO]", new Components.Sprite(assets.getItemTextureRegion(ItemType.AmmoCrate)), x),
-                new InstructionComponent("[ROCKET]", new Components.Sprite(assets.getItemTextureRegion(ItemType.Rocket)), x),
-                new InstructionComponent("[HEALTH]", new Components.Sprite(assets.getItemTextureRegion(ItemType.Heart)), x),
-                new InstructionComponent("[ADRENALINE]", new Components.Sprite(assets.getItemTextureRegion(ItemType.Adrenaline)), x),
-                new InstructionComponent("[WARP]", new Components.Sprite(assets.teleporterFrames, 0.2f, 0, Assets.SEA_BLUE), x),
-                new InstructionComponent("[KEYCARD]", new Components.Sprite(assets.getItemTextureRegion(ItemType.Key)), x),
-                new InstructionComponent("[ESCAPE]", new Components.Sprite(assets.exitFrames, 0.1f, 0, Assets.SKY_BLUE), x)
+                new InstructionComponent("[GARBAGE-MAN]", new Components.Sprite(assets.getMonsterTextureRegion(MonsterType.Player))),
+                new InstructionComponent("[GARBAGE]", new Components.Sprite(assets.getItemTextureRegion(ItemType.Waste))),
+                new InstructionComponent("[AMMO]", new Components.Sprite(assets.getItemTextureRegion(ItemType.Ammo))),
+                new InstructionComponent("[5X-AMMO]", new Components.Sprite(assets.getItemTextureRegion(ItemType.AmmoCrate))),
+                new InstructionComponent("[ROCKET]", new Components.Sprite(assets.getItemTextureRegion(ItemType.Rocket))),
+                new InstructionComponent("[HEALTH]", new Components.Sprite(assets.getItemTextureRegion(ItemType.Heart))),
+                new InstructionComponent("[ADRENALINE]", new Components.Sprite(assets.getItemTextureRegion(ItemType.Adrenaline))),
+                new InstructionComponent("[WARP]", new Components.Sprite(assets.teleporterFrames, 0.2f, 0, Assets.SEA_BLUE)),
+                new InstructionComponent("[KEYCARD]", new Components.Sprite(assets.getItemTextureRegion(ItemType.Key))),
+                new InstructionComponent("[ESCAPE]", new Components.Sprite(assets.exitFrames, 0.1f, 0, Assets.SKY_BLUE))
         };
     }
 

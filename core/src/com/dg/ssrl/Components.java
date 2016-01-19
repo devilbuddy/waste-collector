@@ -315,10 +315,17 @@ public class Components {
         Vector2 tmp = new Vector2();
         Vector2 target = new Vector2();
 
+        private final float turnDuration;
+
         public MoveAnimation(float speed) {
+            this(speed, 0.3f);
+        }
+
+        public MoveAnimation(float speed, float turnDuration) {
             this.speed = speed;
             bounds.width = Assets.TILE_SIZE;
             bounds.height = Assets.TILE_SIZE;
+            this.turnDuration = turnDuration;
         }
 
         public MoveAnimation setPosition(float x, float y) {

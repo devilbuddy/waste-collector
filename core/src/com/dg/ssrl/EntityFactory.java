@@ -99,7 +99,7 @@ public class EntityFactory {
     public Entity makeMonster(int x, int y, MonsterType monsterType) {
         final Entity entity = createEntity();
         Position position = new Position(x, y);
-        final MoveAnimation moveAnimation = new MoveAnimation(50f);
+        final MoveAnimation moveAnimation = new MoveAnimation(50f, 0.1f);
         moveAnimation.setPosition(x * Assets.TILE_SIZE, y * Assets.TILE_SIZE).setDirection(Direction.EAST);
 
         entity.addComponent(position);
