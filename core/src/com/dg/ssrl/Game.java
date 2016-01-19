@@ -34,7 +34,7 @@ public class Game extends ApplicationAdapter {
 						index = 0;
 					}
 					Position size = debugScreenSizes[index];
-					Gdx.graphics.setDisplayMode(size.x, size.y, false);
+					Gdx.graphics.setWindowedMode(size.x, size.y);
 				}
 			} else if (keycode == Input.Keys.G) {
 				initWorld(true);
