@@ -104,7 +104,8 @@ public class MonsterBrain implements Brain {
             }
 
             if (doMove) {
-                BrainCore.move(world, entity, targetDirection, monsterType, sounds);
+                BrainCore.MoveResult moveResult = BrainCore.move(world, entity, targetDirection, monsterType, sounds);
+                return moveResult.acted;
             }
             return true;
         } else {

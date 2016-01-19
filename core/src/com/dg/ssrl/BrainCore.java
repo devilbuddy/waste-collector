@@ -16,6 +16,7 @@ public class BrainCore {
     public static class MoveResult {
         public boolean acted = false;
         public boolean moved = false;
+        public boolean turned = false;
         public Position endPosition = new Position();
     }
 
@@ -29,6 +30,7 @@ public class BrainCore {
 
         moveResult.acted = false;
         moveResult.moved = false;
+        moveResult.turned = false;
         moveResult.endPosition.set(currentPosition);
 
         final Position targetPosition = currentPosition.copy();
@@ -114,7 +116,8 @@ public class BrainCore {
 
         } else {
             moveAnimation.startTurn(moveDirection);
-            moveResult.acted = true;
+            moveResult.acted = false;
+            moveResult.turned = true;
         }
 
         return moveResult;
