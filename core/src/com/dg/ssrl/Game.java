@@ -324,14 +324,29 @@ public class Game extends ApplicationAdapter {
 			assets.font.draw(spriteBatch, sectorString, secondColumnX, firstRowY);
 			assets.font.draw(spriteBatch, itemContainer.getAmountString(ItemType.Waste), secondColumnX, secondRowY);
 
-			if (gestureDetector.isLongPressScheduled()) {
-				float percentage = playerInputAdapter.getLongPressPercentage();
-				if (percentage > 0.1f && itemContainer.getAmount(ItemType.Rocket) > 0) {
-					float longPressBarWidth = hudWidth * percentage;
-					float longPressBarY = fourthRowY - 5;
-					spriteBatch.setColor(Color.RED);
-					spriteBatch.draw(assets.whitePixel, 0, longPressBarY, longPressBarWidth, 2);
-				}
+			renderRocketStatusBar(spriteBatch, fourthRowY - 6, itemContainer.getAmount(ItemType.Rocket) > 0);
+		}
+	}
+
+	private void renderRocketStatusBar(SpriteBatch spriteBatch, float longPressBarY, boolean hasRockets) {
+		spriteBatch.setColor(Color.WHITE);
+		int progressBarPadding = 2;
+		int progressBarWidth = hudWidth - progressBarPadding*2;
+		int progressBarCenterWidth = progressBarWidth - assets.progressBarLeft.getRegionWidth() - assets.progressBarRight.getRegionWidth();
+		int progressBarX = progressBarPadding;
+
+		spriteBatch.draw(assets.progressBarLeft, progressBarX, longPressBarY);
+		spriteBatch.draw(assets.progressBarCenter, progressBarX + 1, longPressBarY, progressBarCenterWidth, assets.progressBarCenter.getRegionHeight());
+		spriteBatch.draw(assets.progressBarRight, progressBarX + 1 + progressBarCenterWidth, longPressBarY);
+
+		if (gestureDetector.isLongPressScheduled()) {
+			float percentage = playerInputAdapter.getLongPressPercentage();
+			if (percentage > 0.1f && hasRockets) {
+				int w = progressBarWidth - 2;
+				float longPressBarWidth = w * percentage;
+
+				spriteBatch.setColor(Color.RED);
+				spriteBatch.draw(assets.whitePixel, progressBarX + 1, longPressBarY + 1, longPressBarWidth, 1);
 			}
 		}
 	}

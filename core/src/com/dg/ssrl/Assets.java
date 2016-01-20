@@ -69,6 +69,11 @@ public class Assets {
     public TextureRegion[] exitFrames;
     public TextureRegion[] teleporterFrames;
 
+    public TextureRegion progressBarLeft;
+    public TextureRegion progressBarCenter;
+    public TextureRegion progressBarRight;
+
+
     public TextureRegion logo;
 
     private Map<MonsterType, TextureRegion> monsterSprites = new HashMap<MonsterType, TextureRegion>();
@@ -140,6 +145,11 @@ public class Assets {
 
         exitFrames = new TextureRegion[] {tiles[8][1], tiles[8][2], tiles[8][3], tiles[8][2], tiles[8][1], tiles[8][0]};
         teleporterFrames = new TextureRegion[] {tiles[9][0], tiles[9][1], tiles[9][2], tiles[9][3]};
+
+        progressBarLeft = new TextureRegion(tilesTexture, 0, 104, 1, 3);
+        progressBarCenter = new TextureRegion(tilesTexture, 1, 104, 1, 3);
+        progressBarRight = new TextureRegion(tilesTexture, 2, 104, 1, 3);
+
 
         logo = new TextureRegion(tilesTexture, 0, 88, 47, 15);
 
