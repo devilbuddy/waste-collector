@@ -102,7 +102,6 @@ public class Generator {
 
     private static final Color[] WALL_COLORS = {
             Assets.COLOR_YELLOW,
-            Assets.COLOR_SKY_BLUE,
             Assets.COLOR_ORANGE,
             Assets.COLOR_LIGHT_GREEN
     };

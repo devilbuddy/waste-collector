@@ -330,7 +330,7 @@ public class Game extends ApplicationAdapter {
 
 			Stats stats = player.getComponent(Stats.class);
 			ItemContainer itemContainer = player.getComponent(ItemContainer.class);
-			String sectorString = "SECTOR " + world.getSector();
+			String sectorString = "AREA " + world.getSector();
 
 			assets.font.setColor(Color.ORANGE);
 			assets.font.draw(spriteBatch, stats.healthString, firstColumnX, firstRowY);

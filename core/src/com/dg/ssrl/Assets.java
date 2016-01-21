@@ -199,7 +199,7 @@ public class Assets {
 
         gameOverText = new GlyphLayoutCacheItem("GAME OVER", font);
         wasteCollectedText = new GlyphLayoutCacheItem("WASTE COLLECTED", font);
-        sectorReachedText = new GlyphLayoutCacheItem("SECTOR REACHED", font);
+        sectorReachedText = new GlyphLayoutCacheItem("AREA REACHED", font);
         tapToStartText = new GlyphLayoutCacheItem("TAP TO START", font);
         scoreText = new GlyphLayoutCacheItem("SCORE", font);
         congratulationsText = new GlyphLayoutCacheItem("CLEARED", font);
