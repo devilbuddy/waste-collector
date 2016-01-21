@@ -101,10 +101,10 @@ public class Generator {
 
 
     private static final Color[] WALL_COLORS = {
-            Assets.YELLOW,
-            Assets.SKY_BLUE,
-            Assets.ORANGE,
-            Assets.LIGHT_GREEN
+            Assets.COLOR_YELLOW,
+            Assets.COLOR_SKY_BLUE,
+            Assets.COLOR_ORANGE,
+            Assets.COLOR_LIGHT_GREEN
     };
 
     public static LevelData generate(long seed, int width, int height, int depth, EntityFactory entityFactory) {

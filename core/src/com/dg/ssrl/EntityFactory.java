@@ -221,7 +221,7 @@ public class EntityFactory {
                     } else {
                         Position position = affecting.getComponent(Position.class);
                         EntityFactory entityFactory = world.getEntityFactory();
-                        world.addEntity(entityFactory.makeExplosion(position.x * Assets.TILE_SIZE + Assets.TILE_SIZE / 2, position.y * Assets.TILE_SIZE + Assets.TILE_SIZE / 2, Assets.YELLOW));
+                        world.addEntity(entityFactory.makeExplosion(position.x * Assets.TILE_SIZE + Assets.TILE_SIZE / 2, position.y * Assets.TILE_SIZE + Assets.TILE_SIZE / 2, Assets.COLOR_YELLOW));
                     }
                 } else {
                     entity.alive = false;
@@ -240,7 +240,7 @@ public class EntityFactory {
         final Entity entity = createEntity();
         final MoveAnimation moveAnimation = new MoveAnimation(50f);
         moveAnimation.setPosition(x * Assets.TILE_SIZE, y * Assets.TILE_SIZE).setDirection(Direction.EAST);
-        final Sprite sprite = new Sprite(assets.teleporterFrames, 0.2f, 0, Assets.SKY_BLUE);
+        final Sprite sprite = new Sprite(assets.teleporterFrames, 0.2f, 0, Assets.COLOR_SKY_BLUE);
         entity.addComponent(new Position(x, y));
         entity.addComponent(moveAnimation);
         entity.addComponent(sprite);
@@ -280,7 +280,7 @@ public class EntityFactory {
         final Entity entity = createEntity();
         final MoveAnimation moveAnimation = new MoveAnimation(50f);
         moveAnimation.setPosition(x * Assets.TILE_SIZE, y * Assets.TILE_SIZE).setDirection(Direction.EAST);
-        final Sprite sprite = new Sprite(assets.exitFrames, 0.1f, 0, Assets.SKY_BLUE);
+        final Sprite sprite = new Sprite(assets.exitFrames, 0.1f, 0, Assets.COLOR_SKY_BLUE);
 
         entity.addComponent(new Position(x, y));
         entity.addComponent(moveAnimation);

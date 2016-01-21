@@ -95,7 +95,7 @@ public class MapRenderer {
         bounds.x = virtualWidth/2 - bounds.width/2;
         bounds.y = virtualHeight - bounds.height - topGutterHeight;
 
-        //spriteBatch.setColor(Color.WHITE);
+        //spriteBatch.setColor(Color.COLOR_WHITE);
 
         float yy = bounds.y;
         for (int y = 0; y < height; y++) {
@@ -103,7 +103,7 @@ public class MapRenderer {
             for (int x = 0; x < width; x++) {
 
                 if(floors[y][x]) {
-                    spriteBatch.setColor(Assets.NIGHT_BLUE);
+                    spriteBatch.setColor(Assets.COLOR_NIGHT_BLUE);
                 } else {
                     spriteBatch.setColor(world.wallColor);
                 }
@@ -115,7 +115,7 @@ public class MapRenderer {
                 if (world.dijkstraMap[y][x] != Integer.MAX_VALUE) {
                     assets.font.draw(spriteBatch, "" + world.dijkstraMap[y][x], xx, yy + 8);
                 }
-                assets.font.setColor(Color.WHITE);
+                assets.font.setColor(Color.COLOR_WHITE);
                 */
 
                 xx += Assets.TILE_SIZE;

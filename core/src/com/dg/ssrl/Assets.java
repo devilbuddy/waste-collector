@@ -93,25 +93,22 @@ public class Assets {
 
 
     //Arnes 16 color palette - http://androidarts.com/palette/16pal.htm
-    public static final Color BLACK = new Color(0x000000ff);
-    public static final Color GREY = new Color(0x9D9D9Dff);
-    public static final Color WHITE = new Color(0xFFFFFFff);
-    public static final Color RED = new Color(0xBE2633ff);
-    public static final Color PINK = new Color(0xE06F8Bff);
-    public static final Color DARK_BROWN = new Color(0x493C2Bff);
-    public static final Color BROWN = new Color(0xA46422ff);
-    public static final Color ORANGE = new Color(0xEB8931ff);
-    public static final Color YELLOW = new Color(0xF7E26Bff);
-    public static final Color DARK_GREEN = new Color(0x2F484Eff);
-    public static final Color GREEN = new Color(0x44891Aff);
-    public static final Color LIGHT_GREEN = new Color(0xA3CE27ff);
-    public static final Color NIGHT_BLUE = new Color(0x1B2632ff);
-    public static final Color DARK_BLUE = new Color(0x005784ff);
-    public static final Color SKY_BLUE = new Color(0x31A2F2ff);
-    public static final Color LIGHT_BLUE = new Color(0xB2DCEFff);
-
-
-
+    public static final Color COLOR_BLACK = new Color(0x000000ff);
+    public static final Color COLOR_GREY = new Color(0x9D9D9Dff);
+    public static final Color COLOR_WHITE = new Color(0xFFFFFFff);
+    public static final Color COLOR_RED = new Color(0xBE2633ff);
+    public static final Color COLOR_PINK = new Color(0xE06F8Bff);
+    public static final Color COLOR_DARK_BROWN = new Color(0x493C2Bff);
+    public static final Color COLOR_BROWN = new Color(0xA46422ff);
+    public static final Color COLOR_ORANGE = new Color(0xEB8931ff);
+    public static final Color COLOR_YELLOW = new Color(0xF7E26Bff);
+    public static final Color COLOR_DARK_GREEN = new Color(0x2F484Eff);
+    public static final Color COLOR_GREEN = new Color(0x44891Aff);
+    public static final Color COLOR_LIGHT_GREEN = new Color(0xA3CE27ff);
+    public static final Color COLOR_NIGHT_BLUE = new Color(0x1B2632ff);
+    public static final Color COLOR_DARK_BLUE = new Color(0x005784ff);
+    public static final Color COLOR_SKY_BLUE = new Color(0x31A2F2ff);
+    public static final Color COLOR_LIGHT_BLUE = new Color(0xB2DCEFff);
 
     private Map<String, GlyphLayoutCacheItem> glyphLayoutCacheItemMap = new HashMap<String, GlyphLayoutCacheItem>();
 
