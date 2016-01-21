@@ -440,6 +440,7 @@ public class Game extends ApplicationAdapter {
                 break;
             }
             case GAME_OVER:
+				starField.update(delta);
 				world.update(delta);
 				if (playerInputAdapter.popAction() == PlayerInputAdapter.Action.FIRE_PRIMARY) {
 					setState(State.MENU);
