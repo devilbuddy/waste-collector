@@ -57,7 +57,7 @@ public class Assets {
 
     public static final int TILE_SIZE = 8;
 
-    private Texture tilesTexture;
+    private Texture gameTexture;
     private TextureRegion[][] tiles;
     public BitmapFont font;
 
@@ -126,13 +126,13 @@ public class Assets {
     }
 
     public void create() {
-        tilesTexture = new Texture(Gdx.files.internal("sprites.png"));
+        gameTexture = new Texture(Gdx.files.internal("sprites.png"));
 
-        tiles = TextureRegion.split(tilesTexture, TILE_SIZE, TILE_SIZE);
+        tiles = TextureRegion.split(gameTexture, TILE_SIZE, TILE_SIZE);
 
 
         floor = tiles[2][0];
-        whitePixel = new TextureRegion(tilesTexture, 11,19,1,1);
+        whitePixel = new TextureRegion(gameTexture, 11,19,1,1);
 
         font = new BitmapFont(Gdx.files.internal("kongtext.fnt"));
 
@@ -160,12 +160,12 @@ public class Assets {
         exitFrames = new TextureRegion[] {tiles[8][1], tiles[8][2], tiles[8][3], tiles[8][2], tiles[8][1], tiles[8][0]};
         teleporterFrames = new TextureRegion[] {tiles[9][0], tiles[9][1], tiles[9][2], tiles[9][3]};
 
-        progressBarLeft = new TextureRegion(tilesTexture, 0, 104, 1, 3);
-        progressBarCenter = new TextureRegion(tilesTexture, 1, 104, 1, 3);
-        progressBarRight = new TextureRegion(tilesTexture, 2, 104, 1, 3);
+        progressBarLeft = new TextureRegion(gameTexture, 0, 104, 1, 3);
+        progressBarCenter = new TextureRegion(gameTexture, 1, 104, 1, 3);
+        progressBarRight = new TextureRegion(gameTexture, 2, 104, 1, 3);
 
 
-        logo = new TextureRegion(tilesTexture, 0, 88, 47, 15);
+        logo = new TextureRegion(gameTexture, 0, 88, 47, 15);
 
         sounds.create();
 
