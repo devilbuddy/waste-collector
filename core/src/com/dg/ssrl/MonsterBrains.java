@@ -1,5 +1,7 @@
 package com.dg.ssrl;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 import static com.dg.ssrl.Components.Actor.Brain;
@@ -17,10 +19,16 @@ public class MonsterBrains {
         private final MonsterType monsterType;
         private final Assets.Sounds sounds;
 
+        private ArrayList<Direction> directionChoices = new ArrayList<Direction>();
+
         public RegularBrain(int entityId, MonsterType monsterType, Assets.Sounds sounds) {
             this.entityId = entityId;
             this.monsterType = monsterType;
             this.sounds = sounds;
+
+            for (Direction direction : Direction.CARDINAL_DIRECTIONS) {
+                directionChoices.add(direction);
+            }
         }
 
         private Direction findAttackDirection(World world, final Position current) {
@@ -28,7 +36,8 @@ public class MonsterBrains {
             Position targetPosition = current.copy();
 
             int lowestValue = world.dijkstraMap[current.y][current.x];
-            for (Direction direction : Direction.CARDINAL_DIRECTIONS) {
+            Collections.shuffle(directionChoices);
+            for (Direction direction : directionChoices) {
                 targetPosition.set(current);
                 targetPosition = world.translateWraparound(targetPosition, direction);
 
