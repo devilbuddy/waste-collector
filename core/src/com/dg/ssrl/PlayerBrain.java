@@ -28,9 +28,6 @@ class PlayerBrain implements Actor.Brain {
             if (moveDirection != Direction.NONE) {
                 BrainCore.MoveResult moveResult = BrainCore.move(world, player, moveDirection, MonsterType.Player, sounds);
                 acted = moveResult.acted;
-                if (moveResult.moved) {
-                    world.updateDijkstraMap(moveResult.endPosition.x, moveResult.endPosition.y);
-                }
             }
 
             if (!acted) {

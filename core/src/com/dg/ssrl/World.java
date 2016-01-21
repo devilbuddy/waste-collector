@@ -255,7 +255,7 @@ public class World {
         return p;
     }
 
-    public void updateDijkstraMap(int goalX, int goalY) {
+    private void updateDijkstraMap(int goalX, int goalY) {
         // http://www.roguebasin.com/index.php?title=The_Incredible_Power_of_Dijkstra_Maps
 
         // To get a Dijkstra map, you start with an integer array representing your map,
@@ -369,6 +369,9 @@ public class World {
         getCell(position.x, position.y).entityIds.removeValue(entity.id);
         position.set(toX, toY);
         getCell(position.x, position.y).entityIds.add(entity.id);
+        if (entity.id == playerEntityId) {
+            updateDijkstraMap(toX, toY);
+        }
     }
 
     public boolean contains(int x, int y) {

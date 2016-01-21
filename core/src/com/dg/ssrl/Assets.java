@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.HashMap;
@@ -75,6 +76,8 @@ public class Assets {
 
 
     public TextureRegion logo;
+    public NinePatch panelNinePatch;
+
 
     private Map<MonsterType, TextureRegion> monsterSprites = new HashMap<MonsterType, TextureRegion>();
     private Map<ItemType, TextureRegion> itemSprites = new HashMap<ItemType, TextureRegion>();
@@ -166,6 +169,8 @@ public class Assets {
 
 
         logo = new TextureRegion(gameTexture, 0, 88, 47, 15);
+
+        panelNinePatch = new NinePatch(new TextureRegion(gameTexture, 0, 112, 16, 16), 4, 4, 4, 4);
 
         sounds.create();
 

@@ -305,6 +305,10 @@ public class Game extends ApplicationAdapter {
 		Entity player = world.getPlayer();
 		if (player != null) {
 
+			float topGutterHeight = ((4 * assets.font.getCapHeight()) / 2)*2;
+			spriteBatch.setColor(Color.WHITE);
+			assets.panelNinePatch.draw(spriteBatch, 0, hudHeight - topGutterHeight, hudWidth, topGutterHeight);
+
 			float firstColumnX = 4;
 			float firstRowY = hudHeight;
 			float secondColumnX = hudWidth / 2;
