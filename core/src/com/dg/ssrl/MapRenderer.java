@@ -1,11 +1,14 @@
 package com.dg.ssrl;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.IntMap;
+
 
 import static com.dg.ssrl.Components.*;
 
@@ -82,7 +85,7 @@ public class MapRenderer {
 
     }
 
-    public void render(World world, SpriteBatch spriteBatch, float topGutterHeight) {
+    public void render(World world, OrthographicCamera camera, SpriteBatch spriteBatch, float topGutterHeight) {
 
         autoTile(world);
 
@@ -95,6 +98,10 @@ public class MapRenderer {
         bounds.x = virtualWidth/2 - bounds.width/2;
         bounds.y = virtualHeight - bounds.height - topGutterHeight;
 
+        Rectangle scissors = new Rectangle();
+        Rectangle clipBounds = new Rectangle(bounds);
+        ScissorStack.calculateScissors(camera, spriteBatch.getTransformMatrix(), clipBounds, scissors);
+        ScissorStack.pushScissors(scissors);
         //spriteBatch.setColor(Color.COLOR_WHITE);
 
         float yy = bounds.y;
@@ -166,6 +173,9 @@ public class MapRenderer {
             }
             renderPass++;
         }
+
+        spriteBatch.flush();
+        ScissorStack.popScissors();
     }
 
     private void renderEffect(Effect effect, Sprite sprite, SpriteBatch spriteBatch) {

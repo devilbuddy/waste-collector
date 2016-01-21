@@ -10,18 +10,6 @@ import java.util.Random;
 
 public class MainMenu {
 
-    private static class Star {
-        Vector2 position = new Vector2();
-        Vector2 velocity = new Vector2();
-        Color color = new Color();
-
-        public void update(float delta) {
-            float dx = velocity.x * delta;
-            float dy = velocity.y * delta;
-            position.add(dx, dy);
-        }
-    }
-
     private static class InstructionComponent {
         final String text;
         final Components.Sprite sprite;
@@ -59,17 +47,14 @@ public class MainMenu {
     private Vector2 instructionTarget = new Vector2();
     private int instructionComponentIndex = 0;
     private InstructionComponent[] instructionComponents;
-    private Star[] stars;
-    private Random random = new Random(System.currentTimeMillis());
 
     private final Assets assets;
 
+    private StarField starField;
+
     public MainMenu(Assets assets) {
         this.assets = assets;
-        stars = new Star[NUM_STARS];
-        for (int i = 0; i < NUM_STARS; i++) {
-            stars[i] = new Star();
-        }
+        starField = new StarField(assets, NUM_STARS, 1, 50f);
 
         instructionComponents = new InstructionComponent[] {
                 new InstructionComponent("[GARBAGE-MAN]", new Components.Sprite(assets.getMonsterTextureRegion(MonsterType.Player))),
@@ -88,33 +73,14 @@ public class MainMenu {
     public void resize(int width, int height) {
         this.hudWidth = width;
         this.hudHeight = height;
-
-        for (int i = 0; i < NUM_STARS; i++) {
-            Star star = stars[i];
-            star.position.x = random.nextInt(hudWidth);
-            star.position.y = random.nextInt(hudHeight);
-
-            float velocityPercent = random.nextFloat();
-            star.velocity.y = 50f * velocityPercent;
-
-            star.color.set(Color.WHITE);
-            star.color.mul(velocityPercent);
-        }
-
+        starField.resize(width, height);
         for (int i = 0; i < instructionComponents.length; i++) {
             instructionComponents[i].resize(hudWidth);
         }
     }
 
     public void update(float delta) {
-        for (int i = 0; i < NUM_STARS; i++) {
-            Star star = stars[i];
-            star.update(delta);
-            if (star.position.y > hudHeight) {
-                star.position.y = -1;
-                star.position.x = random.nextInt(hudWidth);
-            }
-        }
+        starField.update(delta);
 
         InstructionComponent instructionComponent = instructionComponents[instructionComponentIndex];
         instructionComponent.update(delta);
@@ -142,11 +108,7 @@ public class MainMenu {
     }
 
     public void render(SpriteBatch spriteBatch, ScoreData highScore) {
-        for (int i = 0; i < NUM_STARS; i++) {
-            Star star = stars[i];
-            spriteBatch.setColor(star.color);
-            spriteBatch.draw(assets.whitePixel, star.position.x, star.position.y);
-        }
+        starField.render(spriteBatch);
 
         spriteBatch.setColor(Color.WHITE);
         float logoW = assets.logo.getRegionWidth() * 2;

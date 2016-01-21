@@ -82,7 +82,7 @@ public class Game extends ApplicationAdapter {
 	private SpriteBatch spriteBatch;
 	private MapRenderer mapRenderer;
 	private Scheduler scheduler;
-
+	private StarField starField;
 	private EntityFactory entityFactory;
 	private World world;
 
@@ -131,7 +131,7 @@ public class Game extends ApplicationAdapter {
 		mainMenu = new MainMenu(assets);
 
 		topGutterHeight = ((5 * assets.font.getCapHeight()) / 2);
-
+		starField = new StarField(assets, 40, 1, 20f);
 	}
 
 	@Override
@@ -194,7 +194,8 @@ public class Game extends ApplicationAdapter {
 		mapCamera.setToOrtho(false, width, height);
 		mapCamera.update();
 
-        mapRenderer.resize(width, height);
+		mapRenderer.resize(width, height);
+		starField.resize(width, height);
 
 		hudHeight = height * 2;
 		hudCamera.setToOrtho(false, hudWidth, hudHeight);
@@ -215,13 +216,18 @@ public class Game extends ApplicationAdapter {
 
 
 		if (state != State.MENU) {
-			mapRenderer.render(world, spriteBatch, topGutterHeight + 1);
+			starField.render(spriteBatch);
+			spriteBatch.end();
 
+			spriteBatch.begin();
+			mapRenderer.render(world, mapCamera, spriteBatch, topGutterHeight + 1);
+
+			/*
 			spriteBatch.setColor(Color.BLACK);
 			spriteBatch.draw(assets.whitePixel, 0, 0, width, mapRenderer.bounds.y);
-
 			float mapTopY = mapRenderer.bounds.y + mapRenderer.bounds.height;
 			spriteBatch.draw(assets.whitePixel, 0, mapTopY, width, height - mapTopY);
+			*/
 
 			if (state == State.FADE_OUT_LEVEL || state == State.FADE_IN_LEVEL) {
 				spriteBatch.setColor(Color.BLACK);
@@ -308,6 +314,7 @@ public class Game extends ApplicationAdapter {
 	private void renderGameHud() {
 		spriteBatch.setColor(Color.WHITE);
 		float panelHeight = topGutterHeight * 2;
+		assets.panelNinePatch.setColor(Assets.COLOR_TRANSPARENT_WHITE);
 		assets.panelNinePatch.draw(spriteBatch, 0, hudHeight - panelHeight, hudWidth, panelHeight);
 
 		Entity player = world.getPlayer();
@@ -382,6 +389,7 @@ public class Game extends ApplicationAdapter {
 				break;
 			}
             case PLAY: {
+				starField.update(delta);
                 if (world.isCompleted()) {
                     setState(State.FADE_OUT_LEVEL);
                 } else if(world.isGameOver()) {

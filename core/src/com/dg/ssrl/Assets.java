@@ -113,6 +113,9 @@ public class Assets {
     public static final Color COLOR_SKY_BLUE = new Color(0x31A2F2ff);
     public static final Color COLOR_LIGHT_BLUE = new Color(0xB2DCEFff);
 
+    public static final Color COLOR_TRANSPARENT_WHITE = new Color(0xffffff80);
+
+
     private Map<String, GlyphLayoutCacheItem> glyphLayoutCacheItemMap = new HashMap<String, GlyphLayoutCacheItem>();
 
     public static Color bulletExplosionColor = Color.ORANGE;
