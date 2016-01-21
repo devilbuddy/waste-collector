@@ -79,7 +79,7 @@ public class MainMenu {
                 new InstructionComponent("[ROCKET]", new Components.Sprite(assets.getItemTextureRegion(ItemType.Rocket))),
                 new InstructionComponent("[HEALTH]", new Components.Sprite(assets.getItemTextureRegion(ItemType.Heart))),
                 new InstructionComponent("[ADRENALINE]", new Components.Sprite(assets.getItemTextureRegion(ItemType.Adrenaline))),
-                new InstructionComponent("[WARP]", new Components.Sprite(assets.teleporterFrames, 0.2f, 0, Assets.SEA_BLUE)),
+                new InstructionComponent("[WARP]", new Components.Sprite(assets.teleporterFrames, 0.2f, 0, Assets.SKY_BLUE)),
                 new InstructionComponent("[KEYCARD]", new Components.Sprite(assets.getItemTextureRegion(ItemType.Key))),
                 new InstructionComponent("[ESCAPE]", new Components.Sprite(assets.exitFrames, 0.1f, 0, Assets.SKY_BLUE))
         };

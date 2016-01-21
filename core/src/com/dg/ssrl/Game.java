@@ -153,7 +153,7 @@ public class Game extends ApplicationAdapter {
 
 		Generator.LevelData levelData = Generator.generate(System.currentTimeMillis(), WORLD_WIDTH, WORLD_HEIGHT, sector, entityFactory);
 
-		world = new World(WORLD_WIDTH, WORLD_HEIGHT, entityFactory, scheduler, sector);
+		world = new World(WORLD_WIDTH, WORLD_HEIGHT, entityFactory, scheduler, sector, levelData.wallColor);
 		for (int y = 0; y < WORLD_HEIGHT; y++) {
 			for (int x = 0; x < WORLD_WIDTH; x++) {
 				world.getCell(x, y).type = levelData.tiles[y][x];

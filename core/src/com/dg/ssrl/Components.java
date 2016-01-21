@@ -447,7 +447,9 @@ public class Components {
             EXTRA_SLOW(7),
             SLOW(4),
             MEDIUM(3),
-            FAST(2);
+            FAST(2),
+            EXTRA_FAST(2)
+            ;
 
             final int ticksToAct;
             Speed(int ticksToAct) {

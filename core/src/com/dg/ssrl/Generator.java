@@ -1,5 +1,7 @@
 package com.dg.ssrl;
 
+import com.badlogic.gdx.graphics.Color;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,6 +19,7 @@ public class Generator {
         public Position exit = new Position(0,0);
         public List<Entity> entities = new ArrayList<Entity>();
         public int wasteCount;
+        public Color wallColor;
     }
 
     private static class TemplateData {
@@ -97,12 +100,21 @@ public class Generator {
     };
 
 
+    private static final Color[] WALL_COLORS = {
+            Assets.YELLOW,
+            Assets.SKY_BLUE,
+            Assets.ORANGE,
+            Assets.LIGHT_GREEN
+    };
+
     public static LevelData generate(long seed, int width, int height, int depth, EntityFactory entityFactory) {
         Random random = new Random(seed);
 
         TemplateData templateData = templates[random.nextInt(templates.length)];
 
         LevelData levelData = new LevelData();
+
+        levelData.wallColor = WALL_COLORS[random.nextInt(WALL_COLORS.length)];
 
         levelData.width = width;
         levelData.height = height;

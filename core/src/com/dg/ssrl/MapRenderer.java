@@ -103,9 +103,9 @@ public class MapRenderer {
             for (int x = 0; x < width; x++) {
 
                 if(floors[y][x]) {
-                    spriteBatch.setColor(assets.floorColor);
+                    spriteBatch.setColor(Assets.NIGHT_BLUE);
                 } else {
-                    spriteBatch.setColor(Color.PURPLE);
+                    spriteBatch.setColor(world.wallColor);
                 }
                 TextureRegion region = mapTiles[y][x];
                 spriteBatch.draw(region, xx, yy);

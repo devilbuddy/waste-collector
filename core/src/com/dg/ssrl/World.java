@@ -1,5 +1,6 @@
 package com.dg.ssrl;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntMap;
@@ -80,12 +81,15 @@ public class World {
 
     public static final int MAX_SECTOR = 20;
 
-    public World(int width, int height, EntityFactory entityFactory, Scheduler scheduler, int depth) {
+    public final Color wallColor;
+
+    public World(int width, int height, EntityFactory entityFactory, Scheduler scheduler, int depth, Color wallColor) {
         this.width = width;
         this.height = height;
         this.entityFactory = entityFactory;
         this.scheduler = scheduler;
         this.depth = depth;
+        this.wallColor = wallColor;
         this.canSpawnRobot = depth % 3 == 0;
 
         this.sequenceId = ID_GENERATOR.incrementAndGet();

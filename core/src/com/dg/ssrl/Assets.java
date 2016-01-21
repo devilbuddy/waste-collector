@@ -98,24 +98,20 @@ public class Assets {
     public static final Color WHITE = new Color(0xFFFFFFff);
     public static final Color RED = new Color(0xBE2633ff);
     public static final Color PINK = new Color(0xE06F8Bff);
-    public static final Color DARKBROWN = new Color(0x493C2Bff);
+    public static final Color DARK_BROWN = new Color(0x493C2Bff);
     public static final Color BROWN = new Color(0xA46422ff);
     public static final Color ORANGE = new Color(0xEB8931ff);
     public static final Color YELLOW = new Color(0xF7E26Bff);
-    public static final Color DARKGREEN = new Color(0x2F484Eff);
+    public static final Color DARK_GREEN = new Color(0x2F484Eff);
     public static final Color GREEN = new Color(0x44891Aff);
-    public static final Color LIGHTGREEN = new Color(0xA3CE27ff);
-    public static final Color NIGHTBLUE = new Color(0x1B2632ff);
-    public static final Color DARKBLUE = new Color(0x005784ff);
-    public static final Color SKYBLUE = new Color(0x31A2F2ff);
-    public static final Color LIGHTBLUE = new Color(0xB2DCEFff);
+    public static final Color LIGHT_GREEN = new Color(0xA3CE27ff);
+    public static final Color NIGHT_BLUE = new Color(0x1B2632ff);
+    public static final Color DARK_BLUE = new Color(0x005784ff);
+    public static final Color SKY_BLUE = new Color(0x31A2F2ff);
+    public static final Color LIGHT_BLUE = new Color(0xB2DCEFff);
 
 
 
-    public Color floorColor = new Color(0x1f1f1fff);
-    public static final Color SEA_BLUE = new Color(0x005784ff);
-    public static final Color SKY_BLUE = new Color(0xB2DCEFff);
-    public static final Color LIGHT_YELLOW = new Color(0xeeb62fff);
 
     private Map<String, GlyphLayoutCacheItem> glyphLayoutCacheItemMap = new HashMap<String, GlyphLayoutCacheItem>();
 
