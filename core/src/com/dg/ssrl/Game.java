@@ -106,6 +106,8 @@ public class Game extends ApplicationAdapter {
 
 	private DebugInputSwitcher debugInputSwitcher;
 
+	private float topGutterHeight;
+
 	public Game(Position[] debugScreenSizes) {
 		debugInputSwitcher = new DebugInputSwitcher(debugScreenSizes);
 	}
@@ -127,7 +129,10 @@ public class Game extends ApplicationAdapter {
 		entityFactory = new EntityFactory(assets);
 		highScore = loadScore();
 		mainMenu = new MainMenu(assets);
-    }
+
+		topGutterHeight = ((5 * assets.font.getCapHeight()) / 2);
+
+	}
 
 	@Override
 	public void pause () {
@@ -208,10 +213,9 @@ public class Game extends ApplicationAdapter {
 		spriteBatch.begin();
         spriteBatch.setProjectionMatrix(mapCamera.combined);
 
-		float topGutterHeight = (4 * assets.font.getCapHeight()) / 2;
-		
+
 		if (state != State.MENU) {
-			mapRenderer.render(world, spriteBatch, topGutterHeight);
+			mapRenderer.render(world, spriteBatch, topGutterHeight + 1);
 
 			spriteBatch.setColor(Color.BLACK);
 			spriteBatch.draw(assets.whitePixel, 0, 0, width, mapRenderer.bounds.y);
@@ -302,19 +306,20 @@ public class Game extends ApplicationAdapter {
 	}
 
 	private void renderGameHud() {
+		spriteBatch.setColor(Color.WHITE);
+		float panelHeight = topGutterHeight * 2;
+		assets.panelNinePatch.draw(spriteBatch, 0, hudHeight - panelHeight, hudWidth, panelHeight);
+
 		Entity player = world.getPlayer();
 		if (player != null) {
 
-			float topGutterHeight = ((4 * assets.font.getCapHeight()) / 2)*2;
-			spriteBatch.setColor(Color.WHITE);
-			assets.panelNinePatch.draw(spriteBatch, 0, hudHeight - topGutterHeight, hudWidth, topGutterHeight);
 
-			float firstColumnX = 4;
-			float firstRowY = hudHeight;
+			float firstColumnX = 5;
+			float firstRowY = hudHeight - 4;
 			float secondColumnX = hudWidth / 2;
-			float secondRowY = hudHeight - assets.font.getCapHeight();
-			float thirdRowY = hudHeight - 2 * assets.font.getCapHeight();
-			float fourthRowY = hudHeight - 3 * assets.font.getCapHeight();
+			float secondRowY = firstRowY - assets.font.getCapHeight();
+			float thirdRowY = firstRowY - 2 * assets.font.getCapHeight();
+			float fourthRowY = firstRowY - 3 * assets.font.getCapHeight();
 
 			Stats stats = player.getComponent(Stats.class);
 			ItemContainer itemContainer = player.getComponent(ItemContainer.class);
@@ -334,7 +339,7 @@ public class Game extends ApplicationAdapter {
 
 	private void renderRocketStatusBar(SpriteBatch spriteBatch, float longPressBarY, boolean hasRockets) {
 		spriteBatch.setColor(Color.WHITE);
-		int progressBarPadding = 2;
+		int progressBarPadding = 4;
 		int progressBarWidth = hudWidth - progressBarPadding*2;
 		int progressBarCenterWidth = progressBarWidth - assets.progressBarLeft.getRegionWidth() - assets.progressBarRight.getRegionWidth();
 		int progressBarX = progressBarPadding;
