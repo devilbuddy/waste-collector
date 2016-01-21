@@ -20,6 +20,7 @@ import static com.dg.ssrl.Components.Update;
 public class World {
     private static final String tag = "World";
 
+
     public static class Cell {
 
         public enum Type {
@@ -253,6 +254,18 @@ public class World {
             p.y += height;
         }
         return p;
+    }
+
+
+    public void destroyWall(Position position) {
+        cells[position.y][position.x].type = Cell.Type.Floor;
+        // forces re-autotile
+        sequenceId = ID_GENERATOR.incrementAndGet();
+
+        if (playerEntityId != -1) {
+            Position p = getPlayer().getComponent(Position.class);
+            updateDijkstraMap(p.x, p.y);
+        }
     }
 
     private void updateDijkstraMap(int goalX, int goalY) {

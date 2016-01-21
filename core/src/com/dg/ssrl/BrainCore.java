@@ -202,16 +202,21 @@ public class BrainCore {
 
     private static void projectileDamage(World world, Position position, int damage) {
         World.Cell cell = world.getCell(position.x, position.y);
-        int entityCount = cell.getEntityCount();
-        for (int i = 0; i < entityCount; i++) {
-            int entityId = cell.getEntityId(i);
-            Entity hitEntity = world.getEntity(entityId);
-            Components.Stats hitEntityStats = hitEntity.getComponent(Components.Stats.class);
-            if (hitEntityStats != null) {
-                Gdx.app.log(tag, "hit stats " + hitEntityStats);
-                hitEntityStats.damage(damage);
+        if (cell.type == World.Cell.Type.Wall && damage == ItemType.Rocket.damage) {
+            world.destroyWall(position);
+        } else {
+            int entityCount = cell.getEntityCount();
+            for (int i = 0; i < entityCount; i++) {
+                int entityId = cell.getEntityId(i);
+                Entity hitEntity = world.getEntity(entityId);
+                Components.Stats hitEntityStats = hitEntity.getComponent(Components.Stats.class);
+                if (hitEntityStats != null) {
+                    Gdx.app.log(tag, "hit stats " + hitEntityStats);
+                    hitEntityStats.damage(damage);
+                }
             }
         }
+
     }
 
 }
